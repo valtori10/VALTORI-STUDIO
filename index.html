@@ -1,3 +1,4 @@
+cat > /mnt/user-data/outputs/valtori_studio.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="es">
 <head>
@@ -5,1168 +6,1136 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>VALTORI AI Studio</title>
 <style>
-*{box-sizing:border-box;margin:0;padding:0}
-
-:root{
-  --black:#0C0C0C;
-  --surface:#141414;
-  --surface2:#1A1A1A;
-  --border:rgba(255,255,255,0.07);
-  --border2:rgba(255,255,255,0.13);
-  --text:#EFEFEF;
-  --muted:#666;
-  --faint:#333;
-  --orange:#FF6B2B;
-  --orange-bg:rgba(255,107,43,0.08);
-  --green:#34d399;
-  --green-bg:rgba(52,211,153,0.08);
-  --red:#f87171;
-  --sidebar:200px;
+:root {
+  --black: #0A0A0A;
+  --dark: #111111;
+  --surface: #161616;
+  --surface2: #1C1C1C;
+  --border: rgba(255,255,255,0.08);
+  --border2: rgba(255,255,255,0.14);
+  --text: #F5F5F5;
+  --muted: #888;
+  --faint: #444;
+  --orange: #FF6B2B;
+  --odim: rgba(255,107,43,0.12);
+  --oglow: rgba(255,107,43,0.25);
+  --green: #22c55e;
+  --blue: #60a5fa;
+  --purple: #a78bfa;
+  --red: #f87171;
+  --sw: 210px;
 }
+* { box-sizing: border-box; margin: 0; padding: 0; }
+body { background: var(--black); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; line-height: 1.5; display: flex; height: 100vh; overflow: hidden; }
 
-body{background:var(--black);color:var(--text);font-family:-apple-system,BlinkMacSystemFont,'Segoe UI',sans-serif;font-size:13px;line-height:1.5;display:flex;min-height:100vh}
+/* SIDEBAR */
+#sb { width: var(--sw); background: var(--dark); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
+.logo { padding: 18px 16px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
+.logo-icon { width: 28px; height: 28px; background: var(--orange); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: #fff; flex-shrink: 0; }
+.logo-name { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; }
+.logo-sub { font-size: 9px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
+nav { flex: 1; padding: 10px 8px; display: flex; flex-direction: column; gap: 1px; }
+.nav-sec { font-size: 9px; color: var(--faint); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 8px 4px; font-weight: 500; }
+.ni { display: flex; align-items: center; gap: 8px; padding: 7px 9px; border-radius: 7px; cursor: pointer; color: var(--muted); font-size: 12px; border: none; background: none; width: 100%; text-align: left; transition: all 0.12s; }
+.ni:hover { background: rgba(255,255,255,0.05); color: var(--text); }
+.ni.active { background: var(--odim); color: var(--orange); }
+.ni .ic { font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; }
+.sb-foot { padding: 12px 14px; border-top: 1px solid var(--border); font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
+.dot { width: 5px; height: 5px; background: var(--green); border-radius: 50%; flex-shrink: 0; }
 
-/* ── SIDEBAR ── */
-#sidebar{width:var(--sidebar);min-height:100vh;background:var(--surface);border-right:1px solid var(--border);display:flex;flex-direction:column;position:fixed;top:0;left:0;bottom:0;z-index:100}
-.logo{padding:20px 16px 18px;border-bottom:1px solid var(--border);display:flex;align-items:center;gap:10px}
-.logo-icon{width:28px;height:28px;background:var(--orange);border-radius:6px;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:12px;color:#fff;flex-shrink:0}
-.logo-text{font-size:12px;font-weight:600;color:var(--text);letter-spacing:0.04em}
-.logo-sub{font-size:10px;color:var(--muted);letter-spacing:0.06em}
-nav{flex:1;padding:10px 8px;display:flex;flex-direction:column;gap:1px}
-.nav-label{font-size:9px;color:var(--faint);letter-spacing:0.12em;text-transform:uppercase;padding:12px 8px 5px;font-weight:600}
-.nav-item{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:6px;cursor:pointer;color:var(--muted);font-size:12px;border:none;background:none;width:100%;text-align:left;transition:color .12s,background .12s}
-.nav-item:hover{background:rgba(255,255,255,0.04);color:var(--text)}
-.nav-item.active{background:var(--orange-bg);color:var(--orange)}
-.nav-item svg{width:14px;height:14px;flex-shrink:0;opacity:.7}
-.nav-item.active svg{opacity:1}
-.sidebar-foot{padding:14px 16px;border-top:1px solid var(--border);font-size:11px;color:var(--muted);display:flex;align-items:center;gap:6px}
-.dot-live{width:5px;height:5px;background:var(--green);border-radius:50%}
+/* MAIN */
+#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
+.topbar { height: 50px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 22px; gap: 10px; background: var(--dark); flex-shrink: 0; }
+.tb-title { font-size: 13px; font-weight: 500; }
+.tb-sub { font-size: 11px; color: var(--muted); }
+.tb-actions { margin-left: auto; display: flex; gap: 6px; }
+.btn { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 7px; font-size: 11px; font-weight: 500; cursor: pointer; border: none; transition: all 0.12s; font-family: inherit; }
+.btn-ghost { background: rgba(255,255,255,0.06); color: var(--text); }
+.btn-ghost:hover { background: rgba(255,255,255,0.1); }
+.btn-orange { background: var(--orange); color: #fff; }
+.btn-orange:hover { background: #ff7d42; }
+.btn-outline { background: transparent; color: var(--muted); border: 1px solid var(--border2); }
+.btn-outline:hover { color: var(--text); background: rgba(255,255,255,0.04); }
+.btn-sm { padding: 4px 9px; font-size: 10px; }
+.btn-green { background: rgba(34,197,94,0.15); color: var(--green); }
+.btn-green:hover { background: rgba(34,197,94,0.25); }
 
-/* ── MAIN ── */
-#main{margin-left:var(--sidebar);flex:1;display:flex;flex-direction:column}
-.topbar{height:50px;background:var(--surface);border-bottom:1px solid var(--border);display:flex;align-items:center;padding:0 24px;gap:12px;position:sticky;top:0;z-index:50}
-.topbar-title{font-size:13px;font-weight:500;color:var(--text)}
-.topbar-actions{margin-left:auto;display:flex;gap:6px}
+#content { flex: 1; overflow-y: auto; padding: 22px; }
+.page { display: none; flex-direction: column; gap: 16px; }
+.page.active { display: flex; }
 
-/* ── BUTTONS ── */
-.btn{display:inline-flex;align-items:center;gap:5px;padding:6px 12px;border-radius:6px;font-size:12px;font-weight:500;cursor:pointer;border:none;transition:all .12s;font-family:inherit}
-.btn-ghost{background:rgba(255,255,255,0.05);color:var(--text)}
-.btn-ghost:hover{background:rgba(255,255,255,0.09)}
-.btn-orange{background:var(--orange);color:#fff}
-.btn-orange:hover{opacity:.88}
-.btn-outline{background:transparent;color:var(--muted);border:1px solid var(--border2)}
-.btn-outline:hover{color:var(--text);border-color:rgba(255,255,255,0.22)}
-.btn-sm{padding:5px 10px;font-size:11px}
-.btn:disabled{opacity:.35;cursor:default}
+/* CARDS */
+.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
+.card-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
+.card-title { font-size: 12px; font-weight: 500; }
+.card-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
+.mc { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
+.mc-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
+.mc-val { font-size: 20px; font-weight: 600; letter-spacing: -0.5px; }
+.mc-delta { font-size: 10px; margin-top: 3px; color: var(--muted); }
 
-/* ── PAGE ── */
-.page{display:none;padding:28px 28px 48px;flex-direction:column;gap:28px;max-width:860px}
-.page.active{display:flex}
-.page-title{font-size:18px;font-weight:600;color:var(--text);letter-spacing:-.3px}
-.page-sub{font-size:12px;color:var(--muted);margin-top:3px}
+/* BADGES */
+.badge { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 20px; font-size: 10px; font-weight: 500; }
+.bo { background: var(--odim); color: var(--orange); }
+.bg { background: rgba(34,197,94,0.12); color: #22c55e; }
+.bb { background: rgba(59,130,246,0.12); color: #60a5fa; }
+.bp { background: rgba(139,92,246,0.12); color: #a78bfa; }
+.br { background: rgba(239,68,68,0.12); color: #f87171; }
+.bm { background: rgba(255,255,255,0.07); color: var(--muted); }
 
-/* ── EMPTY STATE ── */
-.empty{display:flex;flex-direction:column;align-items:flex-start;gap:10px;padding:36px 28px;border:1px solid var(--border);border-radius:10px;background:var(--surface)}
-.empty-title{font-size:14px;font-weight:500;color:var(--text)}
-.empty-sub{font-size:12px;color:var(--muted);line-height:1.6;max-width:420px}
+/* FORMS */
+.form-g { display: flex; flex-direction: column; gap: 4px; }
+.form-l { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
+input, select, textarea { background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-size: 12px; padding: 7px 10px; outline: none; font-family: inherit; transition: border-color 0.12s; width: 100%; }
+input:focus, select:focus, textarea:focus { border-color: var(--orange); }
+select option { background: #1C1C1C; }
+textarea { resize: vertical; min-height: 64px; }
+.divider { height: 1px; background: var(--border); margin: 8px 0; }
 
-/* ── CARD ── */
-.card{background:var(--surface);border:1px solid var(--border);border-radius:10px;padding:18px 20px}
-.card-title{font-size:12px;font-weight:500;color:var(--text);margin-bottom:14px}
-.card + .card{margin-top:0}
+/* EMPTY STATES */
+.empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; gap: 10px; text-align: center; }
+.empty-icon { font-size: 30px; opacity: 0.2; }
+.empty-title { font-size: 13px; font-weight: 500; }
+.empty-desc { font-size: 11px; color: var(--muted); max-width: 300px; line-height: 1.6; }
 
-/* ── FORM ── */
-.field{display:flex;flex-direction:column;gap:5px}
-.label{font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;font-weight:500}
-input,select,textarea{background:var(--surface2);border:1px solid var(--border2);border-radius:6px;color:var(--text);font-size:12px;padding:8px 10px;outline:none;font-family:inherit;width:100%;transition:border-color .12s}
-input:focus,select:focus,textarea:focus{border-color:var(--orange)}
-select option{background:#1A1A1A}
-textarea{resize:vertical;min-height:72px}
-.grid2{display:grid;grid-template-columns:1fr 1fr;gap:12px}
-.grid3{display:grid;grid-template-columns:1fr 1fr 1fr;gap:12px}
+/* AI AREAS */
+.ai-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 12px; line-height: 1.75; white-space: pre-wrap; word-break: break-word; color: var(--text); min-height: 60px; }
+.ai-placeholder { color: var(--faint); font-style: italic; font-size: 11px; }
+.paste-area { display: none; flex-direction: column; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
+.paste-note { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
+.paste-note::before { content: '↗'; color: var(--orange); font-weight: 600; }
 
-/* ── TABLE ── */
-.tbl-wrap{overflow-x:auto}
-table{width:100%;border-collapse:collapse;font-size:12px}
-th{text-align:left;padding:7px 10px;font-size:10px;color:var(--muted);letter-spacing:.06em;text-transform:uppercase;border-bottom:1px solid var(--border);font-weight:500;white-space:nowrap}
-td{padding:9px 10px;border-bottom:1px solid var(--border);color:var(--text);vertical-align:middle}
-tr:last-child td{border-bottom:none}
-tr:hover td{background:rgba(255,255,255,0.015)}
+/* HERO */
+.hero { background: linear-gradient(135deg, rgba(255,107,43,0.06) 0%, transparent 70%); border: 1px solid var(--oglow); border-radius: 12px; padding: 18px 20px; }
 
-/* ── BADGE ── */
-.badge{display:inline-flex;align-items:center;padding:2px 7px;border-radius:20px;font-size:10px;font-weight:500;white-space:nowrap}
-.b-orange{background:var(--orange-bg);color:var(--orange)}
-.b-green{background:var(--green-bg);color:var(--green)}
-.b-gray{background:rgba(255,255,255,0.06);color:var(--muted)}
-.b-red{background:rgba(248,113,113,0.1);color:var(--red)}
-.b-blue{background:rgba(96,165,250,0.1);color:#60a5fa}
+/* IDEAS */
+.idea-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 9px; transition: border-color 0.2s; }
+.idea-card:hover { border-color: var(--border2); }
+.score-bar { height: 3px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
+.score-fill { height: 100%; background: var(--orange); border-radius: 2px; }
+.hook-box { font-size: 11px; color: var(--text); background: var(--odim); border-left: 2px solid var(--orange); padding: 6px 10px; border-radius: 0 5px 5px 0; line-height: 1.6; }
 
-/* ── DIVIDER ── */
-hr{border:none;border-top:1px solid var(--border);margin:4px 0}
+/* TABLE */
+table { width: 100%; border-collapse: collapse; font-size: 11px; }
+th { text-align: left; padding: 6px 10px; font-size: 10px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid var(--border); font-weight: 500; }
+td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+tr:last-child td { border-bottom: none; }
+tr:hover td { background: rgba(255,255,255,0.02); }
 
-/* ── AI OUTPUT ── */
-.ai-box{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;font-size:12px;color:var(--text);line-height:1.75;white-space:pre-wrap;min-height:60px}
-.ai-box.loading{color:var(--muted);font-style:italic}
+/* CALENDAR */
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
+.cal-hdr { text-align: center; font-size: 9px; color: var(--muted); padding: 3px; text-transform: uppercase; letter-spacing: 0.06em; }
+.cal-day { min-height: 58px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 6px; cursor: default; }
+.cal-day.om { opacity: 0.3; }
+.cal-day.today { border-color: rgba(255,107,43,0.5); }
+.cal-dn { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
+.cal-dn.today-n { color: var(--orange); }
+.cal-ev { font-size: 9px; border-radius: 3px; padding: 1px 4px; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
+.ev-pub { background: rgba(34,197,94,0.15); color: #4ade80; }
+.ev-grab { background: var(--odim); color: var(--orange); }
+.ev-apr { background: rgba(59,130,246,0.12); color: #60a5fa; }
+.ev-edit { background: rgba(139,92,246,0.12); color: #a78bfa; }
+.ev-idea { background: rgba(255,255,255,0.06); color: var(--muted); }
 
-/* ── IDEA CARD ── */
-.idea-item{background:var(--surface);border:1px solid var(--border);border-radius:8px;padding:16px 18px;display:flex;flex-direction:column;gap:10px}
-.idea-item .title{font-size:14px;font-weight:500;color:var(--text)}
-.idea-item .desc{font-size:12px;color:var(--muted);line-height:1.65}
-.idea-actions{display:flex;gap:6px}
+/* SCROLLBAR */
+::-webkit-scrollbar { width: 4px; height: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
 
-/* ── SCENE ── */
-.scene{background:var(--surface2);border:1px solid var(--border);border-radius:8px;padding:14px 16px;display:flex;flex-direction:column;gap:8px}
-.scene-num{font-size:10px;color:var(--orange);text-transform:uppercase;letter-spacing:.08em;font-weight:600}
-
-/* ── CALENDAR ── */
-.cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px}
-.cal-head{text-align:center;font-size:10px;color:var(--muted);padding:4px 0;letter-spacing:.06em;text-transform:uppercase}
-.cal-day{min-height:64px;background:var(--surface2);border:1px solid var(--border);border-radius:6px;padding:6px;font-size:10px;color:var(--muted)}
-.cal-day.dim{opacity:.25}
-.cal-day.today{border-color:rgba(255,107,43,0.35)}
-.cal-event{padding:2px 5px;border-radius:3px;margin-top:3px;font-size:10px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.ev-green{background:rgba(52,211,153,0.12);color:var(--green)}
-.ev-orange{background:var(--orange-bg);color:var(--orange)}
-.ev-blue{background:rgba(96,165,250,0.1);color:#60a5fa}
-.ev-purple{background:rgba(167,139,250,0.1);color:#a78bfa}
-
-/* ── STATUS ── */
-.status-row{display:flex;align-items:center;gap:8px;padding:8px 0;border-bottom:1px solid var(--border)}
-.status-row:last-child{border-bottom:none}
-.status-icon{width:6px;height:6px;border-radius:50%;flex-shrink:0}
-
-/* ── TOAST ── */
-#toast{position:fixed;bottom:24px;right:24px;background:var(--surface2);border:1px solid var(--border2);border-radius:8px;padding:10px 16px;font-size:12px;color:var(--text);z-index:999;opacity:0;transform:translateY(8px);transition:all .2s;pointer-events:none}
-#toast.show{opacity:1;transform:translateY(0)}
-
-/* ── MODAL ── */
-.overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.65);z-index:200;align-items:center;justify-content:center}
-.overlay.open{display:flex}
-.modal{background:var(--surface);border:1px solid var(--border2);border-radius:12px;width:520px;max-width:92vw;max-height:85vh;overflow-y:auto}
-.modal-head{padding:18px 20px 14px;border-bottom:1px solid var(--border);display:flex;align-items:center;justify-content:space-between}
-.modal-title{font-size:14px;font-weight:500;color:var(--text)}
-.modal-body{padding:18px 20px;display:flex;flex-direction:column;gap:12px}
-.modal-foot{padding:12px 20px 18px;display:flex;gap:6px;justify-content:flex-end}
-
-/* ── SCROLLBAR ── */
-::-webkit-scrollbar{width:4px;height:4px}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:2px}
+/* INLINE FORM PANELS */
+.inline-form { display: none; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 4px; }
+.inline-form.open { display: block; }
 </style>
 </head>
 <body>
 
 <!-- SIDEBAR -->
-<aside id="sidebar">
+<aside id="sb">
   <div class="logo">
     <div class="logo-icon">V</div>
-    <div>
-      <div class="logo-text">VALTORI</div>
-      <div class="logo-sub">AI Studio</div>
-    </div>
+    <div><div class="logo-name">VALTORI</div><div class="logo-sub">AI Studio</div></div>
   </div>
   <nav>
-    <button class="nav-item active" onclick="go('dashboard')">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="1" y="1" width="6" height="6" rx="1"/><rect x="9" y="1" width="6" height="6" rx="1"/><rect x="1" y="9" width="6" height="6" rx="1"/><rect x="9" y="9" width="6" height="6" rx="1"/></svg>
-      Dashboard
-    </button>
-    <div class="nav-label">Sistema</div>
-    <button class="nav-item" onclick="go('brain')">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="8" r="6"/><path d="M8 4v4l3 2"/></svg>
-      Brain
-    </button>
-    <button class="nav-item" onclick="go('analytics')">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M2 12l3-4 3 2 3-5 3 3"/></svg>
-      Analytics
-    </button>
-    <button class="nav-item" onclick="go('research')">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="6.5" cy="6.5" r="4"/><path d="M11 11l3 3"/></svg>
-      Research
-    </button>
-    <div class="nav-label">Contenido</div>
-    <button class="nav-item" onclick="go('ideas')">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><circle cx="8" cy="7" r="4"/><path d="M6 11h4M7 13h2"/></svg>
-      Ideas
-    </button>
-    <button class="nav-item" onclick="go('production')">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="10" rx="1.5"/><path d="M6 6l4 2.5L6 11V6z" fill="currentColor" stroke="none"/></svg>
-      Production
-    </button>
-    <button class="nav-item" onclick="go('calendar')">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><rect x="2" y="3" width="12" height="11" rx="1.5"/><path d="M5 2v2M11 2v2M2 7h12"/></svg>
-      Calendar
-    </button>
-    <button class="nav-item" onclick="go('laboratory')">
-      <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.5"><path d="M6 2v5l-3 7h10l-3-7V2"/><path d="M5 2h6"/></svg>
-      Laboratory
-    </button>
+    <button class="ni active" onclick="nav('dashboard')"><span class="ic">⬛</span>Dashboard</button>
+    <div class="nav-sec">Sistema</div>
+    <button class="ni" onclick="nav('brain')"><span class="ic">🧠</span>Brain</button>
+    <button class="ni" onclick="nav('analytics')"><span class="ic">📊</span>Analytics</button>
+    <div class="nav-sec">Contenido</div>
+    <button class="ni" onclick="nav('ideas')"><span class="ic">💡</span>Ideas</button>
+    <button class="ni" onclick="nav('production')"><span class="ic">🎬</span>Production</button>
+    <button class="ni" onclick="nav('calendar')"><span class="ic">📅</span>Calendar</button>
+    <button class="ni" onclick="nav('lab')"><span class="ic">🧪</span>Laboratory</button>
   </nav>
-  <div class="sidebar-foot">
-    <div class="dot-live"></div>
-    IA conectada
-  </div>
+  <div class="sb-foot"><span class="dot"></span>IA vía chat · v3.0</div>
 </aside>
 
 <!-- MAIN -->
-<main id="main">
+<div id="main">
   <div class="topbar">
-    <span class="topbar-title" id="tb-title">Dashboard</span>
-    <div class="topbar-actions" id="tb-actions"></div>
-  </div>
-
-  <!-- ===== DASHBOARD ===== -->
-  <div class="page active" id="page-dashboard">
     <div>
-      <div class="page-title">Bienvenido a VALTORI AI Studio</div>
-      <div class="page-sub">Tu director de contenido impulsado por IA.</div>
+      <div class="tb-title" id="tb-title">Dashboard</div>
+      <div class="tb-sub" id="tb-sub">Director de Contenido IA · Valtori</div>
     </div>
-
-    <div id="dash-content">
-      <!-- populated by JS -->
-    </div>
-  </div>
-
-  <!-- ===== BRAIN ===== -->
-  <div class="page" id="page-brain">
-    <div>
-      <div class="page-title">Brain</div>
-      <div class="page-sub">La memoria de Valtori. La IA usa esto para todo.</div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Marca</div>
-      <div class="grid2" style="gap:12px">
-        <div class="field"><div class="label">Nombre</div><input id="b-name" placeholder="Ej: Valtori"></div>
-        <div class="field"><div class="label">Nicho</div><input id="b-niche" placeholder="Ej: Accesorios de cuero premium para hombres"></div>
-        <div class="field" style="grid-column:1/-1"><div class="label">Descripción de la marca</div><textarea id="b-desc" placeholder="¿Qué es Valtori? ¿Qué vende? ¿Cuál es la propuesta de valor?"></textarea></div>
-        <div class="field"><div class="label">Tono de comunicación</div><input id="b-tone" placeholder="Ej: Premium, aspiracional, directo, masculino"></div>
-        <div class="field"><div class="label">Estética visual</div><input id="b-visual" placeholder="Ej: Minimalista oscuro, cuero, negro y naranja"></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Público objetivo</div>
-      <div class="grid3" style="gap:12px">
-        <div class="field"><div class="label">Edad</div><input id="b-age" placeholder="Ej: 22–38 años"></div>
-        <div class="field"><div class="label">Género</div><input id="b-gender" placeholder="Ej: Masculino principal"></div>
-        <div class="field"><div class="label">Plataformas</div><input id="b-platforms" placeholder="Ej: TikTok, Instagram Reels"></div>
-        <div class="field" style="grid-column:1/-1"><div class="label">Intereses del público</div><textarea id="b-interests" placeholder="Ej: Moda masculina, lifestyle, minimalismo, lujo accesible, negocios..."></textarea></div>
-      </div>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Productos</div>
-      <div id="products-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px"></div>
-      <button class="btn btn-ghost btn-sm" onclick="addProduct()">+ Agregar producto</button>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Competidores</div>
-      <div id="competitors-list" style="display:flex;flex-direction:column;gap:8px;margin-bottom:12px"></div>
-      <button class="btn btn-ghost btn-sm" onclick="addCompetitor()">+ Agregar competidor</button>
-    </div>
-
-    <div class="card">
-      <div class="card-title">Objetivos</div>
-      <div class="field"><div class="label">Meta principal de contenido</div><textarea id="b-goal" placeholder="Ej: Crecer seguidores en TikTok, generar ventas del Cardholder Slim, construir marca premium..."></textarea></div>
-    </div>
-
-    <div style="display:flex;gap:8px">
-      <button class="btn btn-orange" onclick="saveBrain()">Guardar brain</button>
+    <div class="tb-actions" id="tb-actions">
+      <button class="btn btn-ghost" onclick="nav('analytics')">+ Cargar video</button>
+      <button class="btn btn-orange" onclick="askDash()">✦ Análisis IA ↗</button>
     </div>
   </div>
 
-  <!-- ===== ANALYTICS ===== -->
-  <div class="page" id="page-analytics">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
-      <div>
-        <div class="page-title">Analytics</div>
-        <div class="page-sub">Cargá tus videos publicados para que la IA los analice.</div>
-      </div>
-      <button class="btn btn-orange" onclick="openModal('modal-video')">+ Cargar video</button>
-    </div>
+  <div id="content">
 
-    <div id="analytics-content"></div>
-  </div>
-
-  <!-- ===== RESEARCH ===== -->
-  <div class="page" id="page-research">
-    <div>
-      <div class="page-title">Research</div>
-      <div class="page-sub">La IA analiza tu nicho y genera tendencias adaptadas a Valtori.</div>
-    </div>
-    <div id="research-content">
-      <div class="empty">
-        <div class="empty-title">Completá el Brain primero</div>
-        <div class="empty-sub">La IA necesita conocer tu marca, nicho y público para generar investigación relevante.</div>
-        <button class="btn btn-ghost btn-sm" onclick="go('brain')">Ir al Brain →</button>
-      </div>
-    </div>
-    <div id="research-output" style="display:none;flex-direction:column;gap:14px"></div>
-  </div>
-
-  <!-- ===== IDEAS ===== -->
-  <div class="page" id="page-ideas">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
-      <div>
-        <div class="page-title">Ideas</div>
-        <div class="page-sub">La IA genera ideas basadas en tus datos reales.</div>
-      </div>
-      <button class="btn btn-orange" id="btn-gen-ideas" onclick="generateIdeas()">Generar ideas con IA</button>
-    </div>
-    <div id="ideas-content"></div>
-  </div>
-
-  <!-- ===== PRODUCTION ===== -->
-  <div class="page" id="page-production">
-    <div>
-      <div class="page-title">Production</div>
-      <div class="page-sub">Plan completo de grabación generado por IA.</div>
-    </div>
-    <div id="production-content"></div>
-  </div>
-
-  <!-- ===== CALENDAR ===== -->
-  <div class="page" id="page-calendar">
-    <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px;flex-wrap:wrap">
-      <div>
-        <div class="page-title">Calendar</div>
-        <div class="page-sub">Organizá tu calendario de contenido.</div>
-      </div>
-      <button class="btn btn-orange" onclick="openModal('modal-cal')">+ Agregar</button>
-    </div>
-    <div id="calendar-content"></div>
-  </div>
-
-  <!-- ===== LABORATORY ===== -->
-  <div class="page" id="page-laboratory">
-    <div>
-      <div class="page-title">Laboratory</div>
-      <div class="page-sub">Cargá los resultados reales de un video. La IA aprende y recomienda.</div>
-    </div>
-    <div id="lab-content"></div>
-  </div>
-</main>
-
-<!-- TOAST -->
-<div id="toast"></div>
-
-<!-- MODAL: VIDEO -->
-<div class="overlay" id="modal-video">
-  <div class="modal">
-    <div class="modal-head">
-      <span class="modal-title">Cargar video publicado</span>
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-video')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="grid2">
-        <div class="field" style="grid-column:1/-1"><div class="label">Nombre del video</div><input id="v-title" placeholder="Ej: GRWM con Cardholder"></div>
-        <div class="field"><div class="label">Fecha</div><input id="v-date" type="date"></div>
-        <div class="field"><div class="label">Hora publicación</div><input id="v-time" type="time"></div>
-        <div class="field"><div class="label">Plataforma</div>
-          <select id="v-platform"><option value="">Seleccionar...</option><option>TikTok</option><option>Instagram Reels</option><option>YouTube Shorts</option></select>
-        </div>
-        <div class="field"><div class="label">Categoría</div>
-          <select id="v-cat"><option value="">Seleccionar...</option><option>Outfit / GRWM</option><option>Unboxing</option><option>Lifestyle</option><option>Review</option><option>Tutorial</option><option>Comparación</option><option>Otro</option></select>
-        </div>
-        <div class="field"><div class="label">Producto mostrado</div><input id="v-product" placeholder="Ej: Cardholder Slim"></div>
-        <div class="field"><div class="label">Duración (segundos)</div><input id="v-duration" type="number" min="1" placeholder="Ej: 9"></div>
-        <div class="field"><div class="label">Tipo de hook</div>
-          <select id="v-hook"><option value="">Seleccionar...</option><option>Visual directo (sin texto)</option><option>Texto en pantalla</option><option>Pregunta</option><option>Antes / Después</option><option>Comparación</option><option>Otro</option></select>
+    <!-- =================== DASHBOARD =================== -->
+    <section id="page-dashboard" class="page active">
+      <div id="dash-empty" class="card">
+        <div class="empty">
+          <div class="empty-icon">📊</div>
+          <div class="empty-title">Sin datos todavía</div>
+          <div class="empty-desc">Completá el Brain con tu marca y cargá tu primer video en Analytics para activar el análisis IA.</div>
+          <div style="display:flex;gap:8px;margin-top:4px;">
+            <button class="btn btn-orange" onclick="nav('brain')">Empezar en Brain →</button>
+            <button class="btn btn-ghost" onclick="nav('analytics')">Cargar video</button>
+          </div>
         </div>
       </div>
-      <hr>
-      <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:.08em;margin-bottom:8px">Métricas reales</div>
-      <div class="grid3">
-        <div class="field"><div class="label">Visualizaciones</div><input id="v-views" type="number" min="0" placeholder="0"></div>
-        <div class="field"><div class="label">Likes</div><input id="v-likes" type="number" min="0" placeholder="0"></div>
-        <div class="field"><div class="label">Comentarios</div><input id="v-comments" type="number" min="0" placeholder="0"></div>
-        <div class="field"><div class="label">Compartidos</div><input id="v-shares" type="number" min="0" placeholder="0"></div>
-        <div class="field"><div class="label">Guardados</div><input id="v-saves" type="number" min="0" placeholder="0"></div>
-        <div class="field"><div class="label">Seguidores ganados</div><input id="v-followers" type="number" placeholder="0"></div>
-        <div class="field"><div class="label">Retención % (si la tenés)</div><input id="v-retention" type="number" min="0" max="100" placeholder=""></div>
-      </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('modal-video')">Cancelar</button>
-      <button class="btn btn-orange" onclick="saveVideo()">Guardar video</button>
-    </div>
-  </div>
-</div>
 
-<!-- MODAL: CALENDAR EVENT -->
-<div class="overlay" id="modal-cal">
-  <div class="modal">
-    <div class="modal-head">
-      <span class="modal-title">Agregar al calendario</span>
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-cal')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="field"><div class="label">Título del contenido</div><input id="ce-title" placeholder="Ej: Outfit Summer Cardholder"></div>
-      <div class="grid2">
-        <div class="field"><div class="label">Fecha</div><input id="ce-date" type="date"></div>
-        <div class="field"><div class="label">Hora publicación</div><input id="ce-time" type="time" value="20:00"></div>
-        <div class="field"><div class="label">Plataforma</div>
-          <select id="ce-platform"><option>TikTok</option><option>Instagram Reels</option><option>Ambas</option></select>
+      <div id="dash-data" style="display:none;flex-direction:column;gap:14px;">
+        <div class="hero">
+          <div style="font-size:10px;color:var(--muted);margin-bottom:6px;" id="dash-date"></div>
+          <div style="font-size:16px;font-weight:600;margin-bottom:5px;letter-spacing:-0.3px;" id="dash-best-title">—</div>
+          <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;" id="dash-best-desc"></div>
+          <div style="display:flex;gap:7px;">
+            <button class="btn btn-orange" onclick="askDash()">✦ Pedir análisis del canal ↗</button>
+            <button class="btn btn-ghost" onclick="nav('ideas')">Ver ideas →</button>
+          </div>
         </div>
-        <div class="field"><div class="label">Estado</div>
-          <select id="ce-status">
-            <option value="idea">Idea</option>
-            <option value="aprobado">Aprobado</option>
-            <option value="grabando">Pendiente grabación</option>
-            <option value="editando">En edición</option>
-            <option value="publicado">Publicado</option>
-          </select>
+
+        <div class="g4" id="dash-kpis"></div>
+
+        <div class="card">
+          <div class="card-hd">
+            <div><div class="card-title">✦ Último análisis IA</div><div class="card-sub">Enviá el prompt al chat y pegá la respuesta acá</div></div>
+            <span class="badge bg" id="dash-badge" style="display:none;">Guardado</span>
+          </div>
+          <div class="ai-box" id="dash-ai-out"><span class="ai-placeholder">Hacé clic en "Pedir análisis del canal ↗". El prompt se manda al chat automáticamente y yo respondo ahí. Luego pegá mi respuesta acá abajo.</span></div>
+          <div class="paste-area" id="dash-paste">
+            <div class="paste-note">El prompt fue enviado al chat. Cuando yo responda, pegá el texto acá:</div>
+            <textarea id="dash-paste-in" placeholder="Pegá la respuesta de la IA acá..." style="min-height:80px;"></textarea>
+            <button class="btn btn-orange btn-sm" style="width:fit-content;" onclick="saveResp('dash')">Guardar respuesta</button>
+          </div>
         </div>
       </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('modal-cal')">Cancelar</button>
-      <button class="btn btn-orange" onclick="saveCalEvent()">Agregar</button>
-    </div>
-  </div>
-</div>
+    </section>
 
-<!-- MODAL: LAB -->
-<div class="overlay" id="modal-lab">
-  <div class="modal">
-    <div class="modal-head">
-      <span class="modal-title">Analizar video en Laboratorio</span>
-      <button class="btn btn-ghost btn-sm" onclick="closeModal('modal-lab')">✕</button>
-    </div>
-    <div class="modal-body">
-      <div class="field"><div class="label">Seleccionar video</div>
-        <select id="lab-video-select"></select>
+    <!-- =================== BRAIN =================== -->
+    <section id="page-brain" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-size:16px;font-weight:600;margin-bottom:3px;">Memoria de Valtori</div>
+          <div style="font-size:12px;color:var(--muted);">La IA usa esto como contexto en cada pedido. Completar antes de pedir análisis.</div>
+        </div>
+        <button class="btn btn-orange" onclick="saveBrain()">Guardar cambios</button>
       </div>
-      <div style="font-size:11px;color:var(--muted)">Si ya cargaste las métricas al subir el video, la IA las usará. Podés actualizar si cambió algo.</div>
-      <div class="grid3">
-        <div class="field"><div class="label">Visualizaciones finales</div><input id="lab-views" type="number" min="0"></div>
-        <div class="field"><div class="label">Likes</div><input id="lab-likes" type="number" min="0"></div>
-        <div class="field"><div class="label">Retención %</div><input id="lab-retention" type="number" min="0" max="100"></div>
-        <div class="field"><div class="label">Seguidores ganados</div><input id="lab-followers" type="number"></div>
-        <div class="field"><div class="label">Guardados</div><input id="lab-saves" type="number" min="0"></div>
-        <div class="field"><div class="label">Compartidos</div><input id="lab-shares" type="number" min="0"></div>
+
+      <div class="g2" style="align-items:start;">
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="card">
+            <div class="card-hd"><div class="card-title">🏷️ Identidad de marca</div></div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="form-g"><div class="form-l">Nombre de marca</div><input id="b-brand" placeholder="Valtori"></div>
+              <div class="form-g"><div class="form-l">Descripción</div><textarea id="b-desc" placeholder="¿Qué vendés? ¿A quién? ¿Qué te diferencia?"></textarea></div>
+              <div class="form-g"><div class="form-l">Propuesta de valor</div><textarea id="b-value" placeholder="¿Por qué alguien te elegiría?"></textarea></div>
+              <div class="form-g"><div class="form-l">Tono de comunicación</div>
+                <select id="b-tone"><option value="">Seleccioná...</option><option>Premium · Aspiracional · Masculino · Directo</option><option>Casual · Cercano · Juvenil</option><option>Formal · Corporativo</option><option>Educativo · Informativo</option></select>
+              </div>
+            </div>
+          </div>
+          <div class="card">
+            <div class="card-hd"><div class="card-title">🎯 Público objetivo</div></div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="form-g"><div class="form-l">Edad</div><input id="b-age" placeholder="22–38 años"></div>
+              <div class="form-g"><div class="form-l">Género</div><input id="b-gender" placeholder="Masculino principal"></div>
+              <div class="form-g"><div class="form-l">Intereses</div><textarea id="b-interests" placeholder="Moda, lifestyle, viajes..."></textarea></div>
+              <div class="form-g"><div class="form-l">Plataformas</div><input id="b-platforms" placeholder="TikTok · Instagram Reels"></div>
+            </div>
+          </div>
+        </div>
+
+        <div style="display:flex;flex-direction:column;gap:12px;">
+          <div class="card">
+            <div class="card-hd">
+              <div class="card-title">📦 Productos</div>
+              <button class="btn btn-ghost btn-sm" onclick="toggleForm('prod-form')">+ Agregar</button>
+            </div>
+            <div class="inline-form" id="prod-form">
+              <div class="g2" style="gap:8px;margin-bottom:8px;">
+                <div class="form-g"><div class="form-l">Nombre</div><input id="p-name" placeholder="Cardholder Slim"></div>
+                <div class="form-g"><div class="form-l">Precio</div><input id="p-price" placeholder="$29"></div>
+              </div>
+              <div class="form-g" style="margin-bottom:8px;"><div class="form-l">Categoría</div><input id="p-cat" placeholder="Cardholder"></div>
+              <div style="display:flex;gap:6px;">
+                <button class="btn btn-orange btn-sm" onclick="saveProduct()">Guardar</button>
+                <button class="btn btn-ghost btn-sm" onclick="toggleForm('prod-form')">Cancelar</button>
+              </div>
+            </div>
+            <div id="prod-list"><div class="empty" style="padding:20px;"><div class="empty-desc">Agregá tus productos para que la IA los use en las ideas.</div></div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-hd">
+              <div class="card-title">🏆 Competidores</div>
+              <button class="btn btn-ghost btn-sm" onclick="toggleForm('comp-form')">+ Agregar</button>
+            </div>
+            <div class="inline-form" id="comp-form">
+              <div class="g2" style="gap:8px;margin-bottom:8px;">
+                <div class="form-g"><div class="form-l">Nombre</div><input id="c-name" placeholder="Ridge Wallet"></div>
+                <div class="form-g"><div class="form-l">Amenaza</div>
+                  <select id="c-threat"><option value="alta">Alta</option><option value="media">Media</option><option value="ref">Referencia</option></select>
+                </div>
+              </div>
+              <div style="display:flex;gap:6px;">
+                <button class="btn btn-orange btn-sm" onclick="saveComp()">Guardar</button>
+                <button class="btn btn-ghost btn-sm" onclick="toggleForm('comp-form')">Cancelar</button>
+              </div>
+            </div>
+            <div id="comp-list"><div class="empty" style="padding:20px;"><div class="empty-desc">Agregá competidores para análisis de diferenciación.</div></div></div>
+          </div>
+
+          <div class="card">
+            <div class="card-hd"><div class="card-title">🎨 Estilo visual</div></div>
+            <div style="display:flex;flex-direction:column;gap:10px;">
+              <div class="form-g"><div class="form-l">Paleta de colores</div><input id="b-colors" placeholder="Negro, blanco, naranja..."></div>
+              <div class="form-g"><div class="form-l">Estética</div><input id="b-aesthetic" placeholder="Minimalista, premium, clean..."></div>
+              <div class="form-g"><div class="form-l">Referencias visuales</div><textarea id="b-refs" placeholder="Marcas o cuentas de referencia..."></textarea></div>
+            </div>
+          </div>
+        </div>
       </div>
-    </div>
-    <div class="modal-foot">
-      <button class="btn btn-ghost" onclick="closeModal('modal-lab')">Cancelar</button>
-      <button class="btn btn-orange" onclick="runLabAnalysis()">Analizar con IA</button>
-    </div>
-  </div>
-</div>
+    </section>
+
+    <!-- =================== ANALYTICS =================== -->
+    <section id="page-analytics" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-size:16px;font-weight:600;margin-bottom:3px;">Analytics</div>
+          <div style="font-size:12px;color:var(--muted);">Cargá tus videos reales. La IA detecta patrones solo con datos reales.</div>
+        </div>
+        <div style="display:flex;gap:7px;">
+          <button class="btn btn-ghost" onclick="toggleForm('video-form')">+ Cargar video</button>
+          <button class="btn btn-orange" onclick="askAnalysis()">✦ Analizar con IA ↗</button>
+        </div>
+      </div>
+
+      <div class="inline-form" id="video-form">
+        <div style="font-size:12px;font-weight:500;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;">
+          Nuevo video
+          <button class="btn btn-ghost btn-sm" onclick="toggleForm('video-form')">✕</button>
+        </div>
+        <div class="g2" style="gap:8px;margin-bottom:8px;">
+          <div class="form-g"><div class="form-l">Nombre del video</div><input id="v-name" placeholder="Outfit Summer Cardholder"></div>
+          <div class="form-g"><div class="form-l">Fecha de publicación</div><input type="date" id="v-date"></div>
+          <div class="form-g"><div class="form-l">Plataforma</div>
+            <select id="v-plat"><option>TikTok</option><option>Instagram Reels</option><option>YouTube Shorts</option></select>
+          </div>
+          <div class="form-g"><div class="form-l">Categoría</div>
+            <select id="v-cat"><option>Outfit</option><option>GRWM</option><option>Unboxing</option><option>Lifestyle</option><option>Review</option><option>Tutorial</option><option>Antes/Ahora</option><option>Estética</option></select>
+          </div>
+          <div class="form-g"><div class="form-l">Duración (seg)</div><input type="number" id="v-dur" placeholder="9"></div>
+          <div class="form-g"><div class="form-l">Hora de publicación</div><input type="time" id="v-time"></div>
+        </div>
+        <div class="divider"></div>
+        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Métricas reales</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;">
+          <div class="form-g"><div class="form-l">Vistas</div><input type="number" id="v-views" placeholder="0"></div>
+          <div class="form-g"><div class="form-l">Likes</div><input type="number" id="v-likes" placeholder="0"></div>
+          <div class="form-g"><div class="form-l">Comentarios</div><input type="number" id="v-comm" placeholder="0"></div>
+          <div class="form-g"><div class="form-l">Compartidos</div><input type="number" id="v-shares" placeholder="0"></div>
+          <div class="form-g"><div class="form-l">Guardados</div><input type="number" id="v-saves" placeholder="0"></div>
+          <div class="form-g"><div class="form-l">Seguidores +/-</div><input type="number" id="v-foll" placeholder="0"></div>
+          <div class="form-g"><div class="form-l">Retención %</div><input type="number" id="v-ret" placeholder="0"></div>
+        </div>
+        <button class="btn btn-orange" onclick="saveVideo()">Guardar video</button>
+      </div>
+
+      <div id="analytics-empty" class="card">
+        <div class="empty">
+          <div class="empty-icon">🎬</div>
+          <div class="empty-title">Sin videos cargados</div>
+          <div class="empty-desc">Cargá al menos un video con métricas reales. La IA analiza patrones basándose en tus datos.</div>
+          <button class="btn btn-orange" onclick="toggleForm('video-form')">+ Cargar primer video</button>
+        </div>
+      </div>
+
+      <div id="analytics-data" style="display:none;flex-direction:column;gap:14px;">
+        <div class="g4" id="an-kpis"></div>
+        <div class="card">
+          <div class="card-hd">
+            <div><div class="card-title">✦ Análisis IA</div><div class="card-sub" id="an-sub">Enviá el prompt y pegá la respuesta acá</div></div>
+            <span class="badge bg" id="an-badge" style="display:none;">Guardado</span>
+          </div>
+          <div class="ai-box" id="an-ai-out"><span class="ai-placeholder">Hacé clic en "Analizar con IA ↗" para que yo reciba tus datos y genere el análisis acá.</span></div>
+          <div class="paste-area" id="an-paste">
+            <div class="paste-note">Prompt enviado al chat. Pegá mi respuesta acá cuando aparezca:</div>
+            <textarea id="an-paste-in" placeholder="Pegá la respuesta de la IA acá..." style="min-height:80px;"></textarea>
+            <button class="btn btn-orange btn-sm" style="width:fit-content;" onclick="saveResp('an')">Guardar respuesta</button>
+          </div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><div class="card-title">Historial de videos</div></div>
+          <div style="overflow-x:auto;">
+            <table>
+              <thead><tr><th>Video</th><th>Plataforma</th><th>Categoría</th><th>Dur.</th><th>Vistas</th><th>Retención</th><th>Seguidores</th></tr></thead>
+              <tbody id="videos-tbody"></tbody>
+            </table>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== IDEAS =================== -->
+    <section id="page-ideas" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-size:16px;font-weight:600;margin-bottom:3px;">Ideas de contenido</div>
+          <div style="font-size:12px;color:var(--muted);">La IA genera propuestas basadas en tus datos y tu Brain.</div>
+        </div>
+        <button class="btn btn-orange" onclick="askIdeas()">✦ Generar ideas ↗</button>
+      </div>
+
+      <div class="card" id="ideas-prompt-card" style="display:none;">
+        <div class="card-hd"><div class="card-title">Prompt enviado al chat</div><span class="badge bo">Esperando respuesta</span></div>
+        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Cuando yo responda en el chat, pegá el texto acá abajo y hacé clic en "Guardar ideas".</div>
+        <textarea id="ideas-paste-in" placeholder="Pegá la respuesta de la IA acá..." style="min-height:100px;"></textarea>
+        <button class="btn btn-orange btn-sm" style="margin-top:8px;width:fit-content;" onclick="saveIdeas()">Guardar ideas</button>
+      </div>
+
+      <div id="ideas-empty" class="card">
+        <div class="empty">
+          <div class="empty-icon">💡</div>
+          <div class="empty-title">Sin ideas generadas</div>
+          <div class="empty-desc">Hacé clic en "Generar ideas ↗". La IA usará tu Brain y tus videos para crear propuestas reales y específicas para Valtori.</div>
+        </div>
+      </div>
+
+      <div id="ideas-list" style="display:none;flex-direction:column;gap:10px;"></div>
+    </section>
+
+    <!-- =================== PRODUCTION =================== -->
+    <section id="page-production" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-size:16px;font-weight:600;margin-bottom:3px;">Production</div>
+          <div style="font-size:12px;color:var(--muted);">Plan completo generado por IA para la idea aprobada.</div>
+        </div>
+        <button class="btn btn-ghost" onclick="nav('ideas')">← Volver a Ideas</button>
+      </div>
+
+      <div id="prod-empty" class="card">
+        <div class="empty">
+          <div class="empty-icon">🎬</div>
+          <div class="empty-title">Sin idea aprobada</div>
+          <div class="empty-desc">Aprobá una idea en la sección Ideas para generar el plan completo de producción.</div>
+          <button class="btn btn-orange" onclick="nav('ideas')">Ir a Ideas →</button>
+        </div>
+      </div>
+
+      <div id="prod-content" style="display:none;flex-direction:column;gap:14px;">
+        <div class="hero" id="prod-hero"></div>
+        <div class="card">
+          <div class="card-hd">
+            <div><div class="card-title">✦ Plan completo de producción</div><div class="card-sub">Guion · Escenas · Edición · Descripción · Predicción</div></div>
+            <button class="btn btn-orange btn-sm" onclick="askProduction()">Generar plan ↗</button>
+          </div>
+          <div class="ai-box" id="prod-ai-out"><span class="ai-placeholder">Hacé clic en "Generar plan ↗" para que la IA cree el guion, plan de escenas, edición y hashtags.</span></div>
+          <div class="paste-area" id="prod-paste">
+            <div class="paste-note">Prompt enviado. Pegá la respuesta acá cuando aparezca en el chat:</div>
+            <textarea id="prod-paste-in" placeholder="Pegá la respuesta de la IA acá..." style="min-height:80px;"></textarea>
+            <button class="btn btn-orange btn-sm" style="width:fit-content;" onclick="saveResp('prod')">Guardar plan</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== CALENDAR =================== -->
+    <section id="page-calendar" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-size:16px;font-weight:600;margin-bottom:3px;">Calendario</div>
+          <div style="font-size:12px;color:var(--muted);" id="cal-label"></div>
+        </div>
+        <div style="display:flex;gap:6px;align-items:center;">
+          <button class="btn btn-ghost btn-sm" onclick="changeMonth(-1)">←</button>
+          <button class="btn btn-ghost btn-sm" onclick="changeMonth(1)">→</button>
+          <button class="btn btn-orange" onclick="toggleForm('event-form')">+ Agregar</button>
+        </div>
+      </div>
+
+      <div class="inline-form" id="event-form">
+        <div style="font-size:12px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
+          Nuevo evento
+          <button class="btn btn-ghost btn-sm" onclick="toggleForm('event-form')">✕</button>
+        </div>
+        <div class="g2" style="gap:8px;margin-bottom:10px;">
+          <div class="form-g"><div class="form-l">Título</div><input id="ev-title" placeholder="Outfit Summer Cardholder"></div>
+          <div class="form-g"><div class="form-l">Fecha</div><input type="date" id="ev-date"></div>
+          <div class="form-g"><div class="form-l">Plataforma</div>
+            <select id="ev-plat"><option>TikTok</option><option>Instagram Reels</option><option>Ambas</option></select>
+          </div>
+          <div class="form-g"><div class="form-l">Estado</div>
+            <select id="ev-status">
+              <option value="idea">Idea</option><option value="apr">Aprobado</option>
+              <option value="grab">Grabando</option><option value="edit">Editando</option><option value="pub">Publicado</option>
+            </select>
+          </div>
+        </div>
+        <button class="btn btn-orange" onclick="saveEvent()">Agregar al calendario</button>
+      </div>
+
+      <div class="card" style="padding:12px;">
+        <div class="cal-grid" style="margin-bottom:5px;">
+          <div class="cal-hdr">Lun</div><div class="cal-hdr">Mar</div><div class="cal-hdr">Mié</div>
+          <div class="cal-hdr">Jue</div><div class="cal-hdr">Vie</div><div class="cal-hdr">Sáb</div><div class="cal-hdr">Dom</div>
+        </div>
+        <div class="cal-grid" id="cal-days"></div>
+      </div>
+
+      <div class="g2">
+        <div class="card">
+          <div class="card-hd"><div class="card-title">Próximos eventos</div></div>
+          <div id="upcoming"></div>
+        </div>
+        <div class="card">
+          <div class="card-hd"><div class="card-title">Resumen del mes</div></div>
+          <div class="g2" id="cal-summary"></div>
+        </div>
+      </div>
+    </section>
+
+    <!-- =================== LABORATORY =================== -->
+    <section id="page-lab" class="page">
+      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+        <div>
+          <div style="font-size:16px;font-weight:600;margin-bottom:3px;">Laboratory</div>
+          <div style="font-size:12px;color:var(--muted);">Análisis profundo post-publicación. La IA aprende de cada resultado.</div>
+        </div>
+      </div>
+
+      <div id="lab-empty" class="card">
+        <div class="empty">
+          <div class="empty-icon">🧪</div>
+          <div class="empty-title">Sin videos para analizar</div>
+          <div class="empty-desc">Cargá al menos un video con métricas reales en Analytics para usar el laboratorio.</div>
+          <button class="btn btn-orange" onclick="nav('analytics')">Ir a Analytics →</button>
+        </div>
+      </div>
+
+      <div id="lab-content" style="display:none;flex-direction:column;gap:14px;">
+        <div class="card">
+          <div class="card-hd">
+            <div><div class="card-title">Video a analizar</div></div>
+            <button class="btn btn-orange btn-sm" onclick="askLab()">✦ Analizar con IA ↗</button>
+          </div>
+          <select id="lab-select" style="max-width:380px;margin-bottom:12px;" onchange="updateLabMetrics()"></select>
+          <div class="g4" id="lab-metrics"></div>
+        </div>
+
+        <div class="card" id="lab-result" style="display:none;">
+          <div class="card-hd">
+            <div><div class="card-title">✦ Análisis IA</div><div class="card-sub" id="lab-sub"></div></div>
+            <span class="badge bg" id="lab-badge" style="display:none;">Guardado</span>
+          </div>
+          <div class="ai-box" id="lab-ai-out"><span class="ai-placeholder">Esperando respuesta...</span></div>
+          <div class="paste-area" id="lab-paste">
+            <div class="paste-note">Prompt enviado. Pegá mi respuesta acá cuando aparezca en el chat:</div>
+            <textarea id="lab-paste-in" placeholder="Pegá la respuesta de la IA acá..." style="min-height:80px;"></textarea>
+            <button class="btn btn-orange btn-sm" style="width:fit-content;" onclick="saveResp('lab')">Guardar análisis</button>
+          </div>
+        </div>
+      </div>
+    </section>
+
+  </div><!-- /content -->
+</div><!-- /main -->
 
 <script>
-// ── STATE ──
 const S = {
-  brain: {},
-  videos: [],
-  ideas: [],
-  approvedIdeas: [],
-  calEvents: [],
-  labResults: [],
-  products: [],
-  competitors: []
+  videos: [], events: [], products: [], competitors: [],
+  brain: {}, approvedIdea: null,
+  calMonth: new Date().getMonth(), calYear: new Date().getFullYear()
 };
 
-function load() {
-  try {
-    const saved = localStorage.getItem('valtori_v2');
-    if (saved) Object.assign(S, JSON.parse(saved));
-  } catch(e) {}
-}
-
-function save() {
-  try { localStorage.setItem('valtori_v2', JSON.stringify(S)); } catch(e) {}
-}
-
-load();
-
-// ── NAVIGATION ──
-const PAGE_META = {
-  dashboard: 'Dashboard',
-  brain: 'Brain',
-  analytics: 'Analytics',
-  research: 'Research',
-  ideas: 'Ideas',
-  production: 'Production',
-  calendar: 'Calendar',
-  laboratory: 'Laboratory'
+const PAGES = {
+  dashboard: { title:'Dashboard', sub:'Director de Contenido IA · Valtori' },
+  brain:     { title:'Brain — Memoria de marca', sub:'La IA usa esto como contexto en cada pedido' },
+  analytics: { title:'Analytics', sub:'Historial real de videos · Análisis por IA' },
+  ideas:     { title:'Ideas de contenido', sub:'Generadas por IA con base en tus datos reales' },
+  production:{ title:'Production', sub:'Plan de grabación generado por IA' },
+  calendar:  { title:'Calendario', sub:'Planificación mensual de contenido' },
+  lab:       { title:'Laboratory', sub:'Análisis post-publicación · Aprendizaje continuo' }
 };
 
-function go(id) {
+function nav(page) {
   document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
-  document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
-  document.getElementById('page-' + id).classList.add('active');
-  document.querySelectorAll('.nav-item').forEach(n => {
-    if (n.getAttribute('onclick')?.includes("'" + id + "'")) n.classList.add('active');
+  document.querySelectorAll('.ni').forEach(n => n.classList.remove('active'));
+  const pg = document.getElementById('page-' + page);
+  if (pg) pg.classList.add('active');
+  document.querySelectorAll('.ni').forEach(n => {
+    if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + page + "'")) n.classList.add('active');
   });
-  document.getElementById('tb-title').textContent = PAGE_META[id] || id;
-  renderPage(id);
+  const info = PAGES[page] || { title: page, sub: '' };
+  document.getElementById('tb-title').textContent = info.title;
+  document.getElementById('tb-sub').textContent = info.sub;
+  // Update topbar actions per page
+  const ta = document.getElementById('tb-actions');
+  if (page === 'dashboard') ta.innerHTML = '<button class="btn btn-ghost" onclick="nav(\'analytics\')">+ Cargar video</button><button class="btn btn-orange" onclick="askDash()">✦ Análisis IA ↗</button>';
+  else if (page === 'analytics') ta.innerHTML = '<button class="btn btn-ghost" onclick="toggleForm(\'video-form\')">+ Cargar video</button><button class="btn btn-orange" onclick="askAnalysis()">✦ Analizar con IA ↗</button>';
+  else if (page === 'ideas') ta.innerHTML = '<button class="btn btn-orange" onclick="askIdeas()">✦ Generar ideas ↗</button>';
+  else if (page === 'production') ta.innerHTML = '<button class="btn btn-ghost" onclick="nav(\'ideas\')">← Ideas</button>';
+  else if (page === 'brain') ta.innerHTML = '<button class="btn btn-orange" onclick="saveBrain()">Guardar cambios</button>';
+  else ta.innerHTML = '';
+  if (page === 'dashboard') refreshDash();
+  if (page === 'calendar') renderCal();
+  if (page === 'lab') refreshLab();
 }
 
-function renderPage(id) {
-  if (id === 'dashboard') renderDashboard();
-  if (id === 'analytics') renderAnalytics();
-  if (id === 'brain') fillBrainForm();
-  if (id === 'research') renderResearch();
-  if (id === 'ideas') renderIdeas();
-  if (id === 'production') renderProduction();
-  if (id === 'calendar') renderCalendar();
-  if (id === 'laboratory') renderLab();
+function toggleForm(id) {
+  const el = document.getElementById(id);
+  el.classList.toggle('open');
 }
 
-// ── TOAST ──
-function toast(msg) {
-  const t = document.getElementById('toast');
-  t.textContent = msg;
-  t.classList.add('show');
-  setTimeout(() => t.classList.remove('show'), 2500);
-}
-
-// ── MODALS ──
-function openModal(id) { document.getElementById(id).classList.add('open'); }
-function closeModal(id) { document.getElementById(id).classList.remove('open'); }
-document.querySelectorAll('.overlay').forEach(o => o.addEventListener('click', e => { if(e.target===o) o.classList.remove('open'); }));
-
-// ── BRAIN ──
-function fillBrainForm() {
+/* ── BRAIN CONTEXT ── */
+function getBrain() {
   const b = S.brain;
-  ['name','niche','desc','tone','visual','age','gender','platforms','interests','goal'].forEach(k => {
-    const el = document.getElementById('b-'+k);
-    if (el) el.value = b[k] || '';
-  });
-  renderProductList();
-  renderCompetitorList();
+  const prods = S.products.map(p => `${p.name} (${p.price})`).join(', ') || 'ninguno';
+  const comps = S.competitors.map(c => c.name).join(', ') || 'ninguno';
+  return `Marca: ${b.brand||'no definida'}
+Descripción: ${b.desc||'no definida'}
+Propuesta de valor: ${b.value||'no definida'}
+Tono: ${b.tone||'no definido'}
+Público: ${b.age||''} ${b.gender||''}
+Intereses: ${b.interests||'no definidos'}
+Plataformas: ${b.platforms||'no definidas'}
+Productos: ${prods}
+Competidores: ${comps}
+Estética: ${b.aesthetic||'no definida'}
+Colores: ${b.colors||'no definidos'}
+Referencias: ${b.refs||'ninguna'}`;
 }
 
-function saveBrain() {
-  ['name','niche','desc','tone','visual','age','gender','platforms','interests','goal'].forEach(k => {
-    const el = document.getElementById('b-'+k);
-    if (el) S.brain[k] = el.value.trim();
-  });
-  S.brain.products = S.products;
-  S.brain.competitors = S.competitors;
-  save();
-  toast('Brain guardado ✓');
+function getVideos() {
+  if (!S.videos.length) return 'Sin videos cargados todavía.';
+  return S.videos.map(v =>
+    `- "${v.name}" | ${v.plat} | ${v.cat} | ${v.dur}s | ${v.views.toLocaleString()} vistas | ${v.ret}% retención | ${v.foll >= 0 ? '+' : ''}${v.foll} seguidores`
+  ).join('\n');
 }
 
-function renderProductList() {
-  const el = document.getElementById('products-list');
-  if (!el) return;
-  if (!S.products.length) { el.innerHTML = '<div style="font-size:12px;color:var(--muted)">Sin productos aún.</div>'; return; }
-  el.innerHTML = S.products.map((p,i) => `
-    <div style="display:flex;gap:8px;align-items:center">
-      <input value="${p.name||''}" placeholder="Producto" style="flex:2" onchange="S.products[${i}].name=this.value">
-      <input value="${p.price||''}" placeholder="Precio" style="flex:1" onchange="S.products[${i}].price=this.value">
-      <input value="${p.desc||''}" placeholder="Descripción breve" style="flex:3" onchange="S.products[${i}].desc=this.value">
-      <button class="btn btn-ghost btn-sm" style="padding:5px 8px;color:var(--muted)" onclick="removeProduct(${i})">✕</button>
-    </div>`).join('');
-}
-
-function addProduct() {
-  S.products.push({name:'',price:'',desc:''});
-  renderProductList();
-}
-
-function removeProduct(i) {
-  S.products.splice(i,1);
-  renderProductList();
-}
-
-function renderCompetitorList() {
-  const el = document.getElementById('competitors-list');
-  if (!el) return;
-  if (!S.competitors.length) { el.innerHTML = '<div style="font-size:12px;color:var(--muted)">Sin competidores aún.</div>'; return; }
-  el.innerHTML = S.competitors.map((c,i) => `
-    <div style="display:flex;gap:8px;align-items:center">
-      <input value="${c.name||''}" placeholder="Nombre" style="flex:2" onchange="S.competitors[${i}].name=this.value">
-      <input value="${c.notes||''}" placeholder="Notas (qué hace bien, qué hace mal)" style="flex:4" onchange="S.competitors[${i}].notes=this.value">
-      <button class="btn btn-ghost btn-sm" style="padding:5px 8px;color:var(--muted)" onclick="removeCompetitor(${i})">✕</button>
-    </div>`).join('');
-}
-
-function addCompetitor() {
-  S.competitors.push({name:'',notes:''});
-  renderCompetitorList();
-}
-
-function removeCompetitor(i) {
-  S.competitors.splice(i,1);
-  renderCompetitorList();
-}
-
-// ── DASHBOARD ──
-function renderDashboard() {
-  const el = document.getElementById('dash-content');
-  const hasBrain = S.brain.name;
-  const hasVideos = S.videos.length > 0;
-  const hasIdeas = S.approvedIdeas.length > 0;
-
-  if (!hasBrain) {
-    el.innerHTML = `
-      <div class="empty">
-        <div class="empty-title">Empezá por el Brain</div>
-        <div class="empty-sub">Contale a la IA quién es Valtori, qué vende y a quién le habla. Es el paso 1 para que todo funcione.</div>
-        <button class="btn btn-orange" onclick="go('brain')">Configurar Brain →</button>
-      </div>`;
-    return;
+/* ── AI PROMPTS ── */
+function askDash() {
+  if (!S.videos.length && !S.brain.brand) {
+    alert('Primero completá el Brain y cargá al menos un video.');
+    nav('brain'); return;
   }
+  const prompt = `Sos el director de contenido IA de VALTORI. Respondé en español con bullet points breves y concretos.
 
-  let steps = '';
-  const step = (num, done, title, sub, action, page) => `
-    <div style="display:flex;align-items:flex-start;gap:14px;padding:14px 0;border-bottom:1px solid var(--border)">
-      <div style="width:22px;height:22px;border-radius:50%;${done?'background:var(--green);':'background:var(--surface2);border:1px solid var(--border2);'}display:flex;align-items:center;justify-content:center;flex-shrink:0;font-size:10px;font-weight:600;color:${done?'#000':'var(--muted)'}">
-        ${done?'✓':num}
-      </div>
-      <div style="flex:1">
-        <div style="font-size:13px;font-weight:500;color:${done?'var(--muted)':'var(--text)'}${done?';text-decoration:line-through':''}">${title}</div>
-        <div style="font-size:11px;color:var(--muted);margin-top:2px">${sub}</div>
-      </div>
-      ${!done ? `<button class="btn btn-ghost btn-sm" onclick="go('${page}')">${action}</button>` : ''}
-    </div>`;
+CONTEXTO DE MARCA:
+${getBrain()}
 
-  el.innerHTML = `
-    <div style="margin-bottom:6px;font-size:12px;color:var(--muted)">Hola. Valtori AI Studio está listo.</div>
-    <div class="card" style="margin-bottom:16px">
-      <div class="card-title">Próximos pasos</div>
-      ${step(1, !!hasBrain, 'Brain configurado', 'La IA conoce tu marca', '', 'brain')}
-      ${step(2, hasVideos, 'Cargá tu primer video', 'Subí un video publicado con sus métricas reales', 'Ir a Analytics', 'analytics')}
-      ${step(3, hasVideos && S.ideas.length>0, 'Generá ideas con IA', 'La IA crea ideas basadas en tus datos reales', 'Ir a Ideas', 'ideas')}
-      ${step(4, hasIdeas, 'Aprobá una idea', 'La idea aprobada genera el plan de producción completo', 'Ir a Ideas', 'ideas')}
-    </div>
-    ${hasVideos ? `<div style="font-size:12px;color:var(--muted)">${S.videos.length} video${S.videos.length>1?'s':''} cargado${S.videos.length>1?'s':''}. <a href="#" onclick="go('analytics');return false" style="color:var(--orange);text-decoration:none">Ver Analytics →</a></div>` : ''}
-    ${hasIdeas ? `<div style="font-size:12px;color:var(--muted);margin-top:6px">${S.approvedIdeas.length} idea${S.approvedIdeas.length>1?'s':''} aprobada${S.approvedIdeas.length>1?'s':''}. <a href="#" onclick="go('production');return false" style="color:var(--orange);text-decoration:none">Ver Production →</a></div>` : ''}
-  `;
+VIDEOS DEL CANAL:
+${getVideos()}
+
+Generá un análisis ejecutivo:
+1. ¿Qué está funcionando mejor? (con números reales si hay videos)
+2. ¿Qué hay que mejorar o evitar?
+3. Recomendación principal para el próximo video.
+
+Máximo 200 palabras. Sé específico.`;
+  if (typeof sendPrompt === 'function') sendPrompt(prompt);
+  else { navigator.clipboard.writeText(prompt).catch(()=>{}); alert('Prompt copiado. Pegalo en el chat de Claude.'); }
+  showPaste('dash');
+  refreshDash();
 }
 
-// ── ANALYTICS ──
+function askAnalysis() {
+  if (!S.videos.length) { alert('Cargá al menos un video primero.'); toggleForm('video-form'); return; }
+  const prompt = `Sos el analista de contenido de VALTORI. Analizá estos videos en español.
+
+CONTEXTO DE MARCA:
+${getBrain()}
+
+VIDEOS CARGADOS:
+${getVideos()}
+
+Respondé con estas secciones:
+📈 QUÉ FUNCIONA MEJOR — categoría, formato o duración con mejor rendimiento
+⏱️ DURACIÓN ÓPTIMA — basada en los datos reales
+🏆 MEJOR VIDEO — cuál fue y por qué funcionó
+⚠️ QUÉ EVITAR — patrones de bajo rendimiento detectados
+★ PRÓXIMA RECOMENDACIÓN — acción concreta para el siguiente video
+
+Basate solo en los datos reales. Sé específico con los números.`;
+  if (typeof sendPrompt === 'function') sendPrompt(prompt);
+  else { navigator.clipboard.writeText(prompt).catch(()=>{}); alert('Prompt copiado. Pegalo en el chat de Claude.'); }
+  showPaste('an');
+}
+
+function askIdeas() {
+  const prompt = `Sos el estratega de contenido de VALTORI. Generá 3 ideas de videos concretas.
+
+CONTEXTO DE MARCA:
+${getBrain()}
+
+VIDEOS DEL CANAL (para basar las ideas en lo que funciona):
+${getVideos()}
+
+Para cada idea usá este formato exacto:
+
+TÍTULO: [título concreto y específico]
+CONFIANZA: [número del 1 al 100]
+FORMATO: [duración sugerida · plataforma recomendada]
+POR QUÉ FUNCIONARÁ: [razón basada en datos reales del canal, o en la marca si no hay videos]
+HOOK SUGERIDO: [qué mostrar exactamente en los primeros 2 segundos]
+
+---
+
+[repetir para idea 2]
+
+---
+
+[repetir para idea 3]`;
+  if (typeof sendPrompt === 'function') sendPrompt(prompt);
+  else { navigator.clipboard.writeText(prompt).catch(()=>{}); alert('Prompt copiado. Pegalo en el chat de Claude.'); }
+  document.getElementById('ideas-empty').style.display = 'none';
+  document.getElementById('ideas-prompt-card').style.display = 'block';
+  document.getElementById('ideas-list').style.display = 'none';
+}
+
+function askProduction() {
+  if (!S.approvedIdea) { alert('No hay idea aprobada.'); return; }
+  const idea = S.approvedIdea;
+  const prompt = `Sos el director de producción de VALTORI. Generá el plan completo para este video.
+
+CONTEXTO DE MARCA:
+${getBrain()}
+
+IDEA APROBADA: "${idea.title}"
+${idea.format ? 'Formato: ' + idea.format : ''}
+${idea.hook ? 'Hook sugerido: ' + idea.hook : ''}
+${idea.why ? 'Por qué funcionará: ' + idea.why : ''}
+
+HISTORIAL DEL CANAL (referencia):
+${getVideos()}
+
+Generá el plan completo con estas secciones:
+
+🎬 GUION ESCENA POR ESCENA
+Mínimo 3 escenas. Para cada una: duración, acción exacta, instrucciones de cámara y resultado visual esperado.
+
+📝 INSTRUCCIONES DE CÁMARA Y LUZ
+Equipamiento, ángulos, iluminación recomendada, errores a evitar.
+
+✂️ PLAN DE EDICIÓN
+Música, ritmo de cortes, texto en pantalla, color grading.
+
+📋 DESCRIPCIÓN Y HASHTAGS
+Copy listo para copiar en TikTok e Instagram.
+
+✦ PREDICCIÓN DE RENDIMIENTO
+Estimaciones realistas basadas en el historial del canal.`;
+  if (typeof sendPrompt === 'function') sendPrompt(prompt);
+  else { navigator.clipboard.writeText(prompt).catch(()=>{}); alert('Prompt copiado. Pegalo en el chat de Claude.'); }
+  showPaste('prod');
+}
+
+function askLab() {
+  const idx = parseInt(document.getElementById('lab-select').value) || 0;
+  const v = S.videos[idx];
+  if (!v) return;
+  const others = S.videos.filter((_, i) => i !== idx);
+  const prompt = `Sos el analista post-publicación de VALTORI. Analizá este video en profundidad.
+
+CONTEXTO DE MARCA:
+${getBrain()}
+
+VIDEO ANALIZADO:
+- Nombre: ${v.name}
+- Plataforma: ${v.plat}
+- Categoría: ${v.cat}
+- Duración: ${v.dur}s
+- Hora de publicación: ${v.time || 'no registrada'}
+- Vistas: ${v.views.toLocaleString()}
+- Likes: ${v.likes.toLocaleString()}
+- Comentarios: ${v.comm.toLocaleString()}
+- Compartidos: ${v.shares.toLocaleString()}
+- Guardados: ${v.saves.toLocaleString()}
+- Seguidores ganados: ${v.foll >= 0 ? '+' : ''}${v.foll}
+- Retención: ${v.ret}%
+
+${others.length ? 'OTROS VIDEOS DEL CANAL (promedio de referencia):\n' + others.map(ov => `- ${ov.name}: ${ov.views.toLocaleString()} vistas, ${ov.ret}% retención`).join('\n') : 'Este es el único video cargado.'}
+
+Analizá con estas secciones:
+✓ QUÉ FUNCIONÓ — mínimo 3 puntos con los números reales
+✗ QUÉ MEJORAR — con recomendaciones concretas y accionables
+★ PRÓXIMO VIDEO — qué replicar exactamente y qué cambiar
+${others.length ? '📊 VS PROMEDIO DEL CANAL — comparación con los otros videos' : ''}`;
+  if (typeof sendPrompt === 'function') sendPrompt(prompt);
+  else { navigator.clipboard.writeText(prompt).catch(()=>{}); alert('Prompt copiado. Pegalo en el chat de Claude.'); }
+  document.getElementById('lab-result').style.display = 'block';
+  document.getElementById('lab-sub').textContent = 'Análisis de "' + v.name + '"';
+  showPaste('lab');
+}
+
+/* ── PASTE & SAVE RESPONSES ── */
+function showPaste(section) {
+  const map = { dash:'dash-paste', an:'an-paste', prod:'prod-paste', lab:'lab-paste' };
+  const el = document.getElementById(map[section]);
+  if (el) el.style.display = 'flex';
+}
+
+function saveResp(section) {
+  const inputs = { dash:'dash-paste-in', an:'an-paste-in', prod:'prod-paste-in', lab:'lab-paste-in' };
+  const outputs = { dash:'dash-ai-out', an:'an-ai-out', prod:'prod-ai-out', lab:'lab-ai-out' };
+  const pastes = { dash:'dash-paste', an:'an-paste', prod:'prod-paste', lab:'lab-paste' };
+  const badges = { dash:'dash-badge', an:'an-badge', lab:'lab-badge' };
+  const input = document.getElementById(inputs[section]);
+  const output = document.getElementById(outputs[section]);
+  if (!input || !output) return;
+  const val = input.value.trim();
+  if (!val) { alert('Pegá la respuesta de la IA primero.'); return; }
+  output.textContent = val;
+  const paste = document.getElementById(pastes[section]);
+  if (paste) paste.style.display = 'none';
+  if (badges[section]) { const b = document.getElementById(badges[section]); if (b) b.style.display = 'inline-flex'; }
+  input.value = '';
+}
+
+/* ── BRAIN ── */
+function saveBrain() {
+  S.brain = {
+    brand: document.getElementById('b-brand').value,
+    desc: document.getElementById('b-desc').value,
+    value: document.getElementById('b-value').value,
+    tone: document.getElementById('b-tone').value,
+    age: document.getElementById('b-age').value,
+    gender: document.getElementById('b-gender').value,
+    interests: document.getElementById('b-interests').value,
+    platforms: document.getElementById('b-platforms').value,
+    colors: document.getElementById('b-colors').value,
+    aesthetic: document.getElementById('b-aesthetic').value,
+    refs: document.getElementById('b-refs').value
+  };
+  const btn = event.target;
+  const orig = btn.textContent;
+  btn.textContent = '✓ Guardado'; btn.style.background = '#22c55e';
+  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
+  refreshDash();
+}
+
+function saveProduct() {
+  const name = document.getElementById('p-name').value.trim();
+  if (!name) return;
+  S.products.push({ name, price: document.getElementById('p-price').value, cat: document.getElementById('p-cat').value });
+  ['p-name','p-price','p-cat'].forEach(id => document.getElementById(id).value = '');
+  toggleForm('prod-form');
+  renderProducts();
+}
+
+function renderProducts() {
+  const el = document.getElementById('prod-list');
+  if (!S.products.length) { el.innerHTML = '<div class="empty" style="padding:16px;"><div class="empty-desc">Agregá tus productos.</div></div>'; return; }
+  el.innerHTML = '<div style="overflow-x:auto;"><table><thead><tr><th>Nombre</th><th>Precio</th><th>Categoría</th></tr></thead><tbody>' +
+    S.products.map((p, i) => `<tr><td>${p.name}</td><td>${p.price}</td><td>${p.cat}</td><td><button class="btn btn-ghost btn-sm" onclick="delProduct(${i})">✕</button></td></tr>`).join('') +
+    '</tbody></table></div>';
+}
+
+function delProduct(i) { S.products.splice(i, 1); renderProducts(); }
+
+function saveComp() {
+  const name = document.getElementById('c-name').value.trim();
+  if (!name) return;
+  S.competitors.push({ name, threat: document.getElementById('c-threat').value });
+  document.getElementById('c-name').value = '';
+  toggleForm('comp-form');
+  renderComps();
+}
+
+function renderComps() {
+  const el = document.getElementById('comp-list');
+  if (!S.competitors.length) { el.innerHTML = '<div class="empty" style="padding:16px;"><div class="empty-desc">Agregá competidores.</div></div>'; return; }
+  const labels = { alta:'Alta amenaza', media:'Media amenaza', ref:'Referencia' };
+  const cls = { alta:'br', media:'bo', ref:'bm' };
+  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:5px;">' +
+    S.competitors.map((c, i) => `
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 9px;background:var(--surface2);border-radius:6px;border:1px solid var(--border);">
+        <span>${c.name}</span>
+        <div style="display:flex;align-items:center;gap:6px;">
+          <span class="badge ${cls[c.threat]}">${labels[c.threat]}</span>
+          <button class="btn btn-ghost btn-sm" onclick="delComp(${i})">✕</button>
+        </div>
+      </div>`).join('') + '</div>';
+}
+
+function delComp(i) { S.competitors.splice(i, 1); renderComps(); }
+
+/* ── ANALYTICS ── */
 function saveVideo() {
-  const v = {
-    id: Date.now(),
-    title: document.getElementById('v-title').value.trim(),
-    date: document.getElementById('v-date').value,
+  const name = document.getElementById('v-name').value.trim();
+  if (!name) { alert('El nombre del video es obligatorio.'); return; }
+  S.videos.push({
+    name, date: document.getElementById('v-date').value,
+    plat: document.getElementById('v-plat').value, cat: document.getElementById('v-cat').value,
+    dur: parseInt(document.getElementById('v-dur').value) || 0,
     time: document.getElementById('v-time').value,
-    platform: document.getElementById('v-platform').value,
-    category: document.getElementById('v-cat').value,
-    product: document.getElementById('v-product').value.trim(),
-    duration: parseInt(document.getElementById('v-duration').value) || 0,
-    hook: document.getElementById('v-hook').value,
     views: parseInt(document.getElementById('v-views').value) || 0,
     likes: parseInt(document.getElementById('v-likes').value) || 0,
-    comments: parseInt(document.getElementById('v-comments').value) || 0,
+    comm: parseInt(document.getElementById('v-comm').value) || 0,
     shares: parseInt(document.getElementById('v-shares').value) || 0,
     saves: parseInt(document.getElementById('v-saves').value) || 0,
-    followers: parseInt(document.getElementById('v-followers').value) || 0,
-    retention: parseInt(document.getElementById('v-retention').value) || null
-  };
-  if (!v.title) { toast('Agregá un nombre al video'); return; }
-  S.videos.push(v);
-  save();
-  closeModal('modal-video');
-  clearVideoForm();
-  renderAnalytics();
-  toast('Video guardado ✓');
+    foll: parseInt(document.getElementById('v-foll').value) || 0,
+    ret: parseInt(document.getElementById('v-ret').value) || 0
+  });
+  ['v-name','v-date','v-views','v-likes','v-comm','v-shares','v-saves','v-foll','v-ret','v-dur','v-time']
+    .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
+  toggleForm('video-form');
+  refreshAnalytics();
 }
 
-function clearVideoForm() {
-  ['v-title','v-date','v-time','v-product','v-duration','v-views','v-likes','v-comments','v-shares','v-saves','v-followers','v-retention'].forEach(id => { const el = document.getElementById(id); if(el) el.value=''; });
-  ['v-platform','v-cat','v-hook'].forEach(id => { const el = document.getElementById(id); if(el) el.selectedIndex=0; });
+function refreshAnalytics() {
+  const empty = document.getElementById('analytics-empty');
+  const data = document.getElementById('analytics-data');
+  if (!S.videos.length) { empty.style.display = 'block'; data.style.display = 'none'; return; }
+  empty.style.display = 'none'; data.style.display = 'flex';
+  const totalV = S.videos.reduce((a,v) => a + v.views, 0);
+  const avgR = Math.round(S.videos.reduce((a,v) => a + v.ret, 0) / S.videos.length);
+  const totalF = S.videos.reduce((a,v) => a + v.foll, 0);
+  const best = [...S.videos].sort((a,b) => b.views - a.views)[0];
+  document.getElementById('an-kpis').innerHTML = [
+    ['Videos cargados', S.videos.length, null],
+    ['Vistas totales', totalV >= 1000 ? (totalV/1000).toFixed(1)+'K' : totalV, null],
+    ['Retención prom.', avgR + '%', null],
+    ['Seguidores ganados', '+' + totalF, null]
+  ].map(([l,v]) => `<div class="mc"><div class="mc-label">${l}</div><div class="mc-val">${v}</div></div>`).join('');
+  document.getElementById('an-sub').textContent = `Basado en ${S.videos.length} video${S.videos.length > 1 ? 's' : ''} cargados`;
+  document.getElementById('videos-tbody').innerHTML = S.videos.map((v, i) => `
+    <tr>
+      <td><div style="font-weight:500;">${v.name}</div><div style="font-size:10px;color:var(--muted);">${v.date || ''} ${v.time ? '· '+v.time : ''}</div></td>
+      <td><span class="badge bb">${v.plat}</span></td>
+      <td><span class="badge bp">${v.cat}</span></td>
+      <td>${v.dur}s</td>
+      <td style="color:var(--orange);font-weight:600;">${v.views >= 1000 ? (v.views/1000).toFixed(1)+'K' : v.views.toLocaleString()}</td>
+      <td style="color:${v.ret >= 70 ? '#22c55e' : v.ret >= 50 ? 'var(--orange)' : '#f87171'};font-weight:500;">${v.ret}%</td>
+      <td style="color:${v.foll > 0 ? '#22c55e' : 'var(--muted)'};">${v.foll > 0 ? '+' : ''}${v.foll}</td>
+    </tr>`).join('');
+  refreshDash();
 }
 
-function deleteVideo(id) {
-  if (!confirm('¿Eliminar este video?')) return;
-  S.videos = S.videos.filter(v => v.id !== id);
-  save();
-  renderAnalytics();
-  toast('Video eliminado');
+/* ── IDEAS ── */
+function saveIdeas() {
+  const raw = document.getElementById('ideas-paste-in').value.trim();
+  if (!raw) { alert('Pegá la respuesta de la IA primero.'); return; }
+  const blocks = raw.split(/---+/).map(b => b.trim()).filter(Boolean);
+  S.ideas = blocks.map(b => {
+    const get = (rx) => { const m = b.match(rx); return m ? m[1].trim() : ''; };
+    return {
+      title: get(/TÍTULO[:\s]+(.+)/i) || b.slice(0, 60),
+      conf: parseInt(get(/CONFIANZA[:\s]+(\d+)/i)) || null,
+      format: get(/FORMATO[:\s]+(.+)/i),
+      why: get(/POR QUÉ[^:]*:\s*(.+?)(?=\n(?:HOOK|---)|$)/is),
+      hook: get(/HOOK[^:]*:\s*(.+?)(?=\n---|$)/is),
+      status: 'pending'
+    };
+  });
+  document.getElementById('ideas-prompt-card').style.display = 'none';
+  document.getElementById('ideas-paste-in').value = '';
+  renderIdeas();
 }
 
-function renderAnalytics() {
-  const el = document.getElementById('analytics-content');
-  if (!S.videos.length) {
-    el.innerHTML = `
-      <div class="empty">
-        <div class="empty-title">Sin videos cargados</div>
-        <div class="empty-sub">Cargá un video publicado con sus métricas reales. La IA lo analizará junto con los demás para encontrar patrones.</div>
-        <button class="btn btn-orange" onclick="openModal('modal-video')">+ Cargar primer video</button>
-      </div>`;
-    return;
-  }
-
-  el.innerHTML = `
-    <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px">
-      <span style="font-size:12px;color:var(--muted)">${S.videos.length} video${S.videos.length>1?'s':''}</span>
-      <button class="btn btn-orange btn-sm" onclick="analyzeVideos()">Analizar con IA</button>
-    </div>
-    <div class="card" style="margin-bottom:16px">
-      <div class="tbl-wrap">
-        <table>
-          <thead><tr><th>Video</th><th>Plataforma</th><th>Categoría</th><th>Duración</th><th>Vistas</th><th>Retención</th><th>Seg. ganados</th><th></th></tr></thead>
-          <tbody>
-            ${S.videos.map(v => `
-              <tr>
-                <td><div style="font-weight:500">${esc(v.title)}</div><div style="font-size:10px;color:var(--muted)">${v.date||''}${v.time?' · '+v.time:''}</div></td>
-                <td><span class="badge b-gray">${esc(v.platform||'—')}</span></td>
-                <td><span class="badge b-blue">${esc(v.category||'—')}</span></td>
-                <td>${v.duration?v.duration+'s':'—'}</td>
-                <td>${v.views?v.views.toLocaleString():'—'}</td>
-                <td>${v.retention!=null?v.retention+'%':'—'}</td>
-                <td style="color:var(--green)">${v.followers?'+'+v.followers:'—'}</td>
-                <td><button class="btn btn-ghost btn-sm" style="color:var(--muted);padding:3px 7px" onclick="deleteVideo(${v.id})">✕</button></td>
-              </tr>`).join('')}
-          </tbody>
-        </table>
-      </div>
-    </div>
-    <div id="analysis-output"></div>`;
-}
-
-async function analyzeVideos() {
-  const el = document.getElementById('analysis-output');
-  if (!el) return;
-  if (S.videos.length < 1) { toast('Cargá al menos un video primero'); return; }
-  el.innerHTML = `<div class="card"><div class="ai-box loading">Analizando tus videos...</div></div>`;
-
-  const brain = S.brain;
-  const videosStr = S.videos.map(v =>
-    `• "${v.title}" | ${v.platform} | ${v.category} | ${v.duration}s | Hook: ${v.hook} | Vistas: ${v.views} | Likes: ${v.likes} | Retención: ${v.retention!=null?v.retention+'%':'N/D'} | Seguidores: +${v.followers}`
-  ).join('\n');
-
-  const prompt = `Eres un estratega de contenido para redes sociales. Analiza estos videos reales de la marca "${brain.name||'Valtori'}" (${brain.niche||'accesorios premium'}) y extrae conclusiones concretas y accionables.
-
-Videos publicados:
-${videosStr}
-
-Genera un análisis breve y directo con estas secciones:
-1. Qué categorías/formatos funcionan mejor (con datos reales de los videos)
-2. Qué duración funciona mejor
-3. Qué hooks tienen mejor resultado
-4. Mejor horario si hay datos
-5. Una recomendación principal para el próximo video
-
-Sé específico y usa solo los datos reales que te di. No inventes. Si los datos son insuficientes para una conclusión, dilo. Responde en español.`;
-
-  const result = await callAI(prompt);
-  el.innerHTML = `<div class="card"><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Análisis IA</div><div class="ai-box">${esc(result)}</div></div>`;
-}
-
-// ── RESEARCH ──
-function renderResearch() {
-  const b = S.brain;
-  if (!b.name) {
-    document.getElementById('research-output').style.display = 'none';
-    document.getElementById('research-content').style.display = '';
-    return;
-  }
-  document.getElementById('research-content').innerHTML = `
-    <button class="btn btn-orange" onclick="runResearch()">Investigar tendencias con IA</button>
-    <div style="font-size:11px;color:var(--muted);margin-top:8px">La IA analiza el nicho de ${esc(b.name)}, formatos virales y te da tendencias adaptadas.</div>`;
-  document.getElementById('research-output').style.display = 'flex';
-  if (!S._lastResearch) document.getElementById('research-output').innerHTML = '';
-  else document.getElementById('research-output').innerHTML = S._lastResearch;
-}
-
-async function runResearch() {
-  const b = S.brain;
-  const out = document.getElementById('research-output');
-  out.style.display = 'flex';
-  out.innerHTML = `<div class="ai-box loading">Investigando tendencias para tu nicho...</div>`;
-
-  const prompt = `Eres un investigador de tendencias en redes sociales especializado en marcas premium.
-
-Marca: ${b.name||'Valtori'}
-Nicho: ${b.niche||'accesorios de cuero premium'}
-Público: ${b.age||''} ${b.gender||''} — intereses: ${b.interests||'moda masculina, lifestyle'}
-Plataformas: ${b.platforms||'TikTok, Instagram Reels'}
-Competidores: ${(S.competitors||[]).map(c=>c.name).filter(Boolean).join(', ')||'no especificados'}
-
-Genera 4 tendencias actuales de contenido en redes sociales que sean relevantes para esta marca. Para cada una incluye:
-- Nombre de la tendencia
-- Por qué está funcionando (brevemente)
-- Cómo adaptarla a ${b.name||'la marca'}
-- Formato sugerido y duración
-
-Sé específico y práctico. Responde en español.`;
-
-  const result = await callAI(prompt);
-  const html = `<div class="card"><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Tendencias para ${esc(b.name)}</div><div class="ai-box">${esc(result)}</div></div>`;
-  out.innerHTML = html;
-  S._lastResearch = html;
-}
-
-// ── IDEAS ──
 function renderIdeas() {
-  const el = document.getElementById('ideas-content');
-  const b = S.brain;
-  const btn = document.getElementById('btn-gen-ideas');
-
-  if (!b.name) {
-    el.innerHTML = `<div class="empty"><div class="empty-title">Configurá el Brain primero</div><div class="empty-sub">La IA necesita conocer tu marca para generar ideas relevantes.</div><button class="btn btn-ghost btn-sm" onclick="go('brain')">Ir al Brain →</button></div>`;
-    btn.disabled = true; return;
+  const list = document.getElementById('ideas-list');
+  const pending = S.ideas ? S.ideas.filter(i => i.status === 'pending') : [];
+  if (!pending.length) {
+    list.style.display = 'none';
+    document.getElementById('ideas-empty').style.display = 'block';
+    return;
   }
-  btn.disabled = false;
-
-  let html = '';
-
-  if (S.ideas.length === 0) {
-    html += `<div class="empty" style="margin-bottom:16px"><div class="empty-title">Sin ideas generadas</div><div class="empty-sub">Presioná "Generar ideas con IA" y la IA creará ideas basadas en tus datos reales de ${esc(b.name)}${S.videos.length?' y tus '+S.videos.length+' videos':' (agregá videos para ideas más precisas)'}.</div></div>`;
-  } else {
-    html += `<div id="ideas-list" style="display:flex;flex-direction:column;gap:10px">` +
-      S.ideas.map((idea, i) => {
-        const approved = S.approvedIdeas.some(a => a.id === idea.id);
-        return `<div class="idea-item" id="idea-${idea.id}" style="${approved?'border-color:rgba(52,211,153,.3);opacity:.6':''}">
-          <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:12px">
-            <div class="title">${esc(idea.title)}</div>
-            <span class="badge ${approved?'b-green':'b-orange'}" style="flex-shrink:0">${approved?'Aprobada':'Pendiente'}</span>
-          </div>
-          <div class="desc">${esc(idea.description)}</div>
-          ${!approved ? `<div class="idea-actions">
-            <button class="btn btn-orange btn-sm" onclick="approveIdea(${idea.id})">Aprobar y generar plan</button>
-            <button class="btn btn-ghost btn-sm" onclick="discardIdea(${idea.id})">Descartar</button>
-          </div>` : `<div style="font-size:11px;color:var(--green)">✓ Plan generado en Production</div>`}
-        </div>`;
-      }).join('') + '</div>';
-  }
-
-  el.innerHTML = html;
+  document.getElementById('ideas-empty').style.display = 'none';
+  list.style.display = 'flex';
+  list.innerHTML = pending.map((idea, idx) => `
+    <div class="idea-card" id="idea-${idx}">
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
+        <div style="font-size:13px;font-weight:500;flex:1;">${idea.title}</div>
+        ${idea.conf ? `<div style="text-align:right;flex-shrink:0;"><div style="font-size:20px;font-weight:600;color:var(--orange);letter-spacing:-1px;">${idea.conf}</div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;">Confianza</div></div>` : ''}
+      </div>
+      ${idea.format ? `<div><span class="badge bm">${idea.format}</span></div>` : ''}
+      ${idea.conf ? `<div class="score-bar"><div class="score-fill" style="width:${idea.conf}%;"></div></div>` : ''}
+      ${idea.why ? `<div style="font-size:11px;color:var(--muted);line-height:1.65;">${idea.why}</div>` : ''}
+      ${idea.hook ? `<div class="hook-box"><strong style="color:var(--orange);font-weight:500;">Hook:</strong> ${idea.hook}</div>` : ''}
+      <div style="display:flex;gap:6px;margin-top:2px;">
+        <button class="btn btn-orange btn-sm" onclick="approveIdea(${idx})">✓ Aprobar</button>
+        <button class="btn btn-ghost btn-sm" onclick="discardIdea(${idx})">✗ Descartar</button>
+      </div>
+    </div>`).join('');
 }
 
-async function generateIdeas() {
-  const btn = document.getElementById('btn-gen-ideas');
-  btn.textContent = 'Generando...';
-  btn.disabled = true;
-
-  const b = S.brain;
-  const hasVideos = S.videos.length > 0;
-  const videosContext = hasVideos
-    ? 'Videos publicados:\n' + S.videos.map(v=>`• "${v.title}" | ${v.category} | ${v.duration}s | ${v.views} vistas | Retención: ${v.retention!=null?v.retention+'%':'N/D'}`).join('\n')
-    : 'Todavía no hay videos publicados cargados.';
-
-  const prompt = `Eres un estratega de contenido creativo para marcas premium en redes sociales.
-
-Marca: ${b.name||'Valtori'}
-Nicho: ${b.niche||'accesorios'}
-Descripción: ${b.desc||''}
-Tono: ${b.tone||''}
-Público: ${b.age||''} ${b.gender||''} — ${b.interests||''}
-Plataformas: ${b.platforms||'TikTok, Instagram Reels'}
-Objetivo: ${b.goal||'crecer en redes y generar ventas'}
-Productos: ${(S.products||[]).map(p=>p.name).filter(Boolean).join(', ')||'no especificados'}
-
-${videosContext}
-
-Genera 3 ideas de videos concretas y originales. Cada una debe tener:
-- Título (corto y claro)
-- Objetivo principal (ganar seguidores / generar ventas / branding)
-- Descripción de la idea (qué se graba, qué se ve, por qué va a funcionar)
-- Duración sugerida en segundos
-- Plataforma recomendada
-
-${hasVideos ? 'Basate en los patrones de los videos que ya tienen datos.' : 'Basate en el nicho y el público objetivo.'}
-Sé específico y práctico. Responde en español.`;
-
-  const result = await callAI(prompt);
-
-  // Parse ideas roughly — split by numbered items
-  const parts = result.split(/\n(?=\d\.\s|\*\*\d\.|###\s*\d)/);
-  if (parts.length >= 2) {
-    parts.forEach((part, i) => {
-      if (!part.trim()) return;
-      const lines = part.trim().split('\n');
-      let title = lines[0].replace(/^[\d\.\*\#\s]+/, '').replace(/^\*+|\*+$/g,'').trim();
-      if (!title) title = 'Idea ' + (i+1);
-      S.ideas.push({ id: Date.now() + i, title, description: part.trim() });
-    });
-  } else {
-    S.ideas.push({ id: Date.now(), title: 'Ideas generadas por IA', description: result });
-  }
-
-  save();
-  btn.textContent = 'Generar ideas con IA';
-  btn.disabled = false;
-  renderIdeas();
-}
-
-function approveIdea(id) {
-  const idea = S.ideas.find(i => i.id === id);
+function approveIdea(idx) {
+  const pending = S.ideas.filter(i => i.status === 'pending');
+  const idea = pending[idx];
   if (!idea) return;
-  if (!S.approvedIdeas.find(a => a.id === id)) {
-    S.approvedIdeas.push(idea);
-    save();
-  }
-  toast('Idea aprobada — generando plan...');
+  idea.status = 'approved';
+  S.approvedIdea = idea;
+  const card = document.getElementById('idea-' + idx);
+  if (card) { card.style.borderColor = 'rgba(34,197,94,0.4)'; card.style.background = 'rgba(34,197,94,0.04)'; }
+  setTimeout(() => {
+    nav('production');
+    document.getElementById('prod-empty').style.display = 'none';
+    document.getElementById('prod-content').style.display = 'flex';
+    document.getElementById('prod-hero').innerHTML = `
+      <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;">
+        <span class="badge bg">✓ Aprobado</span>
+        ${idea.conf ? `<span class="badge bo">Confianza: ${idea.conf}%</span>` : ''}
+      </div>
+      <div style="font-size:17px;font-weight:600;margin-bottom:5px;letter-spacing:-0.3px;">${idea.title}</div>
+      ${idea.format ? `<div style="font-size:12px;color:var(--muted);">${idea.format}</div>` : ''}`;
+  }, 500);
+}
+
+function discardIdea(idx) {
+  const pending = S.ideas.filter(i => i.status === 'pending');
+  if (pending[idx]) pending[idx].status = 'discarded';
   renderIdeas();
-  setTimeout(() => go('production'), 600);
 }
 
-function discardIdea(id) {
-  S.ideas = S.ideas.filter(i => i.id !== id);
-  save();
-  renderIdeas();
-  toast('Idea descartada');
+/* ── CALENDAR ── */
+function saveEvent() {
+  const title = document.getElementById('ev-title').value.trim();
+  if (!title) { alert('El título es obligatorio.'); return; }
+  S.events.push({
+    title, date: document.getElementById('ev-date').value,
+    plat: document.getElementById('ev-plat').value,
+    status: document.getElementById('ev-status').value
+  });
+  document.getElementById('ev-title').value = '';
+  document.getElementById('ev-date').value = '';
+  toggleForm('event-form');
+  renderCal();
 }
 
-// ── PRODUCTION ──
-function renderProduction() {
-  const el = document.getElementById('production-content');
-  if (!S.approvedIdeas.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-title">Sin ideas aprobadas</div><div class="empty-sub">Aprobá una idea en la sección Ideas para que la IA genere el plan completo de producción.</div><button class="btn btn-ghost btn-sm" onclick="go('ideas')">Ir a Ideas →</button></div>`;
-    return;
+function renderCal() {
+  const y = S.calYear, m = S.calMonth;
+  const mnames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  document.getElementById('cal-label').textContent = mnames[m] + ' ' + y;
+  const first = new Date(y, m, 1), last = new Date(y, m+1, 0);
+  let sdow = first.getDay(); sdow = sdow === 0 ? 6 : sdow - 1;
+  const grid = document.getElementById('cal-days'); grid.innerHTML = '';
+  const today = new Date();
+  const evCls = { pub:'ev-pub', grab:'ev-grab', apr:'ev-apr', edit:'ev-edit', idea:'ev-idea' };
+
+  for (let i = 0; i < sdow; i++) {
+    const d = document.createElement('div'); d.className = 'cal-day om';
+    d.innerHTML = `<div class="cal-dn">${new Date(y,m,-sdow+i+1).getDate()}</div>`;
+    grid.appendChild(d);
+  }
+  for (let day = 1; day <= last.getDate(); day++) {
+    const d = document.createElement('div');
+    const isToday = today.getDate() === day && today.getMonth() === m && today.getFullYear() === y;
+    d.className = 'cal-day' + (isToday ? ' today' : '');
+    const ds = y + '-' + String(m+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
+    const evs = S.events.filter(e => e.date === ds);
+    d.innerHTML = `<div class="cal-dn${isToday?' today-n':''}">${day}${isToday?' ●':''}</div>` +
+      evs.map(e => `<div class="cal-ev ${evCls[e.status]||'ev-idea'}">${e.title}</div>`).join('');
+    grid.appendChild(d);
+  }
+  const rem = 42 - sdow - last.getDate();
+  for (let i = 1; i <= rem; i++) {
+    const d = document.createElement('div'); d.className = 'cal-day om';
+    d.innerHTML = `<div class="cal-dn">${i}</div>`; grid.appendChild(d);
   }
 
-  const latest = S.approvedIdeas[S.approvedIdeas.length - 1];
-  el.innerHTML = `
-    <div style="font-size:11px;color:var(--muted);margin-bottom:6px">${S.approvedIdeas.length} idea${S.approvedIdeas.length>1?'s':''} aprobada${S.approvedIdeas.length>1?'s':''}. Mostrando la última:</div>
-    <div class="card" style="margin-bottom:14px">
-      <div style="font-size:15px;font-weight:500;color:var(--text);margin-bottom:6px">${esc(latest.title)}</div>
-      <div style="font-size:12px;color:var(--muted);line-height:1.65">${esc(latest.description)}</div>
-    </div>
-    <div style="display:flex;gap:8px;margin-bottom:16px">
-      <button class="btn btn-orange" onclick="generateProductionPlan()">Generar plan completo con IA</button>
-    </div>
-    <div id="production-output"></div>`;
+  const todayStr = today.toISOString().split('T')[0];
+  const upcoming = S.events.filter(e => e.date >= todayStr).sort((a,b) => a.date.localeCompare(b.date)).slice(0,5);
+  const lbl = { pub:'Publicado', grab:'Grabando', apr:'Aprobado', edit:'Editando', idea:'Idea' };
+  const bcls = { pub:'bg', grab:'bo', apr:'bb', edit:'bp', idea:'bm' };
+  document.getElementById('upcoming').innerHTML = upcoming.length
+    ? '<div style="display:flex;flex-direction:column;gap:5px;">' + upcoming.map(e =>
+        `<div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--surface2);border-radius:6px;border:1px solid var(--border);">
+          <div style="font-size:10px;color:var(--muted);min-width:36px;">${e.date ? e.date.slice(5).replace('-','/') : '—'}</div>
+          <div style="flex:1;font-size:12px;">${e.title}</div>
+          <span class="badge ${bcls[e.status]||'bm'}">${lbl[e.status]||e.status}</span>
+        </div>`).join('') + '</div>'
+    : '<div class="empty" style="padding:16px;"><div class="empty-desc">No hay eventos próximos agendados.</div></div>';
+
+  const mStr = y + '-' + String(m+1).padStart(2,'0');
+  const mEvs = S.events.filter(e => e.date && e.date.startsWith(mStr));
+  document.getElementById('cal-summary').innerHTML = [
+    ['Publicados', mEvs.filter(e=>e.status==='pub').length],
+    ['Grabando', mEvs.filter(e=>e.status==='grab').length],
+    ['Aprobados', mEvs.filter(e=>e.status==='apr').length],
+    ['Total mes', mEvs.length]
+  ].map(([l,v]) => `<div class="mc"><div class="mc-label">${l}</div><div class="mc-val">${v}</div></div>`).join('');
 }
 
-async function generateProductionPlan() {
-  const out = document.getElementById('production-output');
-  if (!out) return;
-  out.innerHTML = `<div class="ai-box loading">Generando plan de producción...</div>`;
-
-  const latest = S.approvedIdeas[S.approvedIdeas.length - 1];
-  const b = S.brain;
-
-  const prompt = `Eres un director de contenido para redes sociales. Genera un plan de producción detallado para este video.
-
-Marca: ${b.name||'Valtori'}
-Nicho: ${b.niche||'accesorios premium'}
-Tono visual: ${b.visual||'minimalista oscuro'}
-Objetivo de la marca: ${b.goal||'crecer y generar ventas'}
-
-Idea aprobada:
-${latest.description}
-
-Genera el plan completo con estas secciones:
-1. RESUMEN (objetivo, duración ideal, plataforma, hora de publicación recomendada)
-2. GUION (qué se ve en pantalla, segundo a segundo)
-3. PLAN DE GRABACIÓN (escenas, cada una con: duración, ubicación, cámara, movimiento, acción, resultado visual esperado)
-4. PLAN DE EDICIÓN (cortes, ritmo, música, texto en pantalla, efectos si aplica)
-5. DESCRIPCIÓN Y HASHTAGS (listos para copiar y pegar)
-
-Sé muy específico y práctico. Responde en español.`;
-
-  const result = await callAI(prompt);
-  out.innerHTML = `<div class="card"><div style="font-size:11px;color:var(--muted);text-transform:uppercase;letter-spacing:.06em;margin-bottom:10px">Plan de producción</div><div class="ai-box">${esc(result)}</div></div>`;
+function changeMonth(dir) {
+  S.calMonth += dir;
+  if (S.calMonth > 11) { S.calMonth = 0; S.calYear++; }
+  if (S.calMonth < 0) { S.calMonth = 11; S.calYear--; }
+  renderCal();
 }
 
-// ── CALENDAR ──
-function saveCalEvent() {
-  const ev = {
-    id: Date.now(),
-    title: document.getElementById('ce-title').value.trim(),
-    date: document.getElementById('ce-date').value,
-    time: document.getElementById('ce-time').value,
-    platform: document.getElementById('ce-platform').value,
-    status: document.getElementById('ce-status').value
-  };
-  if (!ev.title || !ev.date) { toast('Completá el título y la fecha'); return; }
-  S.calEvents.push(ev);
-  save();
-  closeModal('modal-cal');
-  document.getElementById('ce-title').value = '';
-  renderCalendar();
-  toast('Agregado al calendario ✓');
-}
-
-function deleteCalEvent(id) {
-  S.calEvents = S.calEvents.filter(e => e.id !== id);
-  save();
-  renderCalendar();
-}
-
-function renderCalendar() {
-  const el = document.getElementById('calendar-content');
+/* ── DASHBOARD ── */
+function refreshDash() {
+  const empty = document.getElementById('dash-empty');
+  const data = document.getElementById('dash-data');
+  const hasBrain = S.brain.brand;
+  const hasVideos = S.videos.length > 0;
+  if (!hasBrain && !hasVideos) { empty.style.display = 'block'; data.style.display = 'none'; return; }
+  empty.style.display = 'none'; data.style.display = 'flex';
   const now = new Date();
-  const year = now.getFullYear();
-  const month = now.getMonth();
-  const monthName = now.toLocaleDateString('es', {month:'long',year:'numeric'});
-
-  const statusColors = { publicado:'ev-green', grabando:'ev-orange', aprobado:'ev-blue', editando:'ev-purple', idea:'', pendiente:'ev-orange' };
-
-  const first = new Date(year, month, 1);
-  let startDow = first.getDay(); // 0=Sun
-  startDow = startDow === 0 ? 6 : startDow - 1; // make Mon=0
-  const daysInMonth = new Date(year, month+1, 0).getDate();
-
-  let days = '';
-  for (let i = 0; i < startDow; i++) {
-    days += `<div class="cal-day dim"></div>`;
+  document.getElementById('dash-date').textContent = now.toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long' });
+  if (hasVideos) {
+    const best = [...S.videos].sort((a,b) => b.views - a.views)[0];
+    const totalV = S.videos.reduce((a,v) => a+v.views, 0);
+    const avgR = Math.round(S.videos.reduce((a,v) => a+v.ret, 0) / S.videos.length);
+    const totalF = S.videos.reduce((a,v) => a+v.foll, 0);
+    document.getElementById('dash-best-title').textContent = `Mejor video: "${best.name}"`;
+    document.getElementById('dash-best-desc').textContent = `${best.views.toLocaleString()} vistas · ${best.ret}% retención · ${best.plat}. Pedí el análisis completo del canal para ver qué replicar.`;
+    document.getElementById('dash-kpis').innerHTML = [
+      ['Videos', S.videos.length], ['Vistas totales', totalV >= 1000 ? (totalV/1000).toFixed(1)+'K' : totalV],
+      ['Retención prom.', avgR + '%'], ['Seguidores ganados', '+' + totalF]
+    ].map(([l,v]) => `<div class="mc"><div class="mc-label">${l}</div><div class="mc-val">${v}</div></div>`).join('');
+  } else {
+    document.getElementById('dash-best-title').textContent = 'Brain configurado ✓';
+    document.getElementById('dash-best-desc').textContent = `Marca: ${S.brain.brand}. Ahora cargá tus videos en Analytics para activar el análisis completo.`;
+    document.getElementById('dash-kpis').innerHTML = '';
   }
-  for (let d = 1; d <= daysInMonth; d++) {
-    const dateStr = `${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
-    const isToday = d === now.getDate();
-    const events = S.calEvents.filter(e => e.date === dateStr);
-    days += `<div class="cal-day${isToday?' today':''}">
-      <div style="color:${isToday?'var(--orange)':'var(--muted)'}${isToday?';font-weight:600':''}">${d}</div>
-      ${events.map(e => `<div class="cal-event ${statusColors[e.status]||''}" title="${esc(e.title)}">${esc(e.title)}</div>`).join('')}
-    </div>`;
-  }
-
-  const listItems = S.calEvents.length ? S.calEvents.sort((a,b)=>a.date.localeCompare(b.date)).map(e => `
-    <div class="status-row">
-      <div class="status-icon" style="background:${e.status==='publicado'?'var(--green)':e.status==='aprobado'?'#60a5fa':e.status==='editando'?'#a78bfa':'var(--orange)'}"></div>
-      <div style="flex:1">
-        <div style="font-size:12px;font-weight:500;color:var(--text)">${esc(e.title)}</div>
-        <div style="font-size:10px;color:var(--muted)">${e.date}${e.time?' · '+e.time:''} · ${esc(e.platform)}</div>
-      </div>
-      <span class="badge b-gray">${esc(e.status)}</span>
-      <button class="btn btn-ghost btn-sm" style="color:var(--muted);padding:3px 7px" onclick="deleteCalEvent(${e.id})">✕</button>
-    </div>`).join('') : '<div style="font-size:12px;color:var(--muted)">Sin eventos</div>';
-
-  el.innerHTML = `
-    <div style="font-size:12px;color:var(--muted);text-transform:capitalize;margin-bottom:10px">${monthName}</div>
-    <div class="card" style="margin-bottom:16px">
-      <div class="cal-grid">
-        ${['lun','mar','mié','jue','vie','sáb','dom'].map(d=>`<div class="cal-head">${d}</div>`).join('')}
-        ${days}
-      </div>
-    </div>
-    <div class="card">
-      <div class="card-title">Todos los eventos</div>
-      ${listItems}
-    </div>`;
 }
 
-// ── LABORATORY ──
-function renderLab() {
-  const el = document.getElementById('lab-content');
-
-  if (!S.videos.length) {
-    el.innerHTML = `<div class="empty"><div class="empty-title">Sin videos cargados</div><div class="empty-sub">Primero cargá videos en Analytics. Después podés analizarlos en el Laboratorio.</div><button class="btn btn-ghost btn-sm" onclick="go('analytics')">Ir a Analytics →</button></div>`;
-    return;
-  }
-
-  el.innerHTML = `
-    <div style="display:flex;gap:8px;margin-bottom:16px">
-      <button class="btn btn-orange" onclick="openLabModal()">Analizar video con IA</button>
-    </div>
-    <div id="lab-results" style="display:flex;flex-direction:column;gap:12px">
-      ${S.labResults.length ? S.labResults.slice().reverse().map(r => `
-        <div class="card">
-          <div style="font-size:13px;font-weight:500;color:var(--text);margin-bottom:12px">${esc(r.title)}</div>
-          <div class="ai-box">${esc(r.analysis)}</div>
-        </div>`).join('') : '<div style="font-size:12px;color:var(--muted)">Todavía no analizaste ningún video.</div>'}
-    </div>`;
+/* ── LABORATORY ── */
+function refreshLab() {
+  const empty = document.getElementById('lab-empty');
+  const content = document.getElementById('lab-content');
+  if (!S.videos.length) { empty.style.display = 'block'; content.style.display = 'none'; return; }
+  empty.style.display = 'none'; content.style.display = 'flex';
+  const sel = document.getElementById('lab-select');
+  sel.innerHTML = S.videos.map((v,i) => `<option value="${i}">${v.name} (${v.views >= 1000 ? (v.views/1000).toFixed(1)+'K' : v.views.toLocaleString()} vistas)</option>`).join('');
+  updateLabMetrics();
 }
 
-function openLabModal() {
-  const sel = document.getElementById('lab-video-select');
-  sel.innerHTML = S.videos.map(v => `<option value="${v.id}">${esc(v.title)}</option>`).join('');
-  // pre-fill first video metrics
-  prefillLabFromVideo(S.videos[0]);
-  sel.onchange = () => {
-    const v = S.videos.find(v => v.id == sel.value);
-    if (v) prefillLabFromVideo(v);
-  };
-  openModal('modal-lab');
-}
-
-function prefillLabFromVideo(v) {
+function updateLabMetrics() {
+  const idx = parseInt(document.getElementById('lab-select').value) || 0;
+  const v = S.videos[idx];
   if (!v) return;
-  document.getElementById('lab-views').value = v.views || '';
-  document.getElementById('lab-likes').value = v.likes || '';
-  document.getElementById('lab-retention').value = v.retention || '';
-  document.getElementById('lab-followers').value = v.followers || '';
-  document.getElementById('lab-saves').value = v.saves || '';
-  document.getElementById('lab-shares').value = v.shares || '';
+  document.getElementById('lab-metrics').innerHTML = [
+    ['Vistas', v.views.toLocaleString()], ['Likes', v.likes.toLocaleString()],
+    ['Comentarios', v.comm.toLocaleString()], ['Compartidos', v.shares.toLocaleString()],
+    ['Guardados', v.saves.toLocaleString()], ['Seguidores', (v.foll>=0?'+':'')+v.foll],
+    ['Retención', v.ret+'%'], ['Duración', v.dur+'s']
+  ].map(([l,val]) => `<div class="mc"><div class="mc-label">${l}</div><div class="mc-val">${val}</div></div>`).join('');
 }
 
-async function runLabAnalysis() {
-  const sel = document.getElementById('lab-video-select');
-  const vid = S.videos.find(v => v.id == sel.value);
-  if (!vid) return;
-
-  const metrics = {
-    views: parseInt(document.getElementById('lab-views').value) || vid.views,
-    likes: parseInt(document.getElementById('lab-likes').value) || vid.likes,
-    retention: parseInt(document.getElementById('lab-retention').value) || vid.retention,
-    followers: parseInt(document.getElementById('lab-followers').value) || vid.followers,
-    saves: parseInt(document.getElementById('lab-saves').value) || vid.saves,
-    shares: parseInt(document.getElementById('lab-shares').value) || vid.shares
-  };
-
-  closeModal('modal-lab');
-  const out = document.getElementById('lab-results');
-  out.innerHTML = `<div class="ai-box loading">Analizando resultados de "${esc(vid.title)}"...</div>`;
-
-  const b = S.brain;
-  const otherVideos = S.videos.filter(v => v.id !== vid.id);
-  const avg = otherVideos.length ? Math.round(otherVideos.reduce((a,v)=>a+(v.views||0),0)/otherVideos.length) : null;
-
-  const prompt = `Eres un analista de contenido para redes sociales. Analiza los resultados reales de este video.
-
-Marca: ${b.name||'Valtori'} — ${b.niche||'accesorios premium'}
-
-Video analizado: "${vid.title}"
-Plataforma: ${vid.platform||'N/D'}
-Categoría: ${vid.category||'N/D'}
-Duración: ${vid.duration?vid.duration+'s':'N/D'}
-Hook: ${vid.hook||'N/D'}
-
-Métricas reales:
-- Visualizaciones: ${metrics.views?.toLocaleString()||'N/D'}
-- Likes: ${metrics.likes?.toLocaleString()||'N/D'}
-- Retención: ${metrics.retention!=null?metrics.retention+'%':'N/D'}
-- Seguidores ganados: ${metrics.followers!=null?'+'+metrics.followers:'N/D'}
-- Guardados: ${metrics.saves?.toLocaleString()||'N/D'}
-- Compartidos: ${metrics.shares?.toLocaleString()||'N/D'}
-
-${avg ? `Promedio de visualizaciones de otros videos: ${avg.toLocaleString()}` : ''}
-
-Genera un análisis con:
-1. Qué funcionó (con razones concretas)
-2. Qué no funcionó o se puede mejorar
-3. Qué repetir en el próximo video
-4. Qué evitar
-5. Recomendación concreta para el siguiente video
-
-Sé directo, específico y basate solo en los datos reales. Responde en español.`;
-
-  const result = await callAI(prompt);
-  S.labResults.push({ id: Date.now(), title: vid.title, analysis: result });
-  save();
-  renderLab();
-}
-
-// ── AI API ──
-async function callAI(prompt) {
-  try {
-    const resp = await fetch('https://api.anthropic.com/v1/messages', {
-      method: 'POST',
-      headers: { 'Content-Type': 'application/json' },
-      body: JSON.stringify({
-        model: 'claude-sonnet-4-6',
-        max_tokens: 1000,
-        messages: [{ role: 'user', content: prompt }]
-      })
-    });
-    if (!resp.ok) {
-      const err = await resp.json().catch(()=>({}));
-      return `Error al conectar con la IA: ${err.error?.message || resp.status}`;
-    }
-    const data = await resp.json();
-    return data.content?.map(b => b.text||'').join('') || 'Sin respuesta.';
-  } catch(e) {
-    return `Error de conexión: ${e.message}`;
-  }
-}
-
-// ── UTILS ──
-function esc(s) {
-  if (!s) return '';
-  return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;').replace(/"/g,'&quot;');
-}
-
-// ── INIT ──
-renderDashboard();
+/* ── INIT ── */
+renderCal();
+document.getElementById('dash-date').textContent = new Date().toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long' });
 </script>
 </body>
 </html>
