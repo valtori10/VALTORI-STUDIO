@@ -1,0 +1,1488 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>VALTORI AI Studio</title>
+<style>
+  :root {
+    --v-black: #0A0A0A;
+    --v-dark: #111111;
+    --v-surface: #161616;
+    --v-surface2: #1C1C1C;
+    --v-border: rgba(255,255,255,0.08);
+    --v-border2: rgba(255,255,255,0.14);
+    --v-text: #F5F5F5;
+    --v-muted: #888;
+    --v-faint: #444;
+    --v-orange: #FF6B2B;
+    --v-orange-dim: rgba(255,107,43,0.12);
+    --v-orange-glow: rgba(255,107,43,0.25);
+    --sidebar-w: 220px;
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--v-black); color: var(--v-text); font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Segoe UI', sans-serif; min-height: 100vh; display: flex; font-size: 14px; line-height: 1.5; }
+
+  /* SIDEBAR */
+  #sidebar {
+    width: var(--sidebar-w); min-height: 100vh; background: var(--v-dark);
+    border-right: 1px solid var(--v-border); display: flex; flex-direction: column;
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 100;
+  }
+  .logo-area { padding: 20px 18px 16px; border-bottom: 1px solid var(--v-border); }
+  .logo-mark { display: flex; align-items: center; gap: 10px; }
+  .logo-icon { width: 30px; height: 30px; background: var(--v-orange); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 13px; color: #fff; letter-spacing: -0.5px; }
+  .logo-name { font-size: 13px; font-weight: 600; letter-spacing: 0.05em; color: var(--v-text); }
+  .logo-sub { font-size: 10px; color: var(--v-muted); letter-spacing: 0.08em; text-transform: uppercase; }
+
+  nav { flex: 1; padding: 12px 10px; display: flex; flex-direction: column; gap: 2px; }
+  .nav-section { font-size: 10px; color: var(--v-faint); letter-spacing: 0.1em; text-transform: uppercase; padding: 12px 8px 6px; font-weight: 500; }
+  .nav-item {
+    display: flex; align-items: center; gap: 10px; padding: 8px 10px;
+    border-radius: 8px; cursor: pointer; transition: all 0.15s;
+    color: var(--v-muted); font-size: 13px; font-weight: 450; border: none; background: none; width: 100%; text-align: left;
+  }
+  .nav-item:hover { background: rgba(255,255,255,0.05); color: var(--v-text); }
+  .nav-item.active { background: var(--v-orange-dim); color: var(--v-orange); }
+  .nav-item .nav-icon { font-size: 15px; width: 18px; text-align: center; flex-shrink: 0; }
+  .nav-badge { margin-left: auto; background: var(--v-orange); color: #fff; font-size: 10px; font-weight: 600; border-radius: 20px; padding: 2px 6px; min-width: 18px; text-align: center; }
+
+  .sidebar-footer { padding: 14px 16px; border-top: 1px solid var(--v-border); }
+  .status-dot { display: inline-block; width: 6px; height: 6px; background: #22c55e; border-radius: 50%; margin-right: 6px; }
+
+  /* MAIN */
+  #main { margin-left: var(--sidebar-w); flex: 1; display: flex; flex-direction: column; min-height: 100vh; }
+  .topbar { height: 54px; border-bottom: 1px solid var(--v-border); display: flex; align-items: center; padding: 0 28px; gap: 14px; background: var(--v-dark); position: sticky; top: 0; z-index: 50; }
+  .topbar-title { font-size: 14px; font-weight: 500; color: var(--v-text); }
+  .topbar-sub { font-size: 12px; color: var(--v-muted); }
+  .topbar-actions { margin-left: auto; display: flex; gap: 8px; }
+  .btn { display: inline-flex; align-items: center; gap: 6px; padding: 7px 14px; border-radius: 8px; font-size: 12px; font-weight: 500; cursor: pointer; border: none; transition: all 0.15s; }
+  .btn-ghost { background: rgba(255,255,255,0.06); color: var(--v-text); }
+  .btn-ghost:hover { background: rgba(255,255,255,0.1); }
+  .btn-orange { background: var(--v-orange); color: #fff; }
+  .btn-orange:hover { background: #ff7d42; }
+  .btn-outline { background: transparent; color: var(--v-muted); border: 1px solid var(--v-border2); }
+  .btn-outline:hover { color: var(--v-text); border-color: var(--v-border2); background: rgba(255,255,255,0.04); }
+
+  /* PAGE CONTENT */
+  .page { display: none; flex-direction: column; padding: 28px; gap: 24px; flex: 1; }
+  .page.active { display: flex; }
+
+  /* CARDS */
+  .card { background: var(--v-surface); border: 1px solid var(--v-border); border-radius: 12px; padding: 20px; }
+  .card-sm { padding: 14px 16px; }
+  .card-header { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+  .card-title { font-size: 13px; font-weight: 500; color: var(--v-text); }
+  .card-sub { font-size: 12px; color: var(--v-muted); margin-top: 2px; }
+
+  /* GRID */
+  .grid-2 { display: grid; grid-template-columns: 1fr 1fr; gap: 14px; }
+  .grid-3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 14px; }
+  .grid-4 { display: grid; grid-template-columns: repeat(4, 1fr); gap: 14px; }
+
+  /* METRIC CARD */
+  .metric-card { background: var(--v-surface); border: 1px solid var(--v-border); border-radius: 10px; padding: 16px; }
+  .metric-label { font-size: 11px; color: var(--v-muted); letter-spacing: 0.04em; text-transform: uppercase; margin-bottom: 6px; }
+  .metric-value { font-size: 24px; font-weight: 600; color: var(--v-text); letter-spacing: -0.5px; }
+  .metric-delta { font-size: 11px; margin-top: 4px; }
+  .delta-up { color: #22c55e; }
+  .delta-down { color: #ef4444; }
+
+  /* TAGS / BADGES */
+  .badge { display: inline-flex; align-items: center; gap: 4px; padding: 3px 8px; border-radius: 20px; font-size: 11px; font-weight: 500; }
+  .badge-orange { background: var(--v-orange-dim); color: var(--v-orange); }
+  .badge-green { background: rgba(34,197,94,0.12); color: #22c55e; }
+  .badge-blue { background: rgba(59,130,246,0.12); color: #60a5fa; }
+  .badge-purple { background: rgba(139,92,246,0.12); color: #a78bfa; }
+  .badge-gray { background: rgba(255,255,255,0.07); color: var(--v-muted); }
+  .badge-red { background: rgba(239,68,68,0.12); color: #f87171; }
+
+  /* SCORE BAR */
+  .score-bar { height: 4px; background: rgba(255,255,255,0.08); border-radius: 2px; overflow: hidden; }
+  .score-fill { height: 100%; background: var(--v-orange); border-radius: 2px; }
+
+  /* DIVIDER */
+  .divider { height: 1px; background: var(--v-border); margin: 4px 0; }
+
+  /* INSIGHT ROW */
+  .insight { display: flex; align-items: flex-start; gap: 12px; padding: 12px 14px; background: var(--v-surface2); border-radius: 8px; border: 1px solid var(--v-border); }
+  .insight-icon { width: 28px; height: 28px; border-radius: 7px; display: flex; align-items: center; justify-content: center; font-size: 13px; flex-shrink: 0; margin-top: 1px; }
+  .insight-text { font-size: 12px; color: var(--v-text); line-height: 1.6; }
+  .insight-text strong { color: var(--v-orange); font-weight: 500; }
+
+  /* FORM */
+  .form-group { display: flex; flex-direction: column; gap: 6px; }
+  .form-label { font-size: 11px; color: var(--v-muted); letter-spacing: 0.04em; text-transform: uppercase; }
+  .form-input, .form-select, .form-textarea {
+    background: var(--v-surface2); border: 1px solid var(--v-border2); border-radius: 8px;
+    color: var(--v-text); font-size: 13px; padding: 9px 12px; outline: none; font-family: inherit;
+    transition: border-color 0.15s; width: 100%;
+  }
+  .form-input:focus, .form-select:focus, .form-textarea:focus { border-color: var(--v-orange); }
+  .form-select option { background: #1C1C1C; }
+  .form-textarea { resize: vertical; min-height: 80px; }
+
+  /* TABLE */
+  .table-wrap { overflow-x: auto; }
+  table { width: 100%; border-collapse: collapse; font-size: 12px; }
+  th { text-align: left; padding: 8px 12px; font-size: 10px; color: var(--v-muted); letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid var(--v-border); font-weight: 500; }
+  td { padding: 10px 12px; border-bottom: 1px solid var(--v-border); color: var(--v-text); vertical-align: middle; }
+  tr:hover td { background: rgba(255,255,255,0.02); }
+  tr:last-child td { border-bottom: none; }
+
+  /* IDEAS CARD */
+  .idea-card { background: var(--v-surface); border: 1px solid var(--v-border); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 12px; }
+  .idea-card:hover { border-color: var(--v-border2); }
+  .idea-title { font-size: 15px; font-weight: 500; color: var(--v-text); }
+  .idea-meta { display: flex; gap: 6px; flex-wrap: wrap; align-items: center; }
+  .idea-desc { font-size: 12px; color: var(--v-muted); line-height: 1.6; }
+  .idea-actions { display: flex; gap: 8px; margin-top: 4px; }
+  .idea-score { display: flex; align-items: center; gap: 8px; }
+  .idea-score-num { font-size: 22px; font-weight: 600; color: var(--v-orange); letter-spacing: -1px; }
+  .idea-score-label { font-size: 10px; color: var(--v-muted); text-transform: uppercase; letter-spacing: 0.06em; }
+
+  /* SCENE CARD */
+  .scene-card { background: var(--v-surface2); border: 1px solid var(--v-border); border-radius: 10px; padding: 16px; }
+  .scene-num { font-size: 10px; color: var(--v-orange); letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; margin-bottom: 8px; }
+  .scene-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 16px; }
+  .scene-field { display: flex; flex-direction: column; gap: 2px; }
+  .scene-field-label { font-size: 10px; color: var(--v-faint); text-transform: uppercase; letter-spacing: 0.06em; }
+  .scene-field-value { font-size: 12px; color: var(--v-text); }
+
+  /* CALENDAR */
+  .cal-grid { display: grid; grid-template-columns: repeat(7, 1fr); gap: 6px; }
+  .cal-header { text-align: center; font-size: 10px; color: var(--v-muted); padding: 4px; letter-spacing: 0.06em; text-transform: uppercase; }
+  .cal-day { min-height: 72px; background: var(--v-surface2); border: 1px solid var(--v-border); border-radius: 8px; padding: 8px; }
+  .cal-day.other-month { opacity: 0.35; }
+  .cal-day-num { font-size: 11px; color: var(--v-muted); margin-bottom: 4px; }
+  .cal-item { font-size: 10px; border-radius: 4px; padding: 2px 5px; margin-bottom: 3px; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+  .cal-item.publicado { background: rgba(34,197,94,0.15); color: #4ade80; }
+  .cal-item.grabando { background: var(--v-orange-dim); color: var(--v-orange); }
+  .cal-item.aprobado { background: rgba(59,130,246,0.12); color: #60a5fa; }
+  .cal-item.idea { background: rgba(255,255,255,0.06); color: var(--v-muted); }
+  .cal-item.editando { background: rgba(139,92,246,0.12); color: #a78bfa; }
+
+  /* BRAIN FIELDS */
+  .brain-section { display: flex; flex-direction: column; gap: 14px; }
+  .brain-field { display: flex; flex-direction: column; gap: 6px; }
+  .brain-field-label { font-size: 11px; color: var(--v-muted); font-weight: 500; text-transform: uppercase; letter-spacing: 0.05em; }
+
+  /* INSPIRATION FEED */
+  .trend-card { background: var(--v-surface); border: 1px solid var(--v-border); border-radius: 12px; padding: 18px; display: flex; flex-direction: column; gap: 10px; }
+  .trend-tag { display: flex; gap: 6px; align-items: center; }
+  .trend-title { font-size: 14px; font-weight: 500; color: var(--v-text); }
+  .trend-why { font-size: 12px; color: var(--v-muted); line-height: 1.65; }
+  .trend-adapt { font-size: 12px; color: var(--v-text); background: var(--v-orange-dim); border-left: 2px solid var(--v-orange); padding: 8px 12px; border-radius: 0 6px 6px 0; line-height: 1.6; }
+
+  /* LAB */
+  .lab-metric { display: flex; flex-direction: column; gap: 4px; }
+  .lab-metric-label { font-size: 11px; color: var(--v-muted); }
+  .lab-metric-val { font-size: 20px; font-weight: 600; color: var(--v-text); }
+  .result-row { display: flex; align-items: flex-start; gap: 10px; padding: 10px 0; border-bottom: 1px solid var(--v-border); }
+  .result-row:last-child { border-bottom: none; }
+  .result-icon { width: 22px; height: 22px; border-radius: 5px; font-size: 12px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+
+  /* AI LOADING */
+  .ai-loading { display: flex; align-items: center; gap: 8px; color: var(--v-muted); font-size: 12px; }
+  .ai-dots span { animation: blink 1.2s infinite; display: inline-block; width: 4px; height: 4px; border-radius: 50%; background: var(--v-orange); margin-right: 3px; }
+  .ai-dots span:nth-child(2) { animation-delay: 0.2s; }
+  .ai-dots span:nth-child(3) { animation-delay: 0.4s; }
+  @keyframes blink { 0%,80%,100%{opacity:.15} 40%{opacity:1} }
+
+  /* NOTIFICATION DOT */
+  .notification { position: relative; }
+  .notif-dot { position: absolute; top: -2px; right: -2px; width: 7px; height: 7px; background: var(--v-orange); border-radius: 50%; border: 1.5px solid var(--v-dark); }
+
+  /* TIMELINE */
+  .timeline { display: flex; flex-direction: column; gap: 0; }
+  .tl-item { display: flex; gap: 14px; padding-bottom: 16px; position: relative; }
+  .tl-item:not(:last-child)::before { content: ''; position: absolute; left: 10px; top: 22px; bottom: 0; width: 1px; background: var(--v-border); }
+  .tl-dot { width: 20px; height: 20px; border-radius: 50%; border: 2px solid var(--v-orange); background: var(--v-dark); flex-shrink: 0; margin-top: 1px; display: flex; align-items: center; justify-content: center; }
+  .tl-dot-fill { width: 8px; height: 8px; border-radius: 50%; background: var(--v-orange); }
+  .tl-content { flex: 1; }
+  .tl-title { font-size: 13px; font-weight: 500; color: var(--v-text); }
+  .tl-time { font-size: 11px; color: var(--v-muted); margin-top: 2px; }
+
+  /* Scrollbar */
+  ::-webkit-scrollbar { width: 5px; height: 5px; }
+  ::-webkit-scrollbar-track { background: transparent; }
+  ::-webkit-scrollbar-thumb { background: var(--v-border2); border-radius: 3px; }
+
+  /* TABS */
+  .tabs { display: flex; gap: 2px; background: var(--v-surface2); border-radius: 8px; padding: 3px; border: 1px solid var(--v-border); width: fit-content; }
+  .tab { padding: 6px 14px; border-radius: 6px; font-size: 12px; font-weight: 450; cursor: pointer; color: var(--v-muted); transition: all 0.15s; border: none; background: none; }
+  .tab.active { background: var(--v-surface); color: var(--v-text); box-shadow: 0 1px 3px rgba(0,0,0,0.4); }
+  .tab:hover:not(.active) { color: var(--v-text); }
+
+  /* SECTION HEADER */
+  .section-title { font-size: 11px; color: var(--v-muted); letter-spacing: 0.08em; text-transform: uppercase; font-weight: 500; margin-bottom: 10px; }
+
+  .orange-line { width: 24px; height: 2px; background: var(--v-orange); border-radius: 1px; margin-bottom: 12px; }
+
+  /* AI OUTPUT AREA */
+  .ai-output { background: var(--v-surface2); border: 1px solid var(--v-border); border-radius: 10px; padding: 16px; font-size: 13px; color: var(--v-text); line-height: 1.7; min-height: 80px; }
+  .ai-output.empty { display: flex; align-items: center; justify-content: center; color: var(--v-faint); font-style: italic; font-size: 12px; }
+
+  /* CHART BARS */
+  .bar-chart { display: flex; align-items: flex-end; gap: 8px; height: 120px; padding-top: 10px; }
+  .bar-col { display: flex; flex-direction: column; align-items: center; gap: 4px; flex: 1; }
+  .bar { width: 100%; border-radius: 4px 4px 0 0; background: var(--v-border); transition: background 0.2s; min-height: 6px; position: relative; }
+  .bar:hover { background: rgba(255,107,43,0.4); }
+  .bar.best { background: var(--v-orange); }
+  .bar-label { font-size: 9px; color: var(--v-muted); white-space: nowrap; }
+
+  /* PRODUCTION STEPS */
+  .prod-section { background: var(--v-surface); border: 1px solid var(--v-border); border-radius: 10px; }
+  .prod-section-header { padding: 14px 18px; border-bottom: 1px solid var(--v-border); display: flex; align-items: center; justify-content: space-between; cursor: pointer; }
+  .prod-section-title { font-size: 13px; font-weight: 500; color: var(--v-text); display: flex; align-items: center; gap: 10px; }
+  .prod-section-body { padding: 16px 18px; }
+
+  /* SELECTED IDEA HEADER */
+  .prod-hero { background: linear-gradient(135deg, rgba(255,107,43,0.06) 0%, transparent 70%); border: 1px solid var(--v-orange-glow); border-radius: 14px; padding: 22px 24px; }
+
+  /* MODAL */
+  .modal-overlay { display: none; position: fixed; inset: 0; background: rgba(0,0,0,0.7); z-index: 200; align-items: center; justify-content: center; }
+  .modal-overlay.open { display: flex; }
+  .modal { background: var(--v-surface); border: 1px solid var(--v-border2); border-radius: 16px; width: 560px; max-width: 92vw; max-height: 80vh; overflow-y: auto; }
+  .modal-header { padding: 20px 22px 16px; border-bottom: 1px solid var(--v-border); display: flex; align-items: center; justify-content: space-between; }
+  .modal-body { padding: 20px 22px; display: flex; flex-direction: column; gap: 14px; }
+  .modal-footer { padding: 14px 22px 20px; display: flex; gap: 8px; justify-content: flex-end; }
+
+  /* RESPONSIVE */
+  @media (max-width: 900px) {
+    .grid-4 { grid-template-columns: repeat(2, 1fr); }
+    .grid-3 { grid-template-columns: 1fr 1fr; }
+  }
+</style>
+</head>
+<body>
+
+<!-- SIDEBAR -->
+<aside id="sidebar">
+  <div class="logo-area">
+    <div class="logo-mark">
+      <div class="logo-icon">V</div>
+      <div>
+        <div class="logo-name">VALTORI</div>
+        <div class="logo-sub">AI Studio</div>
+      </div>
+    </div>
+  </div>
+
+  <nav>
+    <button class="nav-item active" onclick="navigate('dashboard')">
+      <span class="nav-icon">⬛</span> Dashboard
+    </button>
+    <div class="nav-section">Sistema</div>
+    <button class="nav-item" onclick="navigate('brain')">
+      <span class="nav-icon">🧠</span> Brain
+    </button>
+    <button class="nav-item" onclick="navigate('analytics')">
+      <span class="nav-icon">📊</span> Analytics
+    </button>
+    <button class="nav-item" onclick="navigate('research')">
+      <span class="nav-icon">🔍</span> Research
+      <span class="nav-badge">8</span>
+    </button>
+    <div class="nav-section">Contenido</div>
+    <button class="nav-item" onclick="navigate('ideas')">
+      <span class="nav-icon">💡</span> Ideas
+      <span class="nav-badge">5</span>
+    </button>
+    <button class="nav-item" onclick="navigate('production')">
+      <span class="nav-icon">🎬</span> Production
+    </button>
+    <button class="nav-item" onclick="navigate('calendar')">
+      <span class="nav-icon">📅</span> Calendar
+    </button>
+    <button class="nav-item" onclick="navigate('laboratory')">
+      <span class="nav-icon">🧪</span> Laboratory
+    </button>
+  </nav>
+
+  <div class="sidebar-footer">
+    <div style="font-size:11px; color: var(--v-muted); display:flex; align-items:center;">
+      <span class="status-dot"></span> IA activa · Valtori v2.1
+    </div>
+  </div>
+</aside>
+
+<!-- MAIN CONTENT -->
+<main id="main">
+
+  <!-- TOPBAR -->
+  <div class="topbar" id="topbar">
+    <div>
+      <div class="topbar-title" id="topbar-title">Dashboard</div>
+      <div class="topbar-sub" id="topbar-sub">Director de Contenido IA · Valtori</div>
+    </div>
+    <div class="topbar-actions">
+      <button class="btn btn-ghost" onclick="openModal('add-content')">+ Nuevo contenido</button>
+      <button class="btn btn-orange" onclick="runAI()">✦ Análisis IA</button>
+    </div>
+  </div>
+
+  <!-- ===================== DASHBOARD ===================== -->
+  <section id="page-dashboard" class="page active">
+
+    <!-- Day Recommendation -->
+    <div class="prod-hero">
+      <div style="display:flex; align-items:center; gap:8px; margin-bottom:8px;">
+        <span class="badge badge-orange">✦ Recomendación del día</span>
+        <span style="font-size:11px; color:var(--v-muted);">Lunes 23 Jun</span>
+      </div>
+      <div style="font-size:20px; font-weight:600; color:var(--v-text); margin-bottom:6px; letter-spacing:-0.3px;">
+        "Outfit de verano — Cardholder Valtori en acción"
+      </div>
+      <div style="font-size:13px; color:var(--v-muted); max-width:600px; line-height:1.6; margin-bottom:14px;">
+        Los videos tipo Outfit son tu categoría con mayor retención (+35%). Esta semana las tendencias muestran un pico de búsqueda de "summer accessories" en TikTok. Momento ideal para publicar.
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-orange" onclick="navigate('production')">Ver plan completo →</button>
+        <button class="btn btn-ghost">Agendar para hoy</button>
+      </div>
+    </div>
+
+    <!-- Metrics Row -->
+    <div class="grid-4">
+      <div class="metric-card">
+        <div class="metric-label">Visualizaciones este mes</div>
+        <div class="metric-value">284K</div>
+        <div class="metric-delta delta-up">↑ 18% vs mes anterior</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Videos publicados</div>
+        <div class="metric-value">12</div>
+        <div class="metric-delta delta-up">↑ 3 más que meta</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Retención promedio</div>
+        <div class="metric-value">68%</div>
+        <div class="metric-delta delta-up">↑ 5pp vs promedio</div>
+      </div>
+      <div class="metric-card">
+        <div class="metric-label">Ideas aprobadas</div>
+        <div class="metric-value">5</div>
+        <div class="metric-delta" style="color:var(--v-muted);">3 pendientes de grabación</div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <!-- Tendencias -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Tendencias detectadas</div>
+            <div class="card-sub">Actualizadas hoy · TikTok + Instagram</div>
+          </div>
+          <button class="btn btn-outline" onclick="navigate('research')">Ver todas</button>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:8px;">
+          <div class="insight">
+            <div class="insight-icon" style="background:var(--v-orange-dim);">🔥</div>
+            <div class="insight-text"><strong>Outfit GRWM corto</strong> — Videos de 8-12s mostrando accesorios al vestirse. Virales en TikTok esta semana con +2M impresiones promedio.</div>
+          </div>
+          <div class="insight">
+            <div class="insight-icon" style="background:rgba(139,92,246,0.12);">✨</div>
+            <div class="insight-text"><strong>Lifestyle minimalista</strong> — Estética blanca + madera clara. Las marcas premium están dominando con este formato.</div>
+          </div>
+          <div class="insight">
+            <div class="insight-icon" style="background:rgba(59,130,246,0.12);">📱</div>
+            <div class="insight-text"><strong>Hook "¿Sabías que...?"</strong> — Retención 40% superior en los primeros 3 segundos. Compatible con productos Valtori.</div>
+          </div>
+        </div>
+      </div>
+
+      <!-- Aprendizajes recientes -->
+      <div class="card">
+        <div class="card-header">
+          <div>
+            <div class="card-title">Aprendizajes recientes</div>
+            <div class="card-sub">Generados por IA desde tus últimos videos</div>
+          </div>
+          <button class="btn btn-outline" onclick="navigate('laboratory')">Laboratorio</button>
+        </div>
+        <div style="display:flex; flex-direction:column; gap:6px;">
+          <div class="result-row">
+            <div class="result-icon" style="background:rgba(34,197,94,0.12); color:#22c55e;">✓</div>
+            <div style="font-size:12px; color:var(--v-text);">Los videos Outfit generan <span style="color:#22c55e; font-weight:500;">35% más retención</span> que otras categorías</div>
+          </div>
+          <div class="result-row">
+            <div class="result-icon" style="background:rgba(34,197,94,0.12); color:#22c55e;">✓</div>
+            <div style="font-size:12px; color:var(--v-text);">Duración ideal: <span style="color:#22c55e; font-weight:500;">8–12 segundos</span> para máximo engagement</div>
+          </div>
+          <div class="result-row">
+            <div class="result-icon" style="background:rgba(239,68,68,0.12); color:#f87171;">✗</div>
+            <div style="font-size:12px; color:var(--v-text);">Videos de <span style="color:#f87171; font-weight:500;">+25 segundos</span> pierden 60% de retención a mitad</div>
+          </div>
+          <div class="result-row">
+            <div class="result-icon" style="background:var(--v-orange-dim); color:var(--v-orange);">★</div>
+            <div style="font-size:12px; color:var(--v-text);">Publicar a las <span style="color:var(--v-orange); font-weight:500;">7pm – 9pm</span> genera 2x más visualizaciones</div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Contenido pendiente + próxima acción -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Contenido pendiente</div>
+          <span class="badge badge-orange">3 urgentes</span>
+        </div>
+        <div class="timeline">
+          <div class="tl-item">
+            <div class="tl-dot"><div class="tl-dot-fill"></div></div>
+            <div class="tl-content">
+              <div class="tl-title">Outfit Summer — Cardholder</div>
+              <div class="tl-time">Pendiente grabación · Agendado Miér 26</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot"><div class="tl-dot-fill"></div></div>
+            <div class="tl-content">
+              <div class="tl-title">Unboxing Premium — Bifold</div>
+              <div class="tl-time">En edición · Para publicar Jue 27</div>
+            </div>
+          </div>
+          <div class="tl-item">
+            <div class="tl-dot" style="border-color:var(--v-border2);"><div class="tl-dot-fill" style="background:var(--v-muted);"></div></div>
+            <div class="tl-content">
+              <div class="tl-title">Lifestyle — Escritorio minimalista</div>
+              <div class="tl-time">Idea aprobada · Sin fecha</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="card">
+        <div class="card-header">
+          <div class="card-title">Mejor contenido reciente</div>
+          <span class="badge badge-green">Top 3</span>
+        </div>
+        <div style="display:flex;flex-direction:column;gap:10px;">
+          <div style="display:flex; align-items:center; gap:12px; padding:10px; background:var(--v-surface2); border-radius:8px; border:1px solid var(--v-border);">
+            <div style="font-size:18px; font-weight:700; color:var(--v-orange); min-width:28px;">1</div>
+            <div style="flex:1;">
+              <div style="font-size:13px; font-weight:500; color:var(--v-text);">GRWM Business — Cardholder</div>
+              <div style="font-size:11px; color:var(--v-muted);">TikTok · 148K views · 82% retención</div>
+            </div>
+            <span class="badge badge-green">+412 seg</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; padding:10px; background:var(--v-surface2); border-radius:8px; border:1px solid var(--v-border);">
+            <div style="font-size:18px; font-weight:700; color:var(--v-muted); min-width:28px;">2</div>
+            <div style="flex:1;">
+              <div style="font-size:13px; font-weight:500; color:var(--v-text);">Outfit Casual — Bifold Negro</div>
+              <div style="font-size:11px; color:var(--v-muted);">Instagram · 62K views · 71% retención</div>
+            </div>
+            <span class="badge badge-green">+218 seg</span>
+          </div>
+          <div style="display:flex; align-items:center; gap:12px; padding:10px; background:var(--v-surface2); border-radius:8px; border:1px solid var(--v-border);">
+            <div style="font-size:18px; font-weight:700; color:var(--v-faint); min-width:28px;">3</div>
+            <div style="flex:1;">
+              <div style="font-size:13px; font-weight:500; color:var(--v-text);">Pack de lujo — Unboxing</div>
+              <div style="font-size:11px; color:var(--v-muted);">TikTok · 44K views · 68% retención</div>
+            </div>
+            <span class="badge badge-blue">+87 seg</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===================== BRAIN ===================== -->
+  <section id="page-brain" class="page">
+    <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px; flex-wrap:wrap;">
+      <div>
+        <div style="font-size:20px; font-weight:600; color:var(--v-text); margin-bottom:4px;">Memoria de Valtori</div>
+        <div style="font-size:13px; color:var(--v-muted);">La IA utiliza esta información para todas las recomendaciones. Mantener actualizada.</div>
+      </div>
+      <button class="btn btn-orange" onclick="saveBrain()">Guardar cambios</button>
+    </div>
+
+    <div class="grid-2" style="align-items:start;">
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="card">
+          <div class="card-header"><div class="card-title">🏷️ Identidad de marca</div></div>
+          <div class="brain-section">
+            <div class="form-group"><div class="form-label">Nombre de marca</div><input class="form-input" value="Valtori"></div>
+            <div class="form-group"><div class="form-label">Descripción</div><textarea class="form-textarea">Marca premium de accesorios de cuero. Cardholders, billeteras y accesorios de hombre para el hombre moderno que valora el estilo y la funcionalidad.</textarea></div>
+            <div class="form-group"><div class="form-label">Propuesta de valor única</div><textarea class="form-textarea">Accesorios de cuero genuino de alta calidad con diseño minimalista. Precio accesible para calidad premium.</textarea></div>
+            <div class="form-group"><div class="form-label">Tono de comunicación</div>
+              <select class="form-select">
+                <option selected>Premium · Aspiracional · Masculino · Directo</option>
+                <option>Casual · Cercano · Juvenil</option>
+                <option>Formal · Corporativo</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">🎯 Público objetivo</div></div>
+          <div class="brain-section">
+            <div class="form-group"><div class="form-label">Edad</div><input class="form-input" value="22 – 38 años"></div>
+            <div class="form-group"><div class="form-label">Género</div><input class="form-input" value="Masculino principal · Femenino (regalos)"></div>
+            <div class="form-group"><div class="form-label">Intereses</div><textarea class="form-textarea">Moda masculina, lifestyle, lujo accesible, minimalismo, productividad, negocios, viajes premium, fitness.</textarea></div>
+            <div class="form-group"><div class="form-label">Plataformas principales</div><input class="form-input" value="TikTok · Instagram Reels · YouTube Shorts"></div>
+          </div>
+        </div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:14px;">
+        <div class="card">
+          <div class="card-header"><div class="card-title">📦 Productos</div></div>
+          <div class="table-wrap">
+            <table>
+              <thead><tr><th>Producto</th><th>Precio</th><th>Categoría</th><th>Performance</th></tr></thead>
+              <tbody>
+                <tr><td>Cardholder Slim</td><td>$29</td><td>Cardholder</td><td><span class="badge badge-green">★ Top</span></td></tr>
+                <tr><td>Bifold Negro</td><td>$45</td><td>Billetera</td><td><span class="badge badge-blue">Bueno</span></td></tr>
+                <tr><td>Bifold Marrón</td><td>$45</td><td>Billetera</td><td><span class="badge badge-gray">Normal</span></td></tr>
+                <tr><td>Pack Premium</td><td>$69</td><td>Bundle</td><td><span class="badge badge-orange">Viral</span></td></tr>
+              </tbody>
+            </table>
+          </div>
+          <button class="btn btn-ghost" style="margin-top:12px; font-size:11px;">+ Agregar producto</button>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">🏆 Competidores</div></div>
+          <div style="display:flex;flex-direction:column;gap:8px;">
+            <div style="display:flex;align-items:center;justify-content:space-between; padding:8px 10px; background:var(--v-surface2); border-radius:7px; border:1px solid var(--v-border);">
+              <span style="font-size:13px;">Ridge Wallet</span><span class="badge badge-red">Alta amenaza</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between; padding:8px 10px; background:var(--v-surface2); border-radius:7px; border:1px solid var(--v-border);">
+              <span style="font-size:13px;">Bellroy</span><span class="badge badge-orange">Media amenaza</span>
+            </div>
+            <div style="display:flex;align-items:center;justify-content:space-between; padding:8px 10px; background:var(--v-surface2); border-radius:7px; border:1px solid var(--v-border);">
+              <span style="font-size:13px;">Secrid</span><span class="badge badge-gray">Referencia</span>
+            </div>
+            <button class="btn btn-ghost" style="font-size:11px;">+ Agregar competidor</button>
+          </div>
+        </div>
+
+        <div class="card">
+          <div class="card-header"><div class="card-title">🎨 Estilo visual</div></div>
+          <div class="brain-section">
+            <div class="form-group"><div class="form-label">Paleta de colores</div><input class="form-input" value="Negro, blanco, gris oscuro, marrón cuero, naranja Valtori"></div>
+            <div class="form-group"><div class="form-label">Estética</div><input class="form-input" value="Minimalista premium · Clean · Oscuro elegante"></div>
+            <div class="form-group"><div class="form-label">Referencias visuales</div><textarea class="form-textarea">Apple Store, Dior Men, Ridge Wallet TikTok, Zara Man Instagram.</textarea></div>
+          </div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== ANALYTICS ===================== -->
+  <section id="page-analytics" class="page">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+      <div>
+        <div style="font-size:20px; font-weight:600; color:var(--v-text); margin-bottom:4px;">Analytics</div>
+        <div style="font-size:13px; color:var(--v-muted);">Rendimiento histórico · Análisis automático IA</div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-ghost" onclick="openModal('add-video')">+ Cargar video</button>
+        <button class="btn btn-orange" onclick="runAnalysis()">✦ Analizar con IA</button>
+      </div>
+    </div>
+
+    <!-- Mini charts -->
+    <div class="grid-4">
+      <div class="metric-card"><div class="metric-label">Videos cargados</div><div class="metric-value">24</div><div class="metric-delta delta-up">↑ +4 este mes</div></div>
+      <div class="metric-card"><div class="metric-label">Retención promedio</div><div class="metric-value">68%</div><div class="metric-delta delta-up">↑ 5pp</div></div>
+      <div class="metric-card"><div class="metric-label">Mejor categoría</div><div class="metric-value">Outfit</div><div class="metric-delta delta-up">82% retención media</div></div>
+      <div class="metric-card"><div class="metric-label">Mejor plataforma</div><div class="metric-value">TikTok</div><div class="metric-delta delta-up">3.2x vs Instagram</div></div>
+    </div>
+
+    <!-- AI Insights -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">✦ Conclusiones automáticas IA</div>
+          <div class="card-sub">Basadas en los 24 videos cargados</div>
+        </div>
+        <span class="badge badge-orange">Actualizado hace 2h</span>
+      </div>
+      <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
+        <div class="insight">
+          <div class="insight-icon" style="background:rgba(34,197,94,0.12); font-size:14px;">📈</div>
+          <div class="insight-text">Los videos <strong>Outfit</strong> generan un 35% más de retención que el promedio de otras categorías.</div>
+        </div>
+        <div class="insight">
+          <div class="insight-icon" style="background:rgba(34,197,94,0.12); font-size:14px;">⏱️</div>
+          <div class="insight-text">Los videos de <strong>8 a 12 segundos</strong> tienen mejor rendimiento. Evitar duración mayor a 20s.</div>
+        </div>
+        <div class="insight">
+          <div class="insight-icon" style="background:var(--v-orange-dim); font-size:14px;">🕐</div>
+          <div class="insight-text">Publicar entre <strong>7pm y 9pm</strong> genera el doble de visualizaciones en las primeras 2 horas.</div>
+        </div>
+        <div class="insight">
+          <div class="insight-icon" style="background:rgba(139,92,246,0.12); font-size:14px;">🎣</div>
+          <div class="insight-text">Los hooks de <strong>acción visual directa</strong> (sin texto inicial) tienen 40% más retención al 50%.</div>
+        </div>
+        <div class="insight">
+          <div class="insight-icon" style="background:rgba(59,130,246,0.12); font-size:14px;">📦</div>
+          <div class="insight-text">El <strong>Cardholder Slim</strong> es el producto con más comentarios y conversión. Priorizar en contenido.</div>
+        </div>
+        <div class="insight">
+          <div class="insight-icon" style="background:rgba(239,68,68,0.12); font-size:14px;">⚠️</div>
+          <div class="insight-text">Los videos <strong>Explicativos</strong> (con texto en pantalla) tienen 50% menos compartidos.</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Charts row -->
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Retención por categoría</div></div>
+        <div class="bar-chart">
+          <div class="bar-col"><div class="bar best" style="height:82%;"></div><div class="bar-label">Outfit</div></div>
+          <div class="bar-col"><div class="bar" style="height:68%;"></div><div class="bar-label">GRWM</div></div>
+          <div class="bar-col"><div class="bar" style="height:61%;"></div><div class="bar-label">Unboxing</div></div>
+          <div class="bar-col"><div class="bar" style="height:54%;"></div><div class="bar-label">Lifestyle</div></div>
+          <div class="bar-col"><div class="bar" style="height:44%;"></div><div class="bar-label">Review</div></div>
+          <div class="bar-col"><div class="bar" style="height:38%;"></div><div class="bar-label">Tutorial</div></div>
+        </div>
+        <div style="display:flex; gap:6px; margin-top:10px; font-size:11px; color:var(--v-muted);">
+          <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:var(--v-orange);border-radius:2px;"></span> Mejor</span>
+          <span style="display:flex;align-items:center;gap:4px;"><span style="width:10px;height:10px;background:var(--v-border);border-radius:2px;"></span> Resto</span>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Visualizaciones por duración</div></div>
+        <div class="bar-chart">
+          <div class="bar-col"><div class="bar" style="height:28%;"></div><div class="bar-label">1-5s</div></div>
+          <div class="bar-col"><div class="bar best" style="height:95%;"></div><div class="bar-label">6-10s</div></div>
+          <div class="bar-col"><div class="bar best" style="height:88%;"></div><div class="bar-label">10-15s</div></div>
+          <div class="bar-col"><div class="bar" style="height:64%;"></div><div class="bar-label">15-20s</div></div>
+          <div class="bar-col"><div class="bar" style="height:42%;"></div><div class="bar-label">20-30s</div></div>
+          <div class="bar-col"><div class="bar" style="height:22%;"></div><div class="bar-label">+30s</div></div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Video table -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Historial de contenido</div>
+        <div class="tabs">
+          <button class="tab active">Todos</button>
+          <button class="tab">TikTok</button>
+          <button class="tab">Instagram</button>
+        </div>
+      </div>
+      <div class="table-wrap">
+        <table>
+          <thead>
+            <tr>
+              <th>Video</th><th>Plataforma</th><th>Categoría</th><th>Duración</th>
+              <th>Vistas</th><th>Likes</th><th>Retención</th><th>Seguidores</th>
+            </tr>
+          </thead>
+          <tbody>
+            <tr>
+              <td><div style="font-size:13px;font-weight:500;">GRWM Business</div><div style="font-size:11px;color:var(--v-muted);">15 Jun · 7:30pm</div></td>
+              <td><span class="badge badge-blue">TikTok</span></td>
+              <td><span class="badge badge-purple">Outfit</span></td>
+              <td>9s</td><td style="color:var(--v-orange);font-weight:600;">148K</td><td>12.4K</td>
+              <td><div style="display:flex;align-items:center;gap:8px;"><span style="color:#22c55e;font-weight:500;">82%</span><div class="score-bar" style="width:60px;"><div class="score-fill" style="width:82%;background:#22c55e;"></div></div></div></td>
+              <td style="color:#22c55e;">+412</td>
+            </tr>
+            <tr>
+              <td><div style="font-size:13px;font-weight:500;">Outfit Casual Bifold</div><div style="font-size:11px;color:var(--v-muted);">10 Jun · 8:00pm</div></td>
+              <td><span class="badge badge-orange">Reels</span></td>
+              <td><span class="badge badge-purple">Outfit</span></td>
+              <td>11s</td><td>62K</td><td>5.8K</td>
+              <td><div style="display:flex;align-items:center;gap:8px;"><span style="color:#22c55e;font-weight:500;">71%</span><div class="score-bar" style="width:60px;"><div class="score-fill" style="width:71%;background:#22c55e;"></div></div></div></td>
+              <td style="color:#22c55e;">+218</td>
+            </tr>
+            <tr>
+              <td><div style="font-size:13px;font-weight:500;">Unboxing Pack Premium</div><div style="font-size:11px;color:var(--v-muted);">5 Jun · 6:45pm</div></td>
+              <td><span class="badge badge-blue">TikTok</span></td>
+              <td><span class="badge badge-green">Unboxing</span></td>
+              <td>18s</td><td>44K</td><td>3.2K</td>
+              <td><div style="display:flex;align-items:center;gap:8px;"><span style="color:var(--v-muted);">68%</span><div class="score-bar" style="width:60px;"><div class="score-fill" style="width:68%;"></div></div></div></td>
+              <td style="color:#22c55e;">+87</td>
+            </tr>
+            <tr>
+              <td><div style="font-size:13px;font-weight:500;">Review Cardholder Slim</div><div style="font-size:11px;color:var(--v-muted);">28 May · 9:00pm</div></td>
+              <td><span class="badge badge-blue">TikTok</span></td>
+              <td><span class="badge badge-gray">Review</span></td>
+              <td>28s</td><td>18K</td><td>940</td>
+              <td><div style="display:flex;align-items:center;gap:8px;"><span style="color:#f87171;font-weight:500;">38%</span><div class="score-bar" style="width:60px;"><div class="score-fill" style="width:38%;background:#ef4444;"></div></div></div></td>
+              <td style="color:var(--v-muted);">+12</td>
+            </tr>
+          </tbody>
+        </table>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== RESEARCH ===================== -->
+  <section id="page-research" class="page">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+      <div>
+        <div style="font-size:20px; font-weight:600; color:var(--v-text); margin-bottom:4px;">Research · Inspiration Feed</div>
+        <div style="font-size:13px; color:var(--v-muted);">Tendencias en tiempo real · TikTok · Instagram · Marcas premium</div>
+      </div>
+      <button class="btn btn-orange" onclick="refreshResearch()">✦ Actualizar tendencias</button>
+    </div>
+
+    <div style="display:flex; gap:8px; flex-wrap:wrap;">
+      <button class="btn btn-outline tab-filter active-filter" onclick="filterResearch(this,'all')">Todas</button>
+      <button class="btn btn-outline tab-filter" onclick="filterResearch(this,'format')">Formatos virales</button>
+      <button class="btn btn-outline tab-filter" onclick="filterResearch(this,'hook')">Hooks</button>
+      <button class="btn btn-outline tab-filter" onclick="filterResearch(this,'visual')">Estilo visual</button>
+      <button class="btn btn-outline tab-filter" onclick="filterResearch(this,'luxury')">Lujo</button>
+    </div>
+
+    <div style="display:grid; grid-template-columns:1fr 1fr; gap:14px;" id="research-feed">
+      <div class="trend-card" data-cat="format hook">
+        <div class="trend-tag"><span class="badge badge-orange">🔥 Viral</span><span class="badge badge-blue">Formato</span><span style="font-size:11px;color:var(--v-muted);">TikTok · Esta semana</span></div>
+        <div class="trend-title">GRWM "outfit del día" ultrarrápido</div>
+        <div class="trend-why">Videos de 7-12 segundos mostrando el proceso completo de vestirse con un accessorio premium como protagonista. Algoritmo de TikTok lo prioriza por alto watch rate. Marcas como Fossil y Daniel Wellington dominan con este formato.</div>
+        <div class="trend-adapt">✦ Para Valtori: mostrar el cardholder saliendo del bolsillo en el momento de "terminar el look". Hook visual puro sin texto. Duración ideal: 9 segundos.</div>
+        <div style="display:flex; gap:6px; margin-top:2px;">
+          <button class="btn btn-ghost" style="font-size:11px;" onclick="approveToIdeas('GRWM ultrarrápido — Cardholder')">+ Enviar a Ideas</button>
+        </div>
+      </div>
+
+      <div class="trend-card" data-cat="visual luxury">
+        <div class="trend-tag"><span class="badge badge-purple">✨ Ascendente</span><span class="badge badge-gray">Estilo visual</span><span style="font-size:11px;color:var(--v-muted);">Instagram · Semana pasada</span></div>
+        <div class="trend-title">Estética Dark Luxury — Sombras y textura</div>
+        <div class="trend-why">Marcas premium como Tom Ford, Louis Vuitton y Ridge Wallet están usando iluminación lateral dura, fondos negros y primer plano extremo de texturas de cuero. Genera percepción de precio 3x mayor al real.</div>
+        <div class="trend-adapt">✦ Para Valtori: video estático de 5s mostrando la textura del cuero del Bifold con iluminación lateral. Cero texto. Solo la imagen y el logo al final.</div>
+        <button class="btn btn-ghost" style="font-size:11px; margin-top:4px;" onclick="approveToIdeas('Dark Luxury — Textura Bifold')">+ Enviar a Ideas</button>
+      </div>
+
+      <div class="trend-card" data-cat="hook">
+        <div class="trend-tag"><span class="badge badge-green">↑ +240%</span><span class="badge badge-gray">Hook</span><span style="font-size:11px;color:var(--v-muted);">Multiplataforma</span></div>
+        <div class="trend-title">Hook "Cambié X y nunca volví"</div>
+        <div class="trend-why">Narrativa de transformación personal generando alta identificación. "Cambié mi billetera vieja y nunca volví" activa curiosidad inmediata y genera comentarios sobre billeteras anteriores. CTR promedio 8.4% superior.</div>
+        <div class="trend-adapt">✦ Para Valtori: primeros 2 segundos mostrando billetera vieja abultada vs. cardholder slim. La transición es el hook. Sin voz en off necesaria.</div>
+        <button class="btn btn-ghost" style="font-size:11px; margin-top:4px;" onclick="approveToIdeas('Cambié mi billetera — Transformación')">+ Enviar a Ideas</button>
+      </div>
+
+      <div class="trend-card" data-cat="format luxury">
+        <div class="trend-tag"><span class="badge badge-orange">★ Destacado</span><span class="badge badge-purple">Lujo</span><span style="font-size:11px;color:var(--v-muted);">Instagram · Tendencia</span></div>
+        <div class="trend-title">Pack gifting — Unboxing slow motion</div>
+        <div class="trend-why">La temporada de regalos activa este formato todo el año en nichos premium. Videos de unboxing en cámara lenta con música ambient generan el mayor porcentaje de guardados (avg 8.2% vs 2.1% general) en categoría accesorios.</div>
+        <div class="trend-adapt">✦ Para Valtori: Pack Premium en caja negra, ribbon naranja, unboxing a 0.5x velocidad. Música lo-fi elegante. Sin texto excepto logo final. Duración: 14 segundos.</div>
+        <button class="btn btn-ghost" style="font-size:11px; margin-top:4px;" onclick="approveToIdeas('Gifting Unboxing Slow — Pack Premium')">+ Enviar a Ideas</button>
+      </div>
+
+      <div class="trend-card" data-cat="hook visual">
+        <div class="trend-tag"><span class="badge badge-blue">⚡ Nuevo</span><span class="badge badge-gray">Hook</span><span style="font-size:11px;color:var(--v-muted);">TikTok · Esta semana</span></div>
+        <div class="trend-title">Comparación visual inmediata — "Antes vs Ahora"</div>
+        <div class="trend-why">Split screen de 1 segundo antes vs después. Sin palabras. El contraste visual genera el 100% del interés. Funciona especialmente bien con accesorios donde el cambio es de tamaño o estética.</div>
+        <div class="trend-adapt">✦ Para Valtori: bolsillo antes (abultado con billetera gorda) vs. bolsillo después (plano con cardholder). Corte súbito. Texto opcional: "El upgrade más simple".</div>
+        <button class="btn btn-ghost" style="font-size:11px; margin-top:4px;" onclick="approveToIdeas('Antes vs Ahora — Bolsillo Slim')">+ Enviar a Ideas</button>
+      </div>
+
+      <div class="trend-card" data-cat="format visual">
+        <div class="trend-tag"><span class="badge badge-gray">📍 Nicho</span><span class="badge badge-green">Lifestyle</span><span style="font-size:11px;color:var(--v-muted);">Instagram · Marcas premium</span></div>
+        <div class="trend-title">Desk setup premium — Accesorios en escena</div>
+        <div class="trend-why">El lifestyle de "escritorio minimalista" es el contenido con más guardados en nichos masculinos premium. El accesorio aparece natural, no como publicidad. Alta credibilidad percibida.</div>
+        <div class="trend-adapt">✦ Para Valtori: escritorio de madera con MacBook, el cardholder y unas llaves. Estática o pequeño movimiento de cámara. Música ambiente. Zero copy. Product placement orgánico.</div>
+        <button class="btn btn-ghost" style="font-size:11px; margin-top:4px;" onclick="approveToIdeas('Desk Setup Premium — Cardholder lifestyle')">+ Enviar a Ideas</button>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== IDEAS ===================== -->
+  <section id="page-ideas" class="page">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+      <div>
+        <div style="font-size:20px; font-weight:600; color:var(--v-text); margin-bottom:4px;">Ideas de contenido</div>
+        <div style="font-size:13px; color:var(--v-muted);">Generadas por IA · Basadas en datos + tendencias + historial Valtori</div>
+      </div>
+      <button class="btn btn-orange" onclick="generateIdeas()">✦ Generar nuevas ideas</button>
+    </div>
+
+    <div style="display:flex; gap:8px; flex-wrap:wrap; align-items:center;">
+      <span style="font-size:12px; color:var(--v-muted);">Filtrar:</span>
+      <button class="btn btn-outline" style="font-size:11px;">Todas (5)</button>
+      <button class="btn btn-outline" style="font-size:11px;">Alta confianza</button>
+      <button class="btn btn-outline" style="font-size:11px;">Outfit</button>
+      <button class="btn btn-outline" style="font-size:11px;">Viral</button>
+    </div>
+
+    <div style="display:flex; flex-direction:column; gap:12px;" id="ideas-list">
+
+      <div class="idea-card">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+          <div class="idea-title">Summer Outfit — Cardholder en exterior</div>
+          <div class="idea-score">
+            <div>
+              <div class="idea-score-num">92</div>
+              <div class="idea-score-label">Confianza</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-meta">
+          <span class="badge badge-purple">Outfit</span>
+          <span class="badge badge-blue">TikTok · Instagram</span>
+          <span class="badge badge-green">Seguidores</span>
+          <span class="badge badge-orange">8-12s</span>
+        </div>
+        <div class="score-bar"><div class="score-fill" style="width:92%;"></div></div>
+        <div class="idea-desc">
+          Video GRWM en exterior (terraza, café, calle premium) mostrando el cardholder saliendo del bolsillo trasero del pantalón. Hook visual puro. Sin texto. La luz natural potencia la textura del cuero.<br><br>
+          <strong style="color:var(--v-orange);">Por qué funcionará:</strong> Los videos Outfit son tu categoría con mayor retención (82%). La temporada de verano amplifica las búsquedas de "summer accessories" en un 65%. Publicar en ventana 7-9pm maximiza el alcance inicial.
+        </div>
+        <div class="idea-actions">
+          <button class="btn btn-orange" onclick="approveIdea(this, 'Summer Outfit — Cardholder en exterior')">✓ Aprobar</button>
+          <button class="btn btn-ghost" onclick="discardIdea(this)">✗ Descartar</button>
+          <button class="btn btn-outline" onclick="regenerateIdea(this)">↻ Regenerar</button>
+        </div>
+      </div>
+
+      <div class="idea-card">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+          <div class="idea-title">Antes vs Ahora — Bolsillo Slim Upgrade</div>
+          <div class="idea-score">
+            <div>
+              <div class="idea-score-num">88</div>
+              <div class="idea-score-label">Confianza</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-meta">
+          <span class="badge badge-orange">Comparación</span>
+          <span class="badge badge-blue">TikTok</span>
+          <span class="badge badge-green">Viral</span>
+          <span class="badge badge-orange">6-9s</span>
+        </div>
+        <div class="score-bar"><div class="score-fill" style="width:88%;"></div></div>
+        <div class="idea-desc">
+          Split screen o corte súbito: bolsillo abultado con billetera vieja vs. bolsillo completamente plano con el Cardholder Slim. Formato trending esta semana. Texto mínimo: "El upgrade". CTA implícito.<br><br>
+          <strong style="color:var(--v-orange);">Por qué funcionará:</strong> El formato "Antes vs Ahora" tiene +240% de crecimiento en TikTok. El problema (bolsillo abultado) es universal y genera identificación inmediata. Alto potencial de viralidad.
+        </div>
+        <div class="idea-actions">
+          <button class="btn btn-orange" onclick="approveIdea(this, 'Antes vs Ahora — Bolsillo Slim Upgrade')">✓ Aprobar</button>
+          <button class="btn btn-ghost" onclick="discardIdea(this)">✗ Descartar</button>
+          <button class="btn btn-outline" onclick="regenerateIdea(this)">↻ Regenerar</button>
+        </div>
+      </div>
+
+      <div class="idea-card">
+        <div style="display:flex; align-items:flex-start; justify-content:space-between; gap:12px;">
+          <div class="idea-title">Dark Luxury — Textura cuero Bifold</div>
+          <div class="idea-score">
+            <div>
+              <div class="idea-score-num">79</div>
+              <div class="idea-score-label">Confianza</div>
+            </div>
+          </div>
+        </div>
+        <div class="idea-meta">
+          <span class="badge badge-gray">Estética</span>
+          <span class="badge badge-orange">Instagram</span>
+          <span class="badge badge-purple">Branding</span>
+          <span class="badge badge-orange">5-8s</span>
+        </div>
+        <div class="score-bar"><div class="score-fill" style="width:79%;"></div></div>
+        <div class="idea-desc">
+          Video estático o micro-movimiento del Bifold sobre fondo negro. Iluminación lateral dura que resalta la textura del cuero. Música elegante ambient. Zero copy excepto logo final. Construye percepción de marca premium.<br><br>
+          <strong style="color:var(--v-orange);">Por qué funcionará:</strong> La estética Dark Luxury está en auge en marcas premium de Instagram. Aunque no genera viralidad masiva, tiene el mayor porcentaje de guardados (8.4%) lo que amplifica el alcance orgánico.
+        </div>
+        <div class="idea-actions">
+          <button class="btn btn-orange" onclick="approveIdea(this, 'Dark Luxury — Textura cuero Bifold')">✓ Aprobar</button>
+          <button class="btn btn-ghost" onclick="discardIdea(this)">✗ Descartar</button>
+          <button class="btn btn-outline" onclick="regenerateIdea(this)">↻ Regenerar</button>
+        </div>
+      </div>
+
+    </div>
+  </section>
+
+  <!-- ===================== PRODUCTION ===================== -->
+  <section id="page-production" class="page">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+      <div>
+        <div style="font-size:20px; font-weight:600; color:var(--v-text); margin-bottom:4px;">Production</div>
+        <div style="font-size:13px; color:var(--v-muted);">Plan completo de grabación · Generado por IA</div>
+      </div>
+      <div style="display:flex; gap:8px;">
+        <button class="btn btn-ghost">← Volver a Ideas</button>
+        <button class="btn btn-orange">Exportar plan</button>
+      </div>
+    </div>
+
+    <!-- Hero -->
+    <div class="prod-hero">
+      <div style="display:flex; align-items:center; gap:10px; margin-bottom:10px;">
+        <span class="badge badge-green">✓ Aprobado</span>
+        <span class="badge badge-orange">Confianza: 92/100</span>
+        <span class="badge badge-purple">Outfit · TikTok + Instagram</span>
+      </div>
+      <div style="font-size:22px; font-weight:600; color:var(--v-text); margin-bottom:8px; letter-spacing:-0.3px;">
+        Summer Outfit — Cardholder en exterior
+      </div>
+      <div style="display:grid; grid-template-columns: repeat(3, 1fr); gap:12px; margin-top:16px;">
+        <div>
+          <div style="font-size:10px;color:var(--v-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">Objetivo</div>
+          <div style="font-size:13px;color:var(--v-text);">Ganar seguidores + Awareness</div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--v-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">Duración ideal</div>
+          <div style="font-size:13px;color:var(--v-text);">8 – 11 segundos</div>
+        </div>
+        <div>
+          <div style="font-size:10px;color:var(--v-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:4px;">Publicar el</div>
+          <div style="font-size:13px;color:var(--v-orange); font-weight:500;">Miér 26 Jun · 8:00pm</div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Guion -->
+    <div class="prod-section">
+      <div class="prod-section-header">
+        <div class="prod-section-title">📝 Guion completo</div>
+        <span class="badge badge-gray">Narrativa visual</span>
+      </div>
+      <div class="prod-section-body">
+        <div style="font-size:13px; color:var(--v-text); line-height:1.8;">
+          <p style="margin-bottom:10px;">El video arranca <strong style="color:var(--v-orange);">sin texto ni música audible</strong> en el primer frame. La cámara encuentra un hombre vestido (solo vemos de cintura a muslos) con pantalón oscuro bien cortado.</p>
+          <p style="margin-bottom:10px;">Con un movimiento natural pero elegante, la mano saca el <strong style="color:var(--v-orange);">Cardholder Slim Valtori</strong> del bolsillo delantero. La luz natural ilumina la textura del cuero en ese instante.</p>
+          <p style="margin-bottom:10px;">Un corte rápido (0.3s) muestra el cardholder en la mano, dedos lo sostienen con confianza. Se abre con una tarjeta visible.</p>
+          <p>El último frame: plano del producto solo sobre la superficie, aparece el <strong style="color:var(--v-orange);">logo Valtori</strong> y el texto "Cardholder Slim — @valtori". Fade negro.</p>
+        </div>
+      </div>
+    </div>
+
+    <!-- Escenas -->
+    <div class="prod-section">
+      <div class="prod-section-header">
+        <div class="prod-section-title">🎬 Plan de grabación — Escena por escena</div>
+        <span class="badge badge-orange">4 escenas · 9-11s total</span>
+      </div>
+      <div class="prod-section-body" style="display:flex;flex-direction:column;gap:10px;">
+        <div class="scene-card">
+          <div class="scene-num">Escena 01 · 1.5 seg</div>
+          <div class="scene-grid">
+            <div class="scene-field"><div class="scene-field-label">Ubicación</div><div class="scene-field-value">Exterior — terraza o calle premium, sombra suave</div></div>
+            <div class="scene-field"><div class="scene-field-label">Cámara</div><div class="scene-field-value">iPhone 15 Pro · modo video 4K60</div></div>
+            <div class="scene-field"><div class="scene-field-label">Lente / Focal</div><div class="scene-field-value">0.5x gran angular o 1x normal</div></div>
+            <div class="scene-field"><div class="scene-field-label">Movimiento</div><div class="scene-field-value">Estático o micro bajada lenta</div></div>
+            <div class="scene-field"><div class="scene-field-label">Acción</div><div class="scene-field-value">Encuadre de cintura-muslos. Mano en bolsillo, outfit completo visible</div></div>
+            <div class="scene-field"><div class="scene-field-label">Resultado visual</div><div class="scene-field-value">Contexto premium. Outfit elegante. Tensión de "¿qué va a sacar?"</div></div>
+          </div>
+        </div>
+
+        <div class="scene-card" style="border-color:rgba(255,107,43,0.3);">
+          <div class="scene-num" style="color:var(--v-orange);">Escena 02 · 2.5 seg · ★ ESCENA CLAVE</div>
+          <div class="scene-grid">
+            <div class="scene-field"><div class="scene-field-label">Ubicación</div><div class="scene-field-value">Mismo exterior · mismo ángulo</div></div>
+            <div class="scene-field"><div class="scene-field-label">Cámara</div><div class="scene-field-value">iPhone · Slow motion 240fps</div></div>
+            <div class="scene-field"><div class="scene-field-label">Movimiento</div><div class="scene-field-value">Ligero acercamiento mientras se saca el producto</div></div>
+            <div class="scene-field"><div class="scene-field-label">Acción</div><div class="scene-field-value">La mano saca el Cardholder Slim del bolsillo delantero con movimiento natural. La luz toca el cuero.</div></div>
+            <div class="scene-field"><div class="scene-field-label">Iluminación</div><div class="scene-field-value">Luz natural lateral. Nublado ligero ideal. Evitar sol directo.</div></div>
+            <div class="scene-field"><div class="scene-field-label">Resultado visual</div><div class="scene-field-value">El momento del reveal. Textura del cuero brilla. Hook visual completo.</div></div>
+          </div>
+        </div>
+
+        <div class="scene-card">
+          <div class="scene-num">Escena 03 · 3 seg</div>
+          <div class="scene-grid">
+            <div class="scene-field"><div class="scene-field-label">Cámara</div><div class="scene-field-value">iPhone · Macro o 2x Tele</div></div>
+            <div class="scene-field"><div class="scene-field-label">Acción</div><div class="scene-field-value">Primer plano del cardholder en mano. Dedos lo sostienen. Se desliza una tarjeta Visa negra visible.</div></div>
+            <div class="scene-field"><div class="scene-field-label">Movimiento</div><div class="scene-field-value">Micro-rotación lenta para mostrar grosor slim</div></div>
+            <div class="scene-field"><div class="scene-field-label">Resultado visual</div><div class="scene-field-value">El espectador ve el producto en detalle. Percibe calidad y funcionalidad.</div></div>
+          </div>
+        </div>
+
+        <div class="scene-card">
+          <div class="scene-num">Escena 04 · 2 seg</div>
+          <div class="scene-grid">
+            <div class="scene-field"><div class="scene-field-label">Acción</div><div class="scene-field-value">Producto solo sobre superficie (mesa madera oscura). Logo Valtori aparece en texto limpio.</div></div>
+            <div class="scene-field"><div class="scene-field-label">Movimiento</div><div class="scene-field-value">Fade negro suave</div></div>
+            <div class="scene-field"><div class="scene-field-label">Texto en pantalla</div><div class="scene-field-value">"Cardholder Slim" · "@valtori" · "Link en bio"</div></div>
+            <div class="scene-field"><div class="scene-field-label">Resultado visual</div><div class="scene-field-value">Cierre premium. Marca queda impregnada. CTA claro.</div></div>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Edición + Descripción -->
+    <div class="grid-2">
+      <div class="prod-section">
+        <div class="prod-section-header">
+          <div class="prod-section-title">✂️ Plan de edición</div>
+        </div>
+        <div class="prod-section-body" style="display:flex;flex-direction:column;gap:8px;">
+          <div class="result-row"><div class="result-icon" style="background:rgba(139,92,246,0.12);color:#a78bfa;">🎵</div><div style="font-size:12px;color:var(--v-text);">Música: lo-fi hip hop elegante o ambient minimal. Sin letra. Volumen bajo (20-30%).</div></div>
+          <div class="result-row"><div class="result-icon" style="background:rgba(59,130,246,0.12);color:#60a5fa;">⚡</div><div style="font-size:12px;color:var(--v-text);">Ritmo: corte rápido entre Esc 1→2 (0.2s), luego más lento en Esc 3→4.</div></div>
+          <div class="result-row"><div class="result-icon" style="background:rgba(34,197,94,0.12);color:#22c55e;">🔄</div><div style="font-size:12px;color:var(--v-text);">Transición 1→2: corte directo. Transición 3→4: fade negro 0.3s.</div></div>
+          <div class="result-row"><div class="result-icon" style="background:var(--v-orange-dim);color:var(--v-orange);">🎨</div><div style="font-size:12px;color:var(--v-text);">Color: contrastar ligeramente. +10% sombras, -5% luces. Tono cálido en cuero.</div></div>
+          <div class="result-row"><div class="result-icon" style="background:rgba(255,255,255,0.06);color:var(--v-muted);">T</div><div style="font-size:12px;color:var(--v-text);">Texto: tipografía sans-serif ligera. Color blanco. Tamaño pequeño. Solo Escena 4.</div></div>
+        </div>
+      </div>
+
+      <div class="prod-section">
+        <div class="prod-section-header">
+          <div class="prod-section-title">📋 Descripción + Hashtags</div>
+        </div>
+        <div class="prod-section-body">
+          <div style="font-size:12px; color:var(--v-text); line-height:1.7; margin-bottom:12px; background:var(--v-surface2); padding:10px 12px; border-radius:8px; border:1px solid var(--v-border);">
+            El accesorio que define el look ✦<br><br>
+            Cardholder Slim Valtori — Cuero genuino. Diseño que cabe en cualquier bolsillo.<br><br>
+            Link en bio para verlo 🔗
+          </div>
+          <div style="font-size:11px; color:var(--v-muted); line-height:1.8;">
+            #valtori #cardholder #mensfashion #outfitoftheday #walletupgrade #menstyle #accessories #minimaliststyle #premiumleather #fashionmen #ootd #accessoriesformen #leatherwallet #menlaccessories #luxurylifestyle
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- Hypothesis -->
+    <div class="card" style="border-color:var(--v-orange-glow);">
+      <div class="card-header">
+        <div class="card-title">✦ Hipótesis IA — Por qué este video funcionará</div>
+        <span class="badge badge-orange">Confianza 92%</span>
+      </div>
+      <div style="font-size:13px; color:var(--v-text); line-height:1.8;">
+        <p style="margin-bottom:8px;">Basándome en los datos históricos de Valtori y tendencias actuales, proyecto las siguientes métricas para este video:</p>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin:14px 0;">
+          <div class="metric-card"><div class="metric-label">Visualizaciones est.</div><div class="metric-value" style="font-size:18px;">45–80K</div></div>
+          <div class="metric-card"><div class="metric-label">Retención est.</div><div class="metric-value" style="font-size:18px;">75–85%</div></div>
+          <div class="metric-card"><div class="metric-label">Seguidores est.</div><div class="metric-value" style="font-size:18px;">+150–300</div></div>
+          <div class="metric-card"><div class="metric-label">Compartidos est.</div><div class="metric-value" style="font-size:18px;">+2%</div></div>
+        </div>
+        <p>La categoría Outfit tiene históricamente tu mejor retención (82%). La duración de 9s está en el rango óptimo. El formato hook visual sin texto es el patrón de mayor éxito en tus datos. La ventana de publicación 7-9pm amplifica el alcance inicial 2x. Combinar estos factores da una probabilidad de superar el promedio estimada en 92%.</p>
+      </div>
+    </div>
+
+  </section>
+
+  <!-- ===================== CALENDAR ===================== -->
+  <section id="page-calendar" class="page">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+      <div>
+        <div style="font-size:20px; font-weight:600; color:var(--v-text); margin-bottom:4px;">Calendario de contenido</div>
+        <div style="font-size:13px; color:var(--v-muted);">Junio 2025</div>
+      </div>
+      <div style="display:flex; gap:8px; align-items:center;">
+        <div style="display:flex;gap:6px;flex-wrap:wrap;">
+          <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--v-muted);"><span style="width:8px;height:8px;background:#22c55e;border-radius:50%;"></span>Publicado</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--v-muted);"><span style="width:8px;height:8px;background:var(--v-orange);border-radius:50%;"></span>Grabando</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--v-muted);"><span style="width:8px;height:8px;background:#60a5fa;border-radius:50%;"></span>Aprobado</span>
+          <span style="display:flex;align-items:center;gap:4px;font-size:11px;color:var(--v-muted);"><span style="width:8px;height:8px;background:#a78bfa;border-radius:50%;"></span>Editando</span>
+        </div>
+        <button class="btn btn-ghost">← Jun</button>
+        <button class="btn btn-ghost">Jul →</button>
+        <button class="btn btn-orange" onclick="openModal('add-content')">+ Agregar</button>
+      </div>
+    </div>
+
+    <div class="card" style="padding:16px;">
+      <div class="cal-grid">
+        <div class="cal-header">Lun</div>
+        <div class="cal-header">Mar</div>
+        <div class="cal-header">Mié</div>
+        <div class="cal-header">Jue</div>
+        <div class="cal-header">Vie</div>
+        <div class="cal-header">Sáb</div>
+        <div class="cal-header">Dom</div>
+
+        <div class="cal-day other-month"><div class="cal-day-num">26</div></div>
+        <div class="cal-day other-month"><div class="cal-day-num">27</div></div>
+        <div class="cal-day other-month"><div class="cal-day-num">28</div></div>
+        <div class="cal-day other-month"><div class="cal-day-num">29</div></div>
+        <div class="cal-day other-month"><div class="cal-day-num">30</div></div>
+        <div class="cal-day other-month"><div class="cal-day-num">31</div></div>
+        <div class="cal-day"><div class="cal-day-num">1</div></div>
+
+        <div class="cal-day"><div class="cal-day-num">2</div></div>
+        <div class="cal-day"><div class="cal-day-num">3</div></div>
+        <div class="cal-day"><div class="cal-day-num">4</div></div>
+        <div class="cal-day"><div class="cal-day-num">5</div><div class="cal-item publicado">Unboxing Pack</div></div>
+        <div class="cal-day"><div class="cal-day-num">6</div></div>
+        <div class="cal-day"><div class="cal-day-num">7</div></div>
+        <div class="cal-day"><div class="cal-day-num">8</div></div>
+
+        <div class="cal-day"><div class="cal-day-num">9</div></div>
+        <div class="cal-day"><div class="cal-day-num">10</div><div class="cal-item publicado">Outfit Casual</div></div>
+        <div class="cal-day"><div class="cal-day-num">11</div></div>
+        <div class="cal-day"><div class="cal-day-num">12</div></div>
+        <div class="cal-day"><div class="cal-day-num">13</div></div>
+        <div class="cal-day"><div class="cal-day-num">14</div></div>
+        <div class="cal-day"><div class="cal-day-num">15</div><div class="cal-item publicado">GRWM Business</div></div>
+
+        <div class="cal-day"><div class="cal-day-num">16</div></div>
+        <div class="cal-day"><div class="cal-day-num">17</div></div>
+        <div class="cal-day"><div class="cal-day-num">18</div></div>
+        <div class="cal-day"><div class="cal-day-num">19</div><div class="cal-item publicado">Dark Luxury</div></div>
+        <div class="cal-day"><div class="cal-day-num">20</div></div>
+        <div class="cal-day"><div class="cal-day-num">21</div></div>
+        <div class="cal-day"><div class="cal-day-num">22</div></div>
+
+        <div class="cal-day" style="border-color:rgba(255,107,43,0.4);"><div class="cal-day-num" style="color:var(--v-orange);">23 ●</div></div>
+        <div class="cal-day"><div class="cal-day-num">24</div></div>
+        <div class="cal-day"><div class="cal-day-num">25</div></div>
+        <div class="cal-day"><div class="cal-day-num">26</div><div class="cal-item grabando">Summer Outfit</div></div>
+        <div class="cal-day"><div class="cal-day-num">27</div><div class="cal-item editando">Bifold Unbox</div></div>
+        <div class="cal-day"><div class="cal-day-num">28</div></div>
+        <div class="cal-day"><div class="cal-day-num">29</div><div class="cal-item aprobado">Desk Setup</div></div>
+
+        <div class="cal-day"><div class="cal-day-num">30</div><div class="cal-item aprobado">Antes/Ahora</div></div>
+        <div class="cal-day other-month"><div class="cal-day-num">1</div></div>
+        <div class="cal-day other-month"><div class="cal-day-num">2</div></div>
+        <div class="cal-day other-month"><div class="cal-day-num">3</div></div>
+        <div class="cal-day other-month"><div class="cal-day-num">4</div></div>
+        <div class="cal-day other-month"><div class="cal-day-num">5</div></div>
+        <div class="cal-day other-month"><div class="cal-day-num">6</div></div>
+      </div>
+    </div>
+
+    <div class="grid-2">
+      <div class="card">
+        <div class="card-header"><div class="card-title">Esta semana</div></div>
+        <div style="display:flex;flex-direction:column;gap:8px;">
+          <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--v-surface2);border-radius:8px;border:1px solid var(--v-border);">
+            <div style="font-size:12px;font-weight:600;color:var(--v-muted);min-width:28px;">Mié 26</div>
+            <div style="flex:1;"><div style="font-size:13px;color:var(--v-text);">Summer Outfit — Cardholder</div><div style="font-size:11px;color:var(--v-muted);">Pendiente grabación · 8:00pm</div></div>
+            <span class="badge badge-orange">Grabando</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--v-surface2);border-radius:8px;border:1px solid var(--v-border);">
+            <div style="font-size:12px;font-weight:600;color:var(--v-muted);min-width:28px;">Jue 27</div>
+            <div style="flex:1;"><div style="font-size:13px;color:var(--v-text);">Bifold Unboxing Premium</div><div style="font-size:11px;color:var(--v-muted);">En edición · Para publicar 8:00pm</div></div>
+            <span class="badge badge-purple">Editando</span>
+          </div>
+          <div style="display:flex;align-items:center;gap:10px;padding:10px;background:var(--v-surface2);border-radius:8px;border:1px solid var(--v-border);">
+            <div style="font-size:12px;font-weight:600;color:var(--v-muted);min-width:28px;">Dom 29</div>
+            <div style="flex:1;"><div style="font-size:13px;color:var(--v-text);">Desk Setup Premium</div><div style="font-size:11px;color:var(--v-muted);">Aprobado · Sin grabar aún</div></div>
+            <span class="badge badge-blue">Aprobado</span>
+          </div>
+        </div>
+      </div>
+      <div class="card">
+        <div class="card-header"><div class="card-title">Resumen del mes</div></div>
+        <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+          <div class="metric-card"><div class="metric-label">Publicados</div><div class="metric-value">4</div></div>
+          <div class="metric-card"><div class="metric-label">En proceso</div><div class="metric-value">3</div></div>
+          <div class="metric-card"><div class="metric-label">Ideas agendadas</div><div class="metric-value">2</div></div>
+          <div class="metric-card"><div class="metric-label">Meta del mes</div><div class="metric-value" style="color:var(--v-orange);">8 videos</div></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===================== LABORATORY ===================== -->
+  <section id="page-laboratory" class="page">
+    <div style="display:flex; align-items:center; justify-content:space-between; flex-wrap:wrap; gap:10px;">
+      <div>
+        <div style="font-size:20px; font-weight:600; color:var(--v-text); margin-bottom:4px;">Laboratory</div>
+        <div style="font-size:13px; color:var(--v-muted);">Análisis post-publicación · La IA aprende de cada resultado</div>
+      </div>
+      <button class="btn btn-orange" onclick="openModal('analyze-video')">+ Analizar video</button>
+    </div>
+
+    <!-- Video selector -->
+    <div class="card">
+      <div class="card-header">
+        <div class="card-title">Video a analizar</div>
+        <select class="form-select" style="width:auto;font-size:12px;" onchange="loadLabAnalysis(this.value)">
+          <option value="grwm">GRWM Business — Cardholder (148K views)</option>
+          <option value="outfit">Outfit Casual Bifold (62K views)</option>
+          <option value="unboxing">Unboxing Pack Premium (44K views)</option>
+        </select>
+      </div>
+      <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;" id="lab-metrics">
+        <div class="lab-metric"><div class="lab-metric-label">Visualizaciones</div><div class="lab-metric-val">148,420</div></div>
+        <div class="lab-metric"><div class="lab-metric-label">Likes</div><div class="lab-metric-val">12,418</div></div>
+        <div class="lab-metric"><div class="lab-metric-label">Comentarios</div><div class="lab-metric-val">842</div></div>
+        <div class="lab-metric"><div class="lab-metric-label">Compartidos</div><div class="lab-metric-val">3,210</div></div>
+        <div class="lab-metric"><div class="lab-metric-label">Guardados</div><div class="lab-metric-val">1,840</div></div>
+        <div class="lab-metric"><div class="lab-metric-label">Seguidores ganados</div><div class="lab-metric-val" style="color:#22c55e;">+412</div></div>
+        <div class="lab-metric"><div class="lab-metric-label">Retención promedio</div><div class="lab-metric-val" style="color:#22c55e;">82%</div></div>
+        <div class="lab-metric"><div class="lab-metric-label">Tasa de interacción</div><div class="lab-metric-val">8.4%</div></div>
+      </div>
+    </div>
+
+    <!-- AI Analysis -->
+    <div class="card">
+      <div class="card-header">
+        <div>
+          <div class="card-title">✦ Análisis IA — GRWM Business Cardholder</div>
+          <div class="card-sub">Comparado contra el promedio histórico de Valtori</div>
+        </div>
+        <span class="badge badge-green">Generado</span>
+      </div>
+
+      <div style="display:grid;grid-template-columns:1fr 1fr;gap:14px;" id="lab-analysis">
+        <div>
+          <div class="section-title" style="color:#22c55e;">✓ Qué funcionó</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="result-row">
+              <div class="result-icon" style="background:rgba(34,197,94,0.12);color:#22c55e;">✓</div>
+              <div style="font-size:12px;color:var(--v-text);">El hook visual de los primeros 2 segundos generó <strong style="color:#22c55e;">94% de retención</strong> en ese tramo. Sin texto ni música alta.</div>
+            </div>
+            <div class="result-row">
+              <div class="result-icon" style="background:rgba(34,197,94,0.12);color:#22c55e;">✓</div>
+              <div style="font-size:12px;color:var(--v-text);">La duración de 9 segundos está en el sweet spot. Retención al 100% del video: 68% (excelente).</div>
+            </div>
+            <div class="result-row">
+              <div class="result-icon" style="background:rgba(34,197,94,0.12);color:#22c55e;">✓</div>
+              <div style="font-size:12px;color:var(--v-text);">La publicación a las 7:30pm maximizó el alcance en las primeras 2 horas. Velocidad inicial alta = impulso del algoritmo.</div>
+            </div>
+            <div class="result-row">
+              <div class="result-icon" style="background:rgba(34,197,94,0.12);color:#22c55e;">✓</div>
+              <div style="font-size:12px;color:var(--v-text);">La categoría Outfit con Cardholder genera los mejores comentarios sobre producto. 78% de comentarios mencionan la billetera.</div>
+            </div>
+          </div>
+        </div>
+
+        <div>
+          <div class="section-title" style="color:#f87171;">✗ Qué no funcionó</div>
+          <div style="display:flex;flex-direction:column;gap:6px;">
+            <div class="result-row">
+              <div class="result-icon" style="background:rgba(239,68,68,0.12);color:#f87171;">✗</div>
+              <div style="font-size:12px;color:var(--v-text);">El texto del final ("Link en bio") tuvo baja visibilidad. Considerar texto más grande y contraste mayor.</div>
+            </div>
+            <div class="result-row">
+              <div class="result-icon" style="background:rgba(239,68,68,0.12);color:#f87171;">✗</div>
+              <div style="font-size:12px;color:var(--v-text);">El hashtag #walletupgrade tuvo 0 impresiones desde búsqueda. Reemplazar por #cardholderslim.</div>
+            </div>
+            <div class="result-row">
+              <div class="result-icon" style="background:rgba(239,68,68,0.12);color:#f87171;">✗</div>
+              <div style="font-size:12px;color:var(--v-text);">La escena de cierre (producto solo) tuvo drop de retención de 12%. Acortar a 1 segundo o eliminar.</div>
+            </div>
+          </div>
+        </div>
+      </div>
+
+      <div class="divider" style="margin:16px 0;"></div>
+
+      <div class="section-title" style="margin-bottom:12px;">★ Recomendaciones para el próximo video</div>
+      <div style="display:flex;flex-direction:column;gap:6px;">
+        <div class="insight">
+          <div class="insight-icon" style="background:var(--v-orange-dim);">★</div>
+          <div class="insight-text"><strong>Replicar formato GRWM Outfit</strong> inmediatamente. Este es tu patrón de mayor éxito. Próximo video: mismo formato, diferentes locaciones (café, gym, aeropuerto).</div>
+        </div>
+        <div class="insight">
+          <div class="insight-icon" style="background:rgba(34,197,94,0.12);">↑</div>
+          <div class="insight-text"><strong>Probar billetera en contexto diferente</strong>: el mismo GRWM pero en exterior de noche (iluminación artificial). Puede ampliar el rango de audiencia.</div>
+        </div>
+        <div class="insight">
+          <div class="insight-icon" style="background:rgba(59,130,246,0.12);">🔄</div>
+          <div class="insight-text"><strong>Memoria actualizada:</strong> La IA ha integrado los aprendizajes de este video. Futuras recomendaciones evitarán la escena final larga y priorizarán el formato hook visual sin texto.</div>
+        </div>
+      </div>
+    </div>
+
+  </section>
+
+</main>
+
+<!-- MODALS -->
+<div class="modal-overlay" id="modal-add-video">
+  <div class="modal">
+    <div class="modal-header">
+      <div style="font-size:15px;font-weight:500;color:var(--v-text);">Cargar nuevo video</div>
+      <button class="btn btn-ghost" style="padding:5px 8px;" onclick="closeModal('add-video')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">Nombre del video</div><input class="form-input" placeholder="Ej: GRWM Summer Outfit"></div>
+        <div class="form-group"><div class="form-label">Fecha</div><input class="form-input" type="date"></div>
+        <div class="form-group"><div class="form-label">Plataforma</div><select class="form-select"><option>TikTok</option><option>Instagram Reels</option><option>YouTube Shorts</option></select></div>
+        <div class="form-group"><div class="form-label">Categoría</div><select class="form-select"><option>Outfit</option><option>GRWM</option><option>Unboxing</option><option>Lifestyle</option><option>Review</option><option>Tutorial</option></select></div>
+        <div class="form-group"><div class="form-label">Duración (seg)</div><input class="form-input" type="number" placeholder="9"></div>
+        <div class="form-group"><div class="form-label">Hora publicación</div><input class="form-input" type="time"></div>
+        <div class="form-group"><div class="form-label">Producto mostrado</div><select class="form-select"><option>Cardholder Slim</option><option>Bifold Negro</option><option>Pack Premium</option></select></div>
+        <div class="form-group"><div class="form-label">Tipo de hook</div><select class="form-select"><option>Visual directo</option><option>Texto provocador</option><option>Pregunta</option><option>Antes/Ahora</option></select></div>
+      </div>
+      <div class="divider"></div>
+      <div style="font-size:11px;color:var(--v-muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:10px;">Métricas</div>
+      <div class="grid-2" style="grid-template-columns: repeat(4,1fr);">
+        <div class="form-group"><div class="form-label">Vistas</div><input class="form-input" type="number" placeholder="0"></div>
+        <div class="form-group"><div class="form-label">Likes</div><input class="form-input" type="number" placeholder="0"></div>
+        <div class="form-group"><div class="form-label">Comentarios</div><input class="form-input" type="number" placeholder="0"></div>
+        <div class="form-group"><div class="form-label">Compartidos</div><input class="form-input" type="number" placeholder="0"></div>
+        <div class="form-group"><div class="form-label">Guardados</div><input class="form-input" type="number" placeholder="0"></div>
+        <div class="form-group"><div class="form-label">Seguidores +/-</div><input class="form-input" type="number" placeholder="0"></div>
+        <div class="form-group"><div class="form-label">Retención %</div><input class="form-input" type="number" placeholder="0"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('add-video')">Cancelar</button>
+      <button class="btn btn-orange" onclick="saveVideo()">Guardar y analizar con IA</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-add-content">
+  <div class="modal">
+    <div class="modal-header">
+      <div style="font-size:15px;font-weight:500;color:var(--v-text);">Agregar al calendario</div>
+      <button class="btn btn-ghost" style="padding:5px 8px;" onclick="closeModal('add-content')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><div class="form-label">Título</div><input class="form-input" placeholder="Ej: Outfit Summer Cardholder"></div>
+      <div class="grid-2">
+        <div class="form-group"><div class="form-label">Fecha</div><input class="form-input" type="date"></div>
+        <div class="form-group"><div class="form-label">Hora publicación</div><input class="form-input" type="time" value="20:00"></div>
+        <div class="form-group"><div class="form-label">Plataforma</div><select class="form-select"><option>TikTok</option><option>Instagram Reels</option><option>Ambas</option></select></div>
+        <div class="form-group"><div class="form-label">Estado</div><select class="form-select"><option>Idea</option><option>Aprobado</option><option>Pendiente grabación</option><option>Grabado</option><option>Editando</option><option>Publicado</option></select></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('add-content')">Cancelar</button>
+      <button class="btn btn-orange" onclick="closeModal('add-content')">Agregar al calendario</button>
+    </div>
+  </div>
+</div>
+
+<div class="modal-overlay" id="modal-analyze-video">
+  <div class="modal">
+    <div class="modal-header">
+      <div style="font-size:15px;font-weight:500;color:var(--v-text);">Analizar video publicado</div>
+      <button class="btn btn-ghost" style="padding:5px 8px;" onclick="closeModal('analyze-video')">✕</button>
+    </div>
+    <div class="modal-body">
+      <div class="form-group"><div class="form-label">Seleccionar video</div>
+        <select class="form-select">
+          <option>Summer Outfit — Cardholder</option>
+          <option>Bifold Unboxing Premium</option>
+        </select>
+      </div>
+      <div class="grid-2" style="grid-template-columns:repeat(4,1fr);">
+        <div class="form-group"><div class="form-label">Vistas</div><input class="form-input" type="number"></div>
+        <div class="form-group"><div class="form-label">Likes</div><input class="form-input" type="number"></div>
+        <div class="form-group"><div class="form-label">Retención %</div><input class="form-input" type="number"></div>
+        <div class="form-group"><div class="form-label">Seguidores +</div><input class="form-input" type="number"></div>
+      </div>
+    </div>
+    <div class="modal-footer">
+      <button class="btn btn-ghost" onclick="closeModal('analyze-video')">Cancelar</button>
+      <button class="btn btn-orange" onclick="closeModal('analyze-video')">✦ Analizar con IA</button>
+    </div>
+  </div>
+</div>
+
+<script>
+  const pages = {
+    'dashboard': { title: 'Dashboard', sub: 'Director de Contenido IA · Valtori' },
+    'brain': { title: 'Brain — Memoria de marca', sub: 'Información que usa la IA para todas las recomendaciones' },
+    'analytics': { title: 'Analytics', sub: 'Rendimiento histórico · Análisis automático IA' },
+    'research': { title: 'Research · Inspiration Feed', sub: 'Tendencias en tiempo real · TikTok · Instagram · Marcas premium' },
+    'ideas': { title: 'Ideas de contenido', sub: 'Generadas por IA · Basadas en datos + tendencias' },
+    'production': { title: 'Production', sub: 'Plan completo de grabación · Generado por IA' },
+    'calendar': { title: 'Calendario', sub: 'Planificación mensual de contenido' },
+    'laboratory': { title: 'Laboratory', sub: 'Análisis post-publicación · Aprendizaje continuo' }
+  };
+
+  function navigate(page) {
+    document.querySelectorAll('.page').forEach(p => p.classList.remove('active'));
+    document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'));
+
+    const target = document.getElementById('page-' + page);
+    if (target) target.classList.add('active');
+
+    document.querySelectorAll('.nav-item').forEach(n => {
+      if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + page + "'")) {
+        n.classList.add('active');
+      }
+    });
+
+    const info = pages[page] || { title: page, sub: '' };
+    document.getElementById('topbar-title').textContent = info.title;
+    document.getElementById('topbar-sub').textContent = info.sub;
+  }
+
+  function openModal(id) {
+    const modal = document.getElementById('modal-' + id);
+    if (modal) modal.classList.add('open');
+  }
+  function closeModal(id) {
+    const modal = document.getElementById('modal-' + id);
+    if (modal) modal.classList.remove('open');
+  }
+  document.querySelectorAll('.modal-overlay').forEach(m => {
+    m.addEventListener('click', (e) => { if (e.target === m) m.classList.remove('open'); });
+  });
+
+  function approveIdea(btn, title) {
+    const card = btn.closest('.idea-card');
+    card.style.borderColor = 'rgba(34,197,94,0.4)';
+    card.style.background = 'rgba(34,197,94,0.04)';
+    btn.textContent = '✓ Aprobado';
+    btn.style.background = '#22c55e';
+    btn.disabled = true;
+    setTimeout(() => {
+      navigate('production');
+    }, 800);
+  }
+
+  function discardIdea(btn) {
+    const card = btn.closest('.idea-card');
+    card.style.opacity = '0';
+    card.style.transition = 'opacity 0.3s';
+    setTimeout(() => card.remove(), 300);
+  }
+
+  function regenerateIdea(btn) {
+    btn.textContent = '✦ Regenerando...';
+    setTimeout(() => { btn.textContent = '↻ Regenerar'; }, 1500);
+  }
+
+  function approveToIdeas(title) {
+    alert('✓ Enviado a Ideas: "' + title + '"');
+  }
+
+  function runAI() {
+    const btn = document.querySelector('.btn-orange');
+    const orig = btn.textContent;
+    btn.textContent = '✦ Analizando...';
+    setTimeout(() => { btn.textContent = orig; }, 2000);
+  }
+
+  function runAnalysis() {
+    const btn = event.target;
+    btn.textContent = '✦ Analizando...';
+    setTimeout(() => { btn.textContent = '✦ Analizar con IA'; }, 2000);
+  }
+
+  function generateIdeas() {
+    const btn = event.target;
+    btn.textContent = '✦ Generando ideas...';
+    setTimeout(() => { btn.textContent = '✦ Generar nuevas ideas'; }, 2000);
+  }
+
+  function refreshResearch() {
+    const btn = event.target;
+    btn.textContent = '✦ Actualizando...';
+    setTimeout(() => { btn.textContent = '✦ Actualizar tendencias'; }, 2000);
+  }
+
+  function saveBrain() {
+    const btn = event.target;
+    btn.textContent = '✓ Guardado';
+    btn.style.background = '#22c55e';
+    setTimeout(() => { btn.textContent = 'Guardar cambios'; btn.style.background = ''; }, 2000);
+  }
+
+  function saveVideo() {
+    closeModal('add-video');
+    navigate('analytics');
+  }
+
+  function filterResearch(el, cat) {
+    document.querySelectorAll('.tab-filter').forEach(b => b.classList.remove('active-filter'));
+    el.classList.add('active-filter');
+    const cards = document.querySelectorAll('#research-feed .trend-card');
+    cards.forEach(c => {
+      if (cat === 'all') { c.style.display = ''; return; }
+      const cats = c.getAttribute('data-cat') || '';
+      c.style.display = cats.includes(cat) ? '' : 'none';
+    });
+  }
+
+  function loadLabAnalysis(val) {}
+</script>
+</body>
+</html>
