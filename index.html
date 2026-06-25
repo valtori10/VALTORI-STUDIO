@@ -1,214 +1,811 @@
-cat > /mnt/user-data/outputs/valtori_studio.html << 'HTMLEOF'
 <!DOCTYPE html>
 <html lang="es">
 <head>
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>VALTORI AI Studio</title>
+<title>VALTORI Studio</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Cormorant+Garamond:ital,wght@0,300;0,400;0,500;1,300;1,400&family=Inter:wght@300;400;500&display=swap" rel="stylesheet">
 <style>
+/* ─────────────────────────────────────────
+   VALTORI STUDIO · Brand System
+   Inspired by: Goyard · Apple · Tom Ford
+   Palette: Ivory, Warm Black, Champagne, Stone
+───────────────────────────────────────── */
 :root {
-  --black: #0A0A0A;
-  --dark: #111111;
-  --surface: #161616;
-  --surface2: #1C1C1C;
-  --border: rgba(255,255,255,0.08);
-  --border2: rgba(255,255,255,0.14);
-  --text: #F5F5F5;
-  --muted: #888;
-  --faint: #444;
-  --orange: #FF6B2B;
-  --odim: rgba(255,107,43,0.12);
-  --oglow: rgba(255,107,43,0.25);
-  --green: #22c55e;
-  --blue: #60a5fa;
-  --purple: #a78bfa;
-  --red: #f87171;
-  --sw: 210px;
+  --ivory:       #F8F6F1;
+  --ivory-2:     #F2EFE8;
+  --ivory-3:     #EAE6DC;
+  --stone:       #C8C0B0;
+  --stone-2:     #A09888;
+  --warm-black:  #0E0D0B;
+  --charcoal:    #1A1916;
+  --graphite:    #2C2A26;
+  --muted:       #6B6660;
+  --faint:       #9A9590;
+  --champagne:   #C9A96E;
+  --champ-dim:   rgba(201,169,110,0.10);
+  --champ-glow:  rgba(201,169,110,0.20);
+  --white:       #FFFFFF;
+  --border:      rgba(200,192,176,0.18);
+  --border-2:    rgba(200,192,176,0.30);
+  --border-3:    rgba(200,192,176,0.08);
+  --shadow:      0 1px 3px rgba(14,13,11,0.08), 0 4px 16px rgba(14,13,11,0.04);
+  --shadow-lg:   0 2px 8px rgba(14,13,11,0.12), 0 8px 32px rgba(14,13,11,0.08);
+  --sw: 224px;
+  --radius: 2px;
+  --radius-md: 4px;
+  --radius-lg: 6px;
+  --font-display: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Inter', -apple-system, sans-serif;
+  --transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
 }
-* { box-sizing: border-box; margin: 0; padding: 0; }
-body { background: var(--black); color: var(--text); font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', sans-serif; font-size: 13px; line-height: 1.5; display: flex; height: 100vh; overflow: hidden; }
 
-/* SIDEBAR */
-#sb { width: var(--sw); background: var(--dark); border-right: 1px solid var(--border); display: flex; flex-direction: column; flex-shrink: 0; overflow-y: auto; }
-.logo { padding: 18px 16px 14px; border-bottom: 1px solid var(--border); display: flex; align-items: center; gap: 10px; }
-.logo-icon { width: 28px; height: 28px; background: var(--orange); border-radius: 7px; display: flex; align-items: center; justify-content: center; font-weight: 700; font-size: 12px; color: #fff; flex-shrink: 0; }
-.logo-name { font-size: 12px; font-weight: 600; letter-spacing: 0.05em; }
-.logo-sub { font-size: 9px; color: var(--muted); letter-spacing: 0.08em; text-transform: uppercase; }
-nav { flex: 1; padding: 10px 8px; display: flex; flex-direction: column; gap: 1px; }
-.nav-sec { font-size: 9px; color: var(--faint); letter-spacing: 0.1em; text-transform: uppercase; padding: 10px 8px 4px; font-weight: 500; }
-.ni { display: flex; align-items: center; gap: 8px; padding: 7px 9px; border-radius: 7px; cursor: pointer; color: var(--muted); font-size: 12px; border: none; background: none; width: 100%; text-align: left; transition: all 0.12s; }
-.ni:hover { background: rgba(255,255,255,0.05); color: var(--text); }
-.ni.active { background: var(--odim); color: var(--orange); }
-.ni .ic { font-size: 13px; width: 16px; text-align: center; flex-shrink: 0; }
-.sb-foot { padding: 12px 14px; border-top: 1px solid var(--border); font-size: 10px; color: var(--muted); display: flex; align-items: center; gap: 6px; }
-.dot { width: 5px; height: 5px; background: var(--green); border-radius: 50%; flex-shrink: 0; }
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
-/* MAIN */
-#main { flex: 1; display: flex; flex-direction: column; overflow: hidden; min-width: 0; }
-.topbar { height: 50px; border-bottom: 1px solid var(--border); display: flex; align-items: center; padding: 0 22px; gap: 10px; background: var(--dark); flex-shrink: 0; }
-.tb-title { font-size: 13px; font-weight: 500; }
-.tb-sub { font-size: 11px; color: var(--muted); }
-.tb-actions { margin-left: auto; display: flex; gap: 6px; }
-.btn { display: inline-flex; align-items: center; gap: 5px; padding: 6px 12px; border-radius: 7px; font-size: 11px; font-weight: 500; cursor: pointer; border: none; transition: all 0.12s; font-family: inherit; }
-.btn-ghost { background: rgba(255,255,255,0.06); color: var(--text); }
-.btn-ghost:hover { background: rgba(255,255,255,0.1); }
-.btn-orange { background: var(--orange); color: #fff; }
-.btn-orange:hover { background: #ff7d42; }
-.btn-outline { background: transparent; color: var(--muted); border: 1px solid var(--border2); }
-.btn-outline:hover { color: var(--text); background: rgba(255,255,255,0.04); }
-.btn-sm { padding: 4px 9px; font-size: 10px; }
-.btn-green { background: rgba(34,197,94,0.15); color: var(--green); }
-.btn-green:hover { background: rgba(34,197,94,0.25); }
+body {
+  background: var(--ivory);
+  color: var(--warm-black);
+  font-family: var(--font-body);
+  font-size: 13px;
+  line-height: 1.6;
+  display: flex;
+  height: 100vh;
+  overflow: hidden;
+  -webkit-font-smoothing: antialiased;
+}
 
-#content { flex: 1; overflow-y: auto; padding: 22px; }
-.page { display: none; flex-direction: column; gap: 16px; }
+/* ── SIDEBAR ── */
+#sb {
+  width: var(--sw);
+  background: var(--warm-black);
+  display: flex;
+  flex-direction: column;
+  flex-shrink: 0;
+  overflow-y: auto;
+  position: relative;
+}
+
+#sb::after {
+  content: '';
+  position: absolute;
+  right: 0; top: 0; bottom: 0;
+  width: 1px;
+  background: linear-gradient(to bottom, transparent, var(--border-2) 20%, var(--border-2) 80%, transparent);
+}
+
+.logo-area {
+  padding: 28px 24px 24px;
+  border-bottom: 1px solid rgba(200,192,176,0.1);
+}
+
+.logo-wordmark {
+  font-family: var(--font-display);
+  font-size: 20px;
+  font-weight: 400;
+  letter-spacing: 0.18em;
+  color: var(--ivory);
+  text-transform: uppercase;
+  margin-bottom: 3px;
+}
+
+.logo-tagline {
+  font-size: 9px;
+  font-weight: 300;
+  letter-spacing: 0.22em;
+  color: var(--stone-2);
+  text-transform: uppercase;
+}
+
+nav {
+  flex: 1;
+  padding: 16px 0;
+}
+
+.nav-group {
+  margin-bottom: 4px;
+}
+
+.nav-group-label {
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--graphite);
+  padding: 12px 24px 6px;
+}
+
+.ni {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  padding: 9px 24px;
+  cursor: pointer;
+  color: var(--stone-2);
+  font-size: 11px;
+  font-weight: 400;
+  letter-spacing: 0.06em;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  transition: var(--transition);
+  position: relative;
+}
+
+.ni:hover { color: var(--ivory-3); }
+
+.ni.active {
+  color: var(--champagne);
+}
+
+.ni.active::before {
+  content: '';
+  position: absolute;
+  left: 0; top: 20%; bottom: 20%;
+  width: 1px;
+  background: var(--champagne);
+}
+
+.ni-dot {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: currentColor;
+  opacity: 0.4;
+  flex-shrink: 0;
+  transition: var(--transition);
+}
+
+.ni.active .ni-dot { opacity: 1; background: var(--champagne); }
+.ni:hover .ni-dot { opacity: 0.7; }
+
+.sb-foot {
+  padding: 20px 24px;
+  border-top: 1px solid rgba(200,192,176,0.08);
+}
+
+.sb-status {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  font-size: 9px;
+  font-weight: 300;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--graphite);
+}
+
+.status-live {
+  width: 4px; height: 4px;
+  border-radius: 50%;
+  background: #5B8A5B;
+}
+
+/* ── MAIN ── */
+#main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  overflow: hidden;
+  min-width: 0;
+  background: var(--ivory);
+}
+
+.topbar {
+  height: 56px;
+  border-bottom: 1px solid var(--border);
+  display: flex;
+  align-items: center;
+  padding: 0 36px;
+  gap: 12px;
+  background: var(--ivory);
+  flex-shrink: 0;
+}
+
+.tb-section {
+  font-family: var(--font-display);
+  font-size: 14px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  color: var(--warm-black);
+}
+
+.tb-breadcrumb {
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.12em;
+  color: var(--faint);
+  text-transform: uppercase;
+}
+
+.tb-actions {
+  margin-left: auto;
+  display: flex;
+  gap: 8px;
+  align-items: center;
+}
+
+/* ── BUTTONS ── */
+.btn {
+  display: inline-flex;
+  align-items: center;
+  gap: 6px;
+  padding: 7px 16px;
+  font-family: var(--font-body);
+  font-size: 10px;
+  font-weight: 500;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  cursor: pointer;
+  border: none;
+  transition: var(--transition);
+  border-radius: var(--radius);
+  white-space: nowrap;
+}
+
+.btn-primary {
+  background: var(--warm-black);
+  color: var(--ivory);
+  border: 1px solid var(--warm-black);
+}
+.btn-primary:hover { background: var(--charcoal); }
+
+.btn-ghost {
+  background: transparent;
+  color: var(--muted);
+  border: 1px solid var(--border-2);
+}
+.btn-ghost:hover { color: var(--warm-black); border-color: var(--stone); }
+
+.btn-champagne {
+  background: transparent;
+  color: var(--champagne);
+  border: 1px solid rgba(201,169,110,0.3);
+}
+.btn-champagne:hover { background: var(--champ-dim); }
+
+.btn-sm { padding: 5px 12px; font-size: 9px; }
+.btn-xs { padding: 4px 10px; font-size: 9px; }
+
+/* ── CONTENT ── */
+#content {
+  flex: 1;
+  overflow-y: auto;
+  padding: 36px;
+}
+
+.page { display: none; flex-direction: column; gap: 24px; }
 .page.active { display: flex; }
 
-/* CARDS */
-.card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 16px; }
-.card-hd { display: flex; align-items: center; justify-content: space-between; margin-bottom: 12px; }
-.card-title { font-size: 12px; font-weight: 500; }
-.card-sub { font-size: 11px; color: var(--muted); margin-top: 2px; }
-.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 12px; }
-.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 12px; }
-.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 10px; }
-.mc { background: var(--surface); border: 1px solid var(--border); border-radius: 8px; padding: 12px; }
-.mc-label { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; margin-bottom: 4px; }
-.mc-val { font-size: 20px; font-weight: 600; letter-spacing: -0.5px; }
-.mc-delta { font-size: 10px; margin-top: 3px; color: var(--muted); }
+/* ── PAGE HEADER ── */
+.page-header {
+  display: flex;
+  align-items: flex-end;
+  justify-content: space-between;
+  gap: 16px;
+  padding-bottom: 24px;
+  border-bottom: 1px solid var(--border);
+}
 
-/* BADGES */
-.badge { display: inline-flex; align-items: center; padding: 2px 7px; border-radius: 20px; font-size: 10px; font-weight: 500; }
-.bo { background: var(--odim); color: var(--orange); }
-.bg { background: rgba(34,197,94,0.12); color: #22c55e; }
-.bb { background: rgba(59,130,246,0.12); color: #60a5fa; }
-.bp { background: rgba(139,92,246,0.12); color: #a78bfa; }
-.br { background: rgba(239,68,68,0.12); color: #f87171; }
-.bm { background: rgba(255,255,255,0.07); color: var(--muted); }
+.page-title {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  color: var(--warm-black);
+  line-height: 1;
+}
 
-/* FORMS */
-.form-g { display: flex; flex-direction: column; gap: 4px; }
-.form-l { font-size: 10px; color: var(--muted); text-transform: uppercase; letter-spacing: 0.04em; }
-input, select, textarea { background: var(--surface2); border: 1px solid var(--border2); border-radius: 6px; color: var(--text); font-size: 12px; padding: 7px 10px; outline: none; font-family: inherit; transition: border-color 0.12s; width: 100%; }
-input:focus, select:focus, textarea:focus { border-color: var(--orange); }
-select option { background: #1C1C1C; }
-textarea { resize: vertical; min-height: 64px; }
-.divider { height: 1px; background: var(--border); margin: 8px 0; }
+.page-subtitle {
+  font-size: 10px;
+  font-weight: 300;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-top: 6px;
+}
 
-/* EMPTY STATES */
-.empty { display: flex; flex-direction: column; align-items: center; justify-content: center; padding: 40px 20px; gap: 10px; text-align: center; }
-.empty-icon { font-size: 30px; opacity: 0.2; }
-.empty-title { font-size: 13px; font-weight: 500; }
-.empty-desc { font-size: 11px; color: var(--muted); max-width: 300px; line-height: 1.6; }
+/* ── CARDS ── */
+.card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 24px;
+  box-shadow: var(--shadow);
+}
 
-/* AI AREAS */
-.ai-box { background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 12px; font-size: 12px; line-height: 1.75; white-space: pre-wrap; word-break: break-word; color: var(--text); min-height: 60px; }
-.ai-placeholder { color: var(--faint); font-style: italic; font-size: 11px; }
-.paste-area { display: none; flex-direction: column; gap: 6px; margin-top: 10px; padding-top: 10px; border-top: 1px solid var(--border); }
-.paste-note { font-size: 11px; color: var(--muted); display: flex; align-items: center; gap: 5px; }
-.paste-note::before { content: '↗'; color: var(--orange); font-weight: 600; }
+.card-hd {
+  display: flex;
+  align-items: flex-start;
+  justify-content: space-between;
+  margin-bottom: 20px;
+}
 
-/* HERO */
-.hero { background: linear-gradient(135deg, rgba(255,107,43,0.06) 0%, transparent 70%); border: 1px solid var(--oglow); border-radius: 12px; padding: 18px 20px; }
+.card-label {
+  font-size: 9px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 4px;
+}
 
-/* IDEAS */
-.idea-card { background: var(--surface); border: 1px solid var(--border); border-radius: 10px; padding: 14px; display: flex; flex-direction: column; gap: 9px; transition: border-color 0.2s; }
-.idea-card:hover { border-color: var(--border2); }
-.score-bar { height: 3px; background: rgba(255,255,255,0.07); border-radius: 2px; overflow: hidden; }
-.score-fill { height: 100%; background: var(--orange); border-radius: 2px; }
-.hook-box { font-size: 11px; color: var(--text); background: var(--odim); border-left: 2px solid var(--orange); padding: 6px 10px; border-radius: 0 5px 5px 0; line-height: 1.6; }
+.card-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--warm-black);
+}
 
-/* TABLE */
+/* ── GRID ── */
+.g2 { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; }
+.g3 { display: grid; grid-template-columns: 1fr 1fr 1fr; gap: 16px; }
+.g4 { display: grid; grid-template-columns: repeat(4,1fr); gap: 12px; }
+
+/* ── METRIC CARDS ── */
+.mc {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 20px 22px;
+  box-shadow: var(--shadow);
+}
+.mc-label {
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--faint);
+  margin-bottom: 8px;
+}
+.mc-val {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 300;
+  letter-spacing: -0.02em;
+  color: var(--warm-black);
+  line-height: 1;
+}
+.mc-delta {
+  font-size: 10px;
+  font-weight: 300;
+  color: var(--faint);
+  margin-top: 6px;
+  letter-spacing: 0.04em;
+}
+
+/* ── DIVIDER ── */
+.divider { height: 1px; background: var(--border); }
+.divider-v { width: 1px; background: var(--border); }
+
+/* ── FORMS ── */
+.form-g { display: flex; flex-direction: column; gap: 6px; }
+
+.form-l {
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.2em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+input, select, textarea {
+  background: var(--ivory-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius);
+  color: var(--warm-black);
+  font-family: var(--font-body);
+  font-size: 12px;
+  font-weight: 300;
+  padding: 9px 12px;
+  outline: none;
+  width: 100%;
+  transition: var(--transition);
+  letter-spacing: 0.02em;
+}
+
+input:focus, select:focus, textarea:focus {
+  border-color: var(--stone);
+  background: var(--white);
+}
+
+input::placeholder, textarea::placeholder {
+  color: var(--stone);
+  font-weight: 300;
+}
+
+select option { background: var(--white); }
+textarea { resize: vertical; min-height: 72px; }
+
+/* ── BADGES ── */
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 3px 10px;
+  border-radius: var(--radius);
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.14em;
+  text-transform: uppercase;
+}
+.badge-champ  { background: var(--champ-dim); color: var(--champagne); border: 1px solid rgba(201,169,110,0.2); }
+.badge-stone  { background: var(--ivory-2); color: var(--muted); border: 1px solid var(--border-2); }
+.badge-dark   { background: var(--warm-black); color: var(--ivory); }
+.badge-ok     { background: rgba(91,138,91,0.08); color: #5B8A5B; border: 1px solid rgba(91,138,91,0.2); }
+
+/* ── EMPTY STATES ── */
+.empty {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  padding: 56px 32px;
+  gap: 12px;
+  text-align: center;
+}
+
+.empty-rule {
+  width: 32px;
+  height: 1px;
+  background: var(--stone);
+  margin-bottom: 4px;
+}
+
+.empty-title {
+  font-family: var(--font-display);
+  font-size: 18px;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  color: var(--warm-black);
+}
+
+.empty-desc {
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--faint);
+  max-width: 280px;
+  line-height: 1.7;
+  letter-spacing: 0.02em;
+}
+
+/* ── AI OUTPUT ── */
+.ai-box {
+  background: var(--ivory-2);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 18px 20px;
+  font-size: 12px;
+  font-weight: 300;
+  line-height: 1.8;
+  white-space: pre-wrap;
+  word-break: break-word;
+  color: var(--warm-black);
+  min-height: 80px;
+  letter-spacing: 0.02em;
+}
+
+.ai-placeholder {
+  color: var(--stone);
+  font-style: italic;
+  font-weight: 300;
+}
+
+.paste-area {
+  display: none;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: 14px;
+  padding-top: 14px;
+  border-top: 1px solid var(--border);
+}
+
+.paste-note {
+  font-size: 9px;
+  font-weight: 400;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--champagne);
+}
+
+/* ── HERO STRIP ── */
+.hero-strip {
+  background: var(--warm-black);
+  border-radius: var(--radius-md);
+  padding: 28px 32px;
+  position: relative;
+  overflow: hidden;
+}
+
+.hero-strip::before {
+  content: '';
+  position: absolute;
+  top: 0; right: 0;
+  width: 200px; height: 100%;
+  background: linear-gradient(to left, rgba(201,169,110,0.06), transparent);
+  pointer-events: none;
+}
+
+.hero-strip-label {
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.24em;
+  text-transform: uppercase;
+  color: var(--champagne);
+  margin-bottom: 10px;
+}
+
+.hero-strip-title {
+  font-family: var(--font-display);
+  font-size: 22px;
+  font-weight: 300;
+  letter-spacing: 0.06em;
+  color: var(--ivory);
+  margin-bottom: 8px;
+  line-height: 1.2;
+}
+
+.hero-strip-desc {
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--stone-2);
+  line-height: 1.7;
+  letter-spacing: 0.03em;
+  max-width: 500px;
+  margin-bottom: 18px;
+}
+
+/* ── IDEAS ── */
+.idea-card {
+  background: var(--white);
+  border: 1px solid var(--border);
+  border-radius: var(--radius-md);
+  padding: 22px 24px;
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+  box-shadow: var(--shadow);
+  transition: var(--transition);
+}
+
+.idea-card:hover {
+  border-color: var(--stone);
+  box-shadow: var(--shadow-lg);
+}
+
+.idea-title {
+  font-family: var(--font-display);
+  font-size: 16px;
+  font-weight: 400;
+  letter-spacing: 0.04em;
+  color: var(--warm-black);
+  line-height: 1.3;
+}
+
+.idea-conf {
+  font-family: var(--font-display);
+  font-size: 28px;
+  font-weight: 300;
+  color: var(--champagne);
+  letter-spacing: -0.02em;
+  line-height: 1;
+}
+
+.idea-conf-label {
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+}
+
+.score-bar { height: 1px; background: var(--border-2); }
+.score-fill { height: 100%; background: var(--champagne); transition: width 0.6s ease; }
+
+.hook-box {
+  font-size: 11px;
+  font-weight: 300;
+  color: var(--muted);
+  border-left: 1px solid var(--champagne);
+  padding: 6px 12px;
+  line-height: 1.6;
+  letter-spacing: 0.02em;
+  font-style: italic;
+}
+
+/* ── TABLE ── */
 table { width: 100%; border-collapse: collapse; font-size: 11px; }
-th { text-align: left; padding: 6px 10px; font-size: 10px; color: var(--muted); letter-spacing: 0.06em; text-transform: uppercase; border-bottom: 1px solid var(--border); font-weight: 500; }
-td { padding: 8px 10px; border-bottom: 1px solid var(--border); vertical-align: middle; }
+th {
+  text-align: left;
+  padding: 8px 14px;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.18em;
+  text-transform: uppercase;
+  color: var(--faint);
+  border-bottom: 1px solid var(--border);
+}
+td {
+  padding: 10px 14px;
+  border-bottom: 1px solid var(--border-3);
+  color: var(--warm-black);
+  font-weight: 300;
+  vertical-align: middle;
+}
 tr:last-child td { border-bottom: none; }
-tr:hover td { background: rgba(255,255,255,0.02); }
+tr:hover td { background: var(--ivory-2); }
 
-/* CALENDAR */
-.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 4px; }
-.cal-hdr { text-align: center; font-size: 9px; color: var(--muted); padding: 3px; text-transform: uppercase; letter-spacing: 0.06em; }
-.cal-day { min-height: 58px; background: var(--surface2); border: 1px solid var(--border); border-radius: 6px; padding: 6px; cursor: default; }
+/* ── CALENDAR ── */
+.cal-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 3px; }
+.cal-hdr {
+  text-align: center;
+  font-size: 8px;
+  font-weight: 500;
+  letter-spacing: 0.16em;
+  text-transform: uppercase;
+  color: var(--faint);
+  padding: 4px;
+}
+.cal-day {
+  min-height: 64px;
+  background: var(--ivory-2);
+  border: 1px solid transparent;
+  border-radius: var(--radius);
+  padding: 7px;
+  transition: var(--transition);
+}
+.cal-day.today { border-color: var(--stone); background: var(--white); }
 .cal-day.om { opacity: 0.3; }
-.cal-day.today { border-color: rgba(255,107,43,0.5); }
-.cal-dn { font-size: 10px; color: var(--muted); margin-bottom: 2px; }
-.cal-dn.today-n { color: var(--orange); }
-.cal-ev { font-size: 9px; border-radius: 3px; padding: 1px 4px; margin-bottom: 2px; overflow: hidden; text-overflow: ellipsis; white-space: nowrap; }
-.ev-pub { background: rgba(34,197,94,0.15); color: #4ade80; }
-.ev-grab { background: var(--odim); color: var(--orange); }
-.ev-apr { background: rgba(59,130,246,0.12); color: #60a5fa; }
-.ev-edit { background: rgba(139,92,246,0.12); color: #a78bfa; }
-.ev-idea { background: rgba(255,255,255,0.06); color: var(--muted); }
+.cal-dn {
+  font-size: 10px;
+  font-weight: 300;
+  color: var(--muted);
+  margin-bottom: 3px;
+  letter-spacing: 0.04em;
+}
+.cal-dn.today-n { color: var(--warm-black); font-weight: 500; }
+.cal-ev {
+  font-size: 8px;
+  letter-spacing: 0.06em;
+  border-radius: 1px;
+  padding: 2px 5px;
+  margin-bottom: 2px;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  white-space: nowrap;
+}
+.ev-pub  { background: rgba(91,138,91,0.10); color: #5B8A5B; }
+.ev-grab { background: var(--champ-dim); color: var(--champagne); }
+.ev-apr  { background: rgba(100,120,180,0.08); color: #7090C0; }
+.ev-edit { background: rgba(140,100,160,0.08); color: #9070B0; }
+.ev-idea { background: var(--ivory-3); color: var(--muted); }
 
-/* SCROLLBAR */
+/* ── PRODUCTION HERO ── */
+.prod-hero {
+  background: var(--warm-black);
+  border-radius: var(--radius-md);
+  padding: 28px 32px;
+}
+.prod-hero-label {
+  font-size: 8px; letter-spacing: 0.22em; text-transform: uppercase;
+  color: var(--champagne); margin-bottom: 10px; font-weight: 500;
+}
+.prod-hero-title {
+  font-family: var(--font-display);
+  font-size: 20px; font-weight: 300; letter-spacing: 0.06em;
+  color: var(--ivory); line-height: 1.3; margin-bottom: 6px;
+}
+
+/* ── INLINE FORMS ── */
+.inline-form {
+  display: none;
+  background: var(--ivory-2);
+  border: 1px solid var(--border-2);
+  border-radius: var(--radius-md);
+  padding: 20px;
+}
+.inline-form.open { display: block; }
+
+/* ── SCROLLBAR ── */
 ::-webkit-scrollbar { width: 4px; height: 4px; }
 ::-webkit-scrollbar-track { background: transparent; }
-::-webkit-scrollbar-thumb { background: var(--border2); border-radius: 2px; }
-
-/* INLINE FORM PANELS */
-.inline-form { display: none; background: var(--surface2); border: 1px solid var(--border); border-radius: 8px; padding: 14px; margin-bottom: 4px; }
-.inline-form.open { display: block; }
+::-webkit-scrollbar-thumb { background: var(--stone); border-radius: 2px; }
+::-webkit-scrollbar-thumb:hover { background: var(--stone-2); }
 </style>
 </head>
 <body>
 
-<!-- SIDEBAR -->
+<!-- ── SIDEBAR ── -->
 <aside id="sb">
-  <div class="logo">
-    <div class="logo-icon">V</div>
-    <div><div class="logo-name">VALTORI</div><div class="logo-sub">AI Studio</div></div>
+  <div class="logo-area">
+    <div class="logo-wordmark">Valtori</div>
+    <div class="logo-tagline">Studio · Content Direction</div>
   </div>
+
   <nav>
-    <button class="ni active" onclick="nav('dashboard')"><span class="ic">⬛</span>Dashboard</button>
-    <div class="nav-sec">Sistema</div>
-    <button class="ni" onclick="nav('brain')"><span class="ic">🧠</span>Brain</button>
-    <button class="ni" onclick="nav('analytics')"><span class="ic">📊</span>Analytics</button>
-    <div class="nav-sec">Contenido</div>
-    <button class="ni" onclick="nav('ideas')"><span class="ic">💡</span>Ideas</button>
-    <button class="ni" onclick="nav('production')"><span class="ic">🎬</span>Production</button>
-    <button class="ni" onclick="nav('calendar')"><span class="ic">📅</span>Calendar</button>
-    <button class="ni" onclick="nav('lab')"><span class="ic">🧪</span>Laboratory</button>
+    <div class="nav-group">
+      <button class="ni active" onclick="nav('dashboard')">
+        <span class="ni-dot"></span>Overview
+      </button>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">System</div>
+      <button class="ni" onclick="nav('brain')">
+        <span class="ni-dot"></span>Brand Brain
+      </button>
+      <button class="ni" onclick="nav('analytics')">
+        <span class="ni-dot"></span>Analytics
+      </button>
+    </div>
+
+    <div class="nav-group">
+      <div class="nav-group-label">Content</div>
+      <button class="ni" onclick="nav('ideas')">
+        <span class="ni-dot"></span>Ideas
+      </button>
+      <button class="ni" onclick="nav('production')">
+        <span class="ni-dot"></span>Production
+      </button>
+      <button class="ni" onclick="nav('calendar')">
+        <span class="ni-dot"></span>Calendar
+      </button>
+      <button class="ni" onclick="nav('lab')">
+        <span class="ni-dot"></span>Laboratory
+      </button>
+    </div>
   </nav>
-  <div class="sb-foot"><span class="dot"></span>IA vía chat · v3.0</div>
+
+  <div class="sb-foot">
+    <div class="sb-status">
+      <span class="status-live"></span>
+      AI via chat · v3.0
+    </div>
+  </div>
 </aside>
 
-<!-- MAIN -->
+<!-- ── MAIN ── -->
 <div id="main">
   <div class="topbar">
     <div>
-      <div class="tb-title" id="tb-title">Dashboard</div>
-      <div class="tb-sub" id="tb-sub">Director de Contenido IA · Valtori</div>
+      <div class="tb-breadcrumb">Valtori Studio</div>
+      <div class="tb-section" id="tb-section">Overview</div>
     </div>
     <div class="tb-actions" id="tb-actions">
-      <button class="btn btn-ghost" onclick="nav('analytics')">+ Cargar video</button>
-      <button class="btn btn-orange" onclick="askDash()">✦ Análisis IA ↗</button>
+      <button class="btn btn-ghost" onclick="nav('analytics')">Load video</button>
+      <button class="btn btn-primary" onclick="askDash()">Request AI analysis</button>
     </div>
   </div>
 
   <div id="content">
 
-    <!-- =================== DASHBOARD =================== -->
+    <!-- ════════════ DASHBOARD ════════════ -->
     <section id="page-dashboard" class="page active">
-      <div id="dash-empty" class="card">
-        <div class="empty">
-          <div class="empty-icon">📊</div>
-          <div class="empty-title">Sin datos todavía</div>
-          <div class="empty-desc">Completá el Brain con tu marca y cargá tu primer video en Analytics para activar el análisis IA.</div>
-          <div style="display:flex;gap:8px;margin-top:4px;">
-            <button class="btn btn-orange" onclick="nav('brain')">Empezar en Brain →</button>
-            <button class="btn btn-ghost" onclick="nav('analytics')">Cargar video</button>
+
+      <div id="dash-empty">
+        <div class="card">
+          <div class="empty">
+            <div class="empty-rule"></div>
+            <div class="empty-title">Begin with your brand.</div>
+            <div class="empty-desc">Complete the Brand Brain and load your first video. The AI will activate once it has real data to work with.</div>
+            <div style="display:flex;gap:10px;margin-top:8px;">
+              <button class="btn btn-primary" onclick="nav('brain')">Brand Brain</button>
+              <button class="btn btn-ghost" onclick="nav('analytics')">Load video</button>
+            </div>
           </div>
         </div>
       </div>
 
-      <div id="dash-data" style="display:none;flex-direction:column;gap:14px;">
-        <div class="hero">
-          <div style="font-size:10px;color:var(--muted);margin-bottom:6px;" id="dash-date"></div>
-          <div style="font-size:16px;font-weight:600;margin-bottom:5px;letter-spacing:-0.3px;" id="dash-best-title">—</div>
-          <div style="font-size:12px;color:var(--muted);margin-bottom:12px;line-height:1.6;" id="dash-best-desc"></div>
-          <div style="display:flex;gap:7px;">
-            <button class="btn btn-orange" onclick="askDash()">✦ Pedir análisis del canal ↗</button>
-            <button class="btn btn-ghost" onclick="nav('ideas')">Ver ideas →</button>
+      <div id="dash-data" style="display:none;flex-direction:column;gap:20px;">
+
+        <div class="hero-strip">
+          <div class="hero-strip-label">AI · Today's direction</div>
+          <div class="hero-strip-title" id="dash-best-title">—</div>
+          <div class="hero-strip-desc" id="dash-best-desc"></div>
+          <div style="display:flex;gap:10px;">
+            <button class="btn btn-champagne" onclick="askDash()">Request full analysis</button>
+            <button class="btn btn-ghost btn-sm" style="color:var(--stone-2);border-color:rgba(200,192,176,0.2);" onclick="nav('ideas')">View ideas</button>
           </div>
         </div>
 
@@ -216,344 +813,399 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 
         <div class="card">
           <div class="card-hd">
-            <div><div class="card-title">✦ Último análisis IA</div><div class="card-sub">Enviá el prompt al chat y pegá la respuesta acá</div></div>
-            <span class="badge bg" id="dash-badge" style="display:none;">Guardado</span>
+            <div>
+              <div class="card-label">AI Analysis</div>
+              <div class="card-title">Latest intelligence</div>
+            </div>
+            <span class="badge badge-ok" id="dash-badge" style="display:none;">Saved</span>
           </div>
-          <div class="ai-box" id="dash-ai-out"><span class="ai-placeholder">Hacé clic en "Pedir análisis del canal ↗". El prompt se manda al chat automáticamente y yo respondo ahí. Luego pegá mi respuesta acá abajo.</span></div>
+          <div class="ai-box" id="dash-ai-out">
+            <span class="ai-placeholder">Request an analysis. The prompt is sent to the chat — paste the response here.</span>
+          </div>
           <div class="paste-area" id="dash-paste">
-            <div class="paste-note">El prompt fue enviado al chat. Cuando yo responda, pegá el texto acá:</div>
-            <textarea id="dash-paste-in" placeholder="Pegá la respuesta de la IA acá..." style="min-height:80px;"></textarea>
-            <button class="btn btn-orange btn-sm" style="width:fit-content;" onclick="saveResp('dash')">Guardar respuesta</button>
+            <div class="paste-note">↗ Prompt sent · Paste the AI response below</div>
+            <textarea id="dash-paste-in" placeholder="Paste the AI response here..." style="min-height:100px;"></textarea>
+            <button class="btn btn-primary btn-sm" style="width:fit-content;" onclick="saveResp('dash')">Save response</button>
           </div>
         </div>
+
       </div>
     </section>
 
-    <!-- =================== BRAIN =================== -->
+    <!-- ════════════ BRAIN ════════════ -->
     <section id="page-brain" class="page">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+
+      <div class="page-header">
         <div>
-          <div style="font-size:16px;font-weight:600;margin-bottom:3px;">Memoria de Valtori</div>
-          <div style="font-size:12px;color:var(--muted);">La IA usa esto como contexto en cada pedido. Completar antes de pedir análisis.</div>
+          <div class="page-title">Brand Brain</div>
+          <div class="page-subtitle">The AI uses this as its only reference</div>
         </div>
-        <button class="btn btn-orange" onclick="saveBrain()">Guardar cambios</button>
+        <button class="btn btn-primary" onclick="saveBrain()">Save changes</button>
       </div>
 
       <div class="g2" style="align-items:start;">
-        <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;flex-direction:column;gap:16px;">
+
           <div class="card">
-            <div class="card-hd"><div class="card-title">🏷️ Identidad de marca</div></div>
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <div class="form-g"><div class="form-l">Nombre de marca</div><input id="b-brand" placeholder="Valtori"></div>
-              <div class="form-g"><div class="form-l">Descripción</div><textarea id="b-desc" placeholder="¿Qué vendés? ¿A quién? ¿Qué te diferencia?"></textarea></div>
-              <div class="form-g"><div class="form-l">Propuesta de valor</div><textarea id="b-value" placeholder="¿Por qué alguien te elegiría?"></textarea></div>
-              <div class="form-g"><div class="form-l">Tono de comunicación</div>
-                <select id="b-tone"><option value="">Seleccioná...</option><option>Premium · Aspiracional · Masculino · Directo</option><option>Casual · Cercano · Juvenil</option><option>Formal · Corporativo</option><option>Educativo · Informativo</option></select>
+            <div class="card-hd">
+              <div><div class="card-label">Identity</div><div class="card-title">Brand</div></div>
+            </div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div class="form-g"><div class="form-l">Brand name</div><input id="b-brand" placeholder="Valtori"></div>
+              <div class="form-g"><div class="form-l">Description</div><textarea id="b-desc" placeholder="What do you sell? To whom? What sets you apart?"></textarea></div>
+              <div class="form-g"><div class="form-l">Value proposition</div><textarea id="b-value" placeholder="Why would someone choose you?"></textarea></div>
+              <div class="form-g"><div class="form-l">Communication tone</div>
+                <select id="b-tone">
+                  <option value="">Select...</option>
+                  <option>Premium · Aspirational · Masculine · Direct</option>
+                  <option>Casual · Approachable · Youthful</option>
+                  <option>Formal · Corporate</option>
+                </select>
               </div>
             </div>
           </div>
+
           <div class="card">
-            <div class="card-hd"><div class="card-title">🎯 Público objetivo</div></div>
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <div class="form-g"><div class="form-l">Edad</div><input id="b-age" placeholder="22–38 años"></div>
-              <div class="form-g"><div class="form-l">Género</div><input id="b-gender" placeholder="Masculino principal"></div>
-              <div class="form-g"><div class="form-l">Intereses</div><textarea id="b-interests" placeholder="Moda, lifestyle, viajes..."></textarea></div>
-              <div class="form-g"><div class="form-l">Plataformas</div><input id="b-platforms" placeholder="TikTok · Instagram Reels"></div>
+            <div class="card-hd"><div><div class="card-label">Audience</div><div class="card-title">Ideal client</div></div></div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div class="g2">
+                <div class="form-g"><div class="form-l">Age range</div><input id="b-age" placeholder="22–35"></div>
+                <div class="form-g"><div class="form-l">Gender</div><input id="b-gender" placeholder="Male primary"></div>
+              </div>
+              <div class="form-g"><div class="form-l">Interests</div><textarea id="b-interests" placeholder="Business, travel, minimal fashion..."></textarea></div>
+              <div class="form-g"><div class="form-l">Platforms</div><input id="b-platforms" placeholder="TikTok · Instagram Reels"></div>
             </div>
           </div>
+
         </div>
 
-        <div style="display:flex;flex-direction:column;gap:12px;">
+        <div style="display:flex;flex-direction:column;gap:16px;">
+
           <div class="card">
             <div class="card-hd">
-              <div class="card-title">📦 Productos</div>
-              <button class="btn btn-ghost btn-sm" onclick="toggleForm('prod-form')">+ Agregar</button>
+              <div><div class="card-label">Catalogue</div><div class="card-title">Products</div></div>
+              <button class="btn btn-ghost btn-xs" onclick="toggleForm('prod-form')">+ Add</button>
             </div>
-            <div class="inline-form" id="prod-form">
-              <div class="g2" style="gap:8px;margin-bottom:8px;">
-                <div class="form-g"><div class="form-l">Nombre</div><input id="p-name" placeholder="Cardholder Slim"></div>
-                <div class="form-g"><div class="form-l">Precio</div><input id="p-price" placeholder="$29"></div>
+            <div class="inline-form" id="prod-form" style="margin-bottom:16px;">
+              <div class="g2" style="gap:10px;margin-bottom:10px;">
+                <div class="form-g"><div class="form-l">Name</div><input id="p-name" placeholder="Cardholder Slim"></div>
+                <div class="form-g"><div class="form-l">Price</div><input id="p-price" placeholder="$29"></div>
               </div>
-              <div class="form-g" style="margin-bottom:8px;"><div class="form-l">Categoría</div><input id="p-cat" placeholder="Cardholder"></div>
+              <div class="form-g" style="margin-bottom:10px;"><div class="form-l">Category</div><input id="p-cat" placeholder="Cardholder"></div>
               <div style="display:flex;gap:6px;">
-                <button class="btn btn-orange btn-sm" onclick="saveProduct()">Guardar</button>
-                <button class="btn btn-ghost btn-sm" onclick="toggleForm('prod-form')">Cancelar</button>
+                <button class="btn btn-primary btn-xs" onclick="saveProduct()">Save</button>
+                <button class="btn btn-ghost btn-xs" onclick="toggleForm('prod-form')">Cancel</button>
               </div>
             </div>
-            <div id="prod-list"><div class="empty" style="padding:20px;"><div class="empty-desc">Agregá tus productos para que la IA los use en las ideas.</div></div></div>
+            <div id="prod-list">
+              <div class="empty" style="padding:24px;">
+                <div class="empty-rule"></div>
+                <div class="empty-desc">Add your products so the AI can reference them in ideas.</div>
+              </div>
+            </div>
           </div>
 
           <div class="card">
             <div class="card-hd">
-              <div class="card-title">🏆 Competidores</div>
-              <button class="btn btn-ghost btn-sm" onclick="toggleForm('comp-form')">+ Agregar</button>
+              <div><div class="card-label">Landscape</div><div class="card-title">Competitors</div></div>
+              <button class="btn btn-ghost btn-xs" onclick="toggleForm('comp-form')">+ Add</button>
             </div>
-            <div class="inline-form" id="comp-form">
-              <div class="g2" style="gap:8px;margin-bottom:8px;">
-                <div class="form-g"><div class="form-l">Nombre</div><input id="c-name" placeholder="Ridge Wallet"></div>
-                <div class="form-g"><div class="form-l">Amenaza</div>
-                  <select id="c-threat"><option value="alta">Alta</option><option value="media">Media</option><option value="ref">Referencia</option></select>
+            <div class="inline-form" id="comp-form" style="margin-bottom:16px;">
+              <div class="g2" style="gap:10px;margin-bottom:10px;">
+                <div class="form-g"><div class="form-l">Name</div><input id="c-name" placeholder="Ridge Wallet"></div>
+                <div class="form-g"><div class="form-l">Threat level</div>
+                  <select id="c-threat"><option value="alta">High</option><option value="media">Medium</option><option value="ref">Reference</option></select>
                 </div>
               </div>
               <div style="display:flex;gap:6px;">
-                <button class="btn btn-orange btn-sm" onclick="saveComp()">Guardar</button>
-                <button class="btn btn-ghost btn-sm" onclick="toggleForm('comp-form')">Cancelar</button>
+                <button class="btn btn-primary btn-xs" onclick="saveComp()">Save</button>
+                <button class="btn btn-ghost btn-xs" onclick="toggleForm('comp-form')">Cancel</button>
               </div>
             </div>
-            <div id="comp-list"><div class="empty" style="padding:20px;"><div class="empty-desc">Agregá competidores para análisis de diferenciación.</div></div></div>
+            <div id="comp-list">
+              <div class="empty" style="padding:24px;">
+                <div class="empty-rule"></div>
+                <div class="empty-desc">Add competitors for differentiation analysis.</div>
+              </div>
+            </div>
           </div>
 
           <div class="card">
-            <div class="card-hd"><div class="card-title">🎨 Estilo visual</div></div>
-            <div style="display:flex;flex-direction:column;gap:10px;">
-              <div class="form-g"><div class="form-l">Paleta de colores</div><input id="b-colors" placeholder="Negro, blanco, naranja..."></div>
-              <div class="form-g"><div class="form-l">Estética</div><input id="b-aesthetic" placeholder="Minimalista, premium, clean..."></div>
-              <div class="form-g"><div class="form-l">Referencias visuales</div><textarea id="b-refs" placeholder="Marcas o cuentas de referencia..."></textarea></div>
+            <div class="card-hd"><div><div class="card-label">Aesthetic</div><div class="card-title">Visual identity</div></div></div>
+            <div style="display:flex;flex-direction:column;gap:14px;">
+              <div class="form-g"><div class="form-l">Color palette</div><input id="b-colors" placeholder="Black, ivory, champagne gold..."></div>
+              <div class="form-g"><div class="form-l">Aesthetic direction</div><input id="b-aesthetic" placeholder="Minimal luxury, clean, premium..."></div>
+              <div class="form-g"><div class="form-l">Visual references</div><textarea id="b-refs" placeholder="Goyard, Tom Ford, Apple, Porsche..."></textarea></div>
             </div>
           </div>
+
         </div>
       </div>
     </section>
 
-    <!-- =================== ANALYTICS =================== -->
+    <!-- ════════════ ANALYTICS ════════════ -->
     <section id="page-analytics" class="page">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+
+      <div class="page-header">
         <div>
-          <div style="font-size:16px;font-weight:600;margin-bottom:3px;">Analytics</div>
-          <div style="font-size:12px;color:var(--muted);">Cargá tus videos reales. La IA detecta patrones solo con datos reales.</div>
+          <div class="page-title">Analytics</div>
+          <div class="page-subtitle">Real data only · No invented metrics</div>
         </div>
-        <div style="display:flex;gap:7px;">
-          <button class="btn btn-ghost" onclick="toggleForm('video-form')">+ Cargar video</button>
-          <button class="btn btn-orange" onclick="askAnalysis()">✦ Analizar con IA ↗</button>
+        <div style="display:flex;gap:8px;">
+          <button class="btn btn-ghost" onclick="toggleForm('video-form')">Load video</button>
+          <button class="btn btn-primary" onclick="askAnalysis()">Request AI analysis</button>
         </div>
       </div>
 
       <div class="inline-form" id="video-form">
-        <div style="font-size:12px;font-weight:500;margin-bottom:12px;display:flex;align-items:center;justify-content:space-between;">
-          Nuevo video
-          <button class="btn btn-ghost btn-sm" onclick="toggleForm('video-form')">✕</button>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;">
+          <div style="font-family:var(--font-display);font-size:15px;font-weight:400;letter-spacing:0.06em;">New video</div>
+          <button class="btn btn-ghost btn-xs" onclick="toggleForm('video-form')">✕</button>
         </div>
-        <div class="g2" style="gap:8px;margin-bottom:8px;">
-          <div class="form-g"><div class="form-l">Nombre del video</div><input id="v-name" placeholder="Outfit Summer Cardholder"></div>
-          <div class="form-g"><div class="form-l">Fecha de publicación</div><input type="date" id="v-date"></div>
-          <div class="form-g"><div class="form-l">Plataforma</div>
+        <div class="g2" style="gap:10px;margin-bottom:10px;">
+          <div class="form-g"><div class="form-l">Video name</div><input id="v-name" placeholder="Summer Outfit — Cardholder"></div>
+          <div class="form-g"><div class="form-l">Publication date</div><input type="date" id="v-date"></div>
+          <div class="form-g"><div class="form-l">Platform</div>
             <select id="v-plat"><option>TikTok</option><option>Instagram Reels</option><option>YouTube Shorts</option></select>
           </div>
-          <div class="form-g"><div class="form-l">Categoría</div>
-            <select id="v-cat"><option>Outfit</option><option>GRWM</option><option>Unboxing</option><option>Lifestyle</option><option>Review</option><option>Tutorial</option><option>Antes/Ahora</option><option>Estética</option></select>
+          <div class="form-g"><div class="form-l">Category</div>
+            <select id="v-cat"><option>Outfit</option><option>GRWM</option><option>Unboxing</option><option>Lifestyle</option><option>Review</option><option>Tutorial</option><option>Before/After</option><option>Aesthetic</option></select>
           </div>
-          <div class="form-g"><div class="form-l">Duración (seg)</div><input type="number" id="v-dur" placeholder="9"></div>
-          <div class="form-g"><div class="form-l">Hora de publicación</div><input type="time" id="v-time"></div>
+          <div class="form-g"><div class="form-l">Duration (sec)</div><input type="number" id="v-dur" placeholder="9"></div>
+          <div class="form-g"><div class="form-l">Publication time</div><input type="time" id="v-time"></div>
         </div>
-        <div class="divider"></div>
-        <div style="font-size:10px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;margin-bottom:8px;">Métricas reales</div>
-        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:8px;margin-bottom:10px;">
-          <div class="form-g"><div class="form-l">Vistas</div><input type="number" id="v-views" placeholder="0"></div>
+        <div class="divider" style="margin:14px 0;"></div>
+        <div style="font-size:8px;font-weight:500;letter-spacing:0.2em;text-transform:uppercase;color:var(--faint);margin-bottom:10px;">Real metrics</div>
+        <div style="display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:14px;">
+          <div class="form-g"><div class="form-l">Views</div><input type="number" id="v-views" placeholder="0"></div>
           <div class="form-g"><div class="form-l">Likes</div><input type="number" id="v-likes" placeholder="0"></div>
-          <div class="form-g"><div class="form-l">Comentarios</div><input type="number" id="v-comm" placeholder="0"></div>
-          <div class="form-g"><div class="form-l">Compartidos</div><input type="number" id="v-shares" placeholder="0"></div>
-          <div class="form-g"><div class="form-l">Guardados</div><input type="number" id="v-saves" placeholder="0"></div>
-          <div class="form-g"><div class="form-l">Seguidores +/-</div><input type="number" id="v-foll" placeholder="0"></div>
-          <div class="form-g"><div class="form-l">Retención %</div><input type="number" id="v-ret" placeholder="0"></div>
+          <div class="form-g"><div class="form-l">Comments</div><input type="number" id="v-comm" placeholder="0"></div>
+          <div class="form-g"><div class="form-l">Shares</div><input type="number" id="v-shares" placeholder="0"></div>
+          <div class="form-g"><div class="form-l">Saves</div><input type="number" id="v-saves" placeholder="0"></div>
+          <div class="form-g"><div class="form-l">Followers +/-</div><input type="number" id="v-foll" placeholder="0"></div>
+          <div class="form-g"><div class="form-l">Retention %</div><input type="number" id="v-ret" placeholder="0"></div>
         </div>
-        <button class="btn btn-orange" onclick="saveVideo()">Guardar video</button>
+        <button class="btn btn-primary" onclick="saveVideo()">Save video</button>
       </div>
 
       <div id="analytics-empty" class="card">
         <div class="empty">
-          <div class="empty-icon">🎬</div>
-          <div class="empty-title">Sin videos cargados</div>
-          <div class="empty-desc">Cargá al menos un video con métricas reales. La IA analiza patrones basándose en tus datos.</div>
-          <button class="btn btn-orange" onclick="toggleForm('video-form')">+ Cargar primer video</button>
+          <div class="empty-rule"></div>
+          <div class="empty-title">No videos loaded.</div>
+          <div class="empty-desc">Load your first video with real metrics. The AI detects patterns only from actual data.</div>
+          <button class="btn btn-primary" style="margin-top:8px;" onclick="toggleForm('video-form')">Load first video</button>
         </div>
       </div>
 
-      <div id="analytics-data" style="display:none;flex-direction:column;gap:14px;">
+      <div id="analytics-data" style="display:none;flex-direction:column;gap:20px;">
         <div class="g4" id="an-kpis"></div>
         <div class="card">
           <div class="card-hd">
-            <div><div class="card-title">✦ Análisis IA</div><div class="card-sub" id="an-sub">Enviá el prompt y pegá la respuesta acá</div></div>
-            <span class="badge bg" id="an-badge" style="display:none;">Guardado</span>
+            <div><div class="card-label">AI Analysis</div><div class="card-title" id="an-title">Pattern recognition</div></div>
+            <span class="badge badge-ok" id="an-badge" style="display:none;">Saved</span>
           </div>
-          <div class="ai-box" id="an-ai-out"><span class="ai-placeholder">Hacé clic en "Analizar con IA ↗" para que yo reciba tus datos y genere el análisis acá.</span></div>
+          <div class="ai-box" id="an-ai-out">
+            <span class="ai-placeholder">Click "Request AI analysis" — the prompt is sent to the chat. Paste the response here.</span>
+          </div>
           <div class="paste-area" id="an-paste">
-            <div class="paste-note">Prompt enviado al chat. Pegá mi respuesta acá cuando aparezca:</div>
-            <textarea id="an-paste-in" placeholder="Pegá la respuesta de la IA acá..." style="min-height:80px;"></textarea>
-            <button class="btn btn-orange btn-sm" style="width:fit-content;" onclick="saveResp('an')">Guardar respuesta</button>
+            <div class="paste-note">↗ Prompt sent · Paste the AI response below</div>
+            <textarea id="an-paste-in" placeholder="Paste the AI response here..." style="min-height:100px;"></textarea>
+            <button class="btn btn-primary btn-sm" style="width:fit-content;" onclick="saveResp('an')">Save response</button>
           </div>
         </div>
         <div class="card">
-          <div class="card-hd"><div class="card-title">Historial de videos</div></div>
+          <div class="card-hd"><div><div class="card-label">History</div><div class="card-title">Videos</div></div></div>
           <div style="overflow-x:auto;">
             <table>
-              <thead><tr><th>Video</th><th>Plataforma</th><th>Categoría</th><th>Dur.</th><th>Vistas</th><th>Retención</th><th>Seguidores</th></tr></thead>
+              <thead><tr><th>Video</th><th>Platform</th><th>Category</th><th>Dur.</th><th>Views</th><th>Retention</th><th>Followers</th></tr></thead>
               <tbody id="videos-tbody"></tbody>
             </table>
           </div>
         </div>
       </div>
+
     </section>
 
-    <!-- =================== IDEAS =================== -->
+    <!-- ════════════ IDEAS ════════════ -->
     <section id="page-ideas" class="page">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+
+      <div class="page-header">
         <div>
-          <div style="font-size:16px;font-weight:600;margin-bottom:3px;">Ideas de contenido</div>
-          <div style="font-size:12px;color:var(--muted);">La IA genera propuestas basadas en tus datos y tu Brain.</div>
+          <div class="page-title">Ideas</div>
+          <div class="page-subtitle">Generated by AI from your real data</div>
         </div>
-        <button class="btn btn-orange" onclick="askIdeas()">✦ Generar ideas ↗</button>
+        <button class="btn btn-primary" onclick="askIdeas()">Generate ideas</button>
       </div>
 
-      <div class="card" id="ideas-prompt-card" style="display:none;">
-        <div class="card-hd"><div class="card-title">Prompt enviado al chat</div><span class="badge bo">Esperando respuesta</span></div>
-        <div style="font-size:11px;color:var(--muted);margin-bottom:10px;">Cuando yo responda en el chat, pegá el texto acá abajo y hacé clic en "Guardar ideas".</div>
-        <textarea id="ideas-paste-in" placeholder="Pegá la respuesta de la IA acá..." style="min-height:100px;"></textarea>
-        <button class="btn btn-orange btn-sm" style="margin-top:8px;width:fit-content;" onclick="saveIdeas()">Guardar ideas</button>
+      <div class="card" id="ideas-paste-card" style="display:none;">
+        <div class="card-hd">
+          <div><div class="card-label">Waiting</div><div class="card-title">AI response</div></div>
+          <span class="badge badge-champ">Prompt sent</span>
+        </div>
+        <div style="font-size:11px;font-weight:300;color:var(--faint);margin-bottom:12px;line-height:1.7;">
+          The prompt was sent to the chat. When I respond, paste the text below.
+        </div>
+        <textarea id="ideas-paste-in" placeholder="Paste the AI response here..." style="min-height:120px;"></textarea>
+        <button class="btn btn-primary btn-sm" style="margin-top:10px;width:fit-content;" onclick="saveIdeas()">Save ideas</button>
       </div>
 
       <div id="ideas-empty" class="card">
         <div class="empty">
-          <div class="empty-icon">💡</div>
-          <div class="empty-title">Sin ideas generadas</div>
-          <div class="empty-desc">Hacé clic en "Generar ideas ↗". La IA usará tu Brain y tus videos para crear propuestas reales y específicas para Valtori.</div>
+          <div class="empty-rule"></div>
+          <div class="empty-title">No ideas generated.</div>
+          <div class="empty-desc">Click "Generate ideas". The AI will create specific proposals based on your Brand Brain and real video data.</div>
         </div>
       </div>
 
-      <div id="ideas-list" style="display:none;flex-direction:column;gap:10px;"></div>
+      <div id="ideas-list" style="display:none;flex-direction:column;gap:12px;"></div>
+
     </section>
 
-    <!-- =================== PRODUCTION =================== -->
+    <!-- ════════════ PRODUCTION ════════════ -->
     <section id="page-production" class="page">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+
+      <div class="page-header">
         <div>
-          <div style="font-size:16px;font-weight:600;margin-bottom:3px;">Production</div>
-          <div style="font-size:12px;color:var(--muted);">Plan completo generado por IA para la idea aprobada.</div>
+          <div class="page-title">Production</div>
+          <div class="page-subtitle">Full plan generated by AI for the approved idea</div>
         </div>
-        <button class="btn btn-ghost" onclick="nav('ideas')">← Volver a Ideas</button>
+        <button class="btn btn-ghost" onclick="nav('ideas')">← Ideas</button>
       </div>
 
       <div id="prod-empty" class="card">
         <div class="empty">
-          <div class="empty-icon">🎬</div>
-          <div class="empty-title">Sin idea aprobada</div>
-          <div class="empty-desc">Aprobá una idea en la sección Ideas para generar el plan completo de producción.</div>
-          <button class="btn btn-orange" onclick="nav('ideas')">Ir a Ideas →</button>
+          <div class="empty-rule"></div>
+          <div class="empty-title">No approved idea.</div>
+          <div class="empty-desc">Approve an idea in the Ideas section to generate the complete production plan.</div>
+          <button class="btn btn-primary" style="margin-top:8px;" onclick="nav('ideas')">Go to Ideas</button>
         </div>
       </div>
 
-      <div id="prod-content" style="display:none;flex-direction:column;gap:14px;">
-        <div class="hero" id="prod-hero"></div>
+      <div id="prod-content" style="display:none;flex-direction:column;gap:20px;">
+        <div class="prod-hero" id="prod-hero"></div>
         <div class="card">
           <div class="card-hd">
-            <div><div class="card-title">✦ Plan completo de producción</div><div class="card-sub">Guion · Escenas · Edición · Descripción · Predicción</div></div>
-            <button class="btn btn-orange btn-sm" onclick="askProduction()">Generar plan ↗</button>
+            <div><div class="card-label">AI Production</div><div class="card-title">Complete plan</div></div>
+            <button class="btn btn-primary btn-sm" onclick="askProduction()">Generate plan</button>
           </div>
-          <div class="ai-box" id="prod-ai-out"><span class="ai-placeholder">Hacé clic en "Generar plan ↗" para que la IA cree el guion, plan de escenas, edición y hashtags.</span></div>
+          <div class="ai-box" id="prod-ai-out">
+            <span class="ai-placeholder">Click "Generate plan" — the AI will create the script, scenes, editing notes and hashtags.</span>
+          </div>
           <div class="paste-area" id="prod-paste">
-            <div class="paste-note">Prompt enviado. Pegá la respuesta acá cuando aparezca en el chat:</div>
-            <textarea id="prod-paste-in" placeholder="Pegá la respuesta de la IA acá..." style="min-height:80px;"></textarea>
-            <button class="btn btn-orange btn-sm" style="width:fit-content;" onclick="saveResp('prod')">Guardar plan</button>
+            <div class="paste-note">↗ Prompt sent · Paste the AI response below</div>
+            <textarea id="prod-paste-in" placeholder="Paste the AI response here..." style="min-height:100px;"></textarea>
+            <button class="btn btn-primary btn-sm" style="width:fit-content;" onclick="saveResp('prod')">Save plan</button>
           </div>
         </div>
       </div>
+
     </section>
 
-    <!-- =================== CALENDAR =================== -->
+    <!-- ════════════ CALENDAR ════════════ -->
     <section id="page-calendar" class="page">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+
+      <div class="page-header">
         <div>
-          <div style="font-size:16px;font-weight:600;margin-bottom:3px;">Calendario</div>
-          <div style="font-size:12px;color:var(--muted);" id="cal-label"></div>
+          <div class="page-title">Calendar</div>
+          <div class="page-subtitle" id="cal-label"></div>
         </div>
-        <div style="display:flex;gap:6px;align-items:center;">
+        <div style="display:flex;gap:8px;align-items:center;">
           <button class="btn btn-ghost btn-sm" onclick="changeMonth(-1)">←</button>
           <button class="btn btn-ghost btn-sm" onclick="changeMonth(1)">→</button>
-          <button class="btn btn-orange" onclick="toggleForm('event-form')">+ Agregar</button>
+          <button class="btn btn-primary" onclick="toggleForm('event-form')">+ Schedule</button>
         </div>
       </div>
 
       <div class="inline-form" id="event-form">
-        <div style="font-size:12px;font-weight:500;margin-bottom:10px;display:flex;align-items:center;justify-content:space-between;">
-          Nuevo evento
-          <button class="btn btn-ghost btn-sm" onclick="toggleForm('event-form')">✕</button>
+        <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:14px;">
+          <div style="font-family:var(--font-display);font-size:15px;font-weight:400;letter-spacing:0.06em;">New event</div>
+          <button class="btn btn-ghost btn-xs" onclick="toggleForm('event-form')">✕</button>
         </div>
-        <div class="g2" style="gap:8px;margin-bottom:10px;">
-          <div class="form-g"><div class="form-l">Título</div><input id="ev-title" placeholder="Outfit Summer Cardholder"></div>
-          <div class="form-g"><div class="form-l">Fecha</div><input type="date" id="ev-date"></div>
-          <div class="form-g"><div class="form-l">Plataforma</div>
-            <select id="ev-plat"><option>TikTok</option><option>Instagram Reels</option><option>Ambas</option></select>
+        <div class="g2" style="gap:10px;margin-bottom:12px;">
+          <div class="form-g"><div class="form-l">Title</div><input id="ev-title" placeholder="Summer Outfit — Cardholder"></div>
+          <div class="form-g"><div class="form-l">Date</div><input type="date" id="ev-date"></div>
+          <div class="form-g"><div class="form-l">Platform</div>
+            <select id="ev-plat"><option>TikTok</option><option>Instagram Reels</option><option>Both</option></select>
           </div>
-          <div class="form-g"><div class="form-l">Estado</div>
+          <div class="form-g"><div class="form-l">Status</div>
             <select id="ev-status">
-              <option value="idea">Idea</option><option value="apr">Aprobado</option>
-              <option value="grab">Grabando</option><option value="edit">Editando</option><option value="pub">Publicado</option>
+              <option value="idea">Idea</option>
+              <option value="apr">Approved</option>
+              <option value="grab">Filming</option>
+              <option value="edit">Editing</option>
+              <option value="pub">Published</option>
             </select>
           </div>
         </div>
-        <button class="btn btn-orange" onclick="saveEvent()">Agregar al calendario</button>
+        <button class="btn btn-primary" onclick="saveEvent()">Schedule</button>
       </div>
 
-      <div class="card" style="padding:12px;">
-        <div class="cal-grid" style="margin-bottom:5px;">
-          <div class="cal-hdr">Lun</div><div class="cal-hdr">Mar</div><div class="cal-hdr">Mié</div>
-          <div class="cal-hdr">Jue</div><div class="cal-hdr">Vie</div><div class="cal-hdr">Sáb</div><div class="cal-hdr">Dom</div>
+      <div class="card" style="padding:16px;">
+        <div class="cal-grid" style="margin-bottom:6px;">
+          <div class="cal-hdr">Mon</div><div class="cal-hdr">Tue</div><div class="cal-hdr">Wed</div>
+          <div class="cal-hdr">Thu</div><div class="cal-hdr">Fri</div><div class="cal-hdr">Sat</div><div class="cal-hdr">Sun</div>
         </div>
         <div class="cal-grid" id="cal-days"></div>
       </div>
 
       <div class="g2">
         <div class="card">
-          <div class="card-hd"><div class="card-title">Próximos eventos</div></div>
+          <div class="card-hd"><div><div class="card-label">Upcoming</div><div class="card-title">Next events</div></div></div>
           <div id="upcoming"></div>
         </div>
         <div class="card">
-          <div class="card-hd"><div class="card-title">Resumen del mes</div></div>
+          <div class="card-hd"><div><div class="card-label">Summary</div><div class="card-title">This month</div></div></div>
           <div class="g2" id="cal-summary"></div>
         </div>
       </div>
+
     </section>
 
-    <!-- =================== LABORATORY =================== -->
+    <!-- ════════════ LABORATORY ════════════ -->
     <section id="page-lab" class="page">
-      <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
+
+      <div class="page-header">
         <div>
-          <div style="font-size:16px;font-weight:600;margin-bottom:3px;">Laboratory</div>
-          <div style="font-size:12px;color:var(--muted);">Análisis profundo post-publicación. La IA aprende de cada resultado.</div>
+          <div class="page-title">Laboratory</div>
+          <div class="page-subtitle">Deep post-publication analysis</div>
         </div>
       </div>
 
       <div id="lab-empty" class="card">
         <div class="empty">
-          <div class="empty-icon">🧪</div>
-          <div class="empty-title">Sin videos para analizar</div>
-          <div class="empty-desc">Cargá al menos un video con métricas reales en Analytics para usar el laboratorio.</div>
-          <button class="btn btn-orange" onclick="nav('analytics')">Ir a Analytics →</button>
+          <div class="empty-rule"></div>
+          <div class="empty-title">No videos to analyse.</div>
+          <div class="empty-desc">Load at least one video in Analytics to use the Laboratory.</div>
+          <button class="btn btn-primary" style="margin-top:8px;" onclick="nav('analytics')">Go to Analytics</button>
         </div>
       </div>
 
-      <div id="lab-content" style="display:none;flex-direction:column;gap:14px;">
+      <div id="lab-content" style="display:none;flex-direction:column;gap:20px;">
         <div class="card">
           <div class="card-hd">
-            <div><div class="card-title">Video a analizar</div></div>
-            <button class="btn btn-orange btn-sm" onclick="askLab()">✦ Analizar con IA ↗</button>
+            <div><div class="card-label">Select</div><div class="card-title">Video to analyse</div></div>
+            <button class="btn btn-primary btn-sm" onclick="askLab()">Request AI analysis</button>
           </div>
-          <select id="lab-select" style="max-width:380px;margin-bottom:12px;" onchange="updateLabMetrics()"></select>
+          <select id="lab-select" style="max-width:400px;margin-bottom:16px;" onchange="updateLabMetrics()"></select>
           <div class="g4" id="lab-metrics"></div>
         </div>
 
         <div class="card" id="lab-result" style="display:none;">
           <div class="card-hd">
-            <div><div class="card-title">✦ Análisis IA</div><div class="card-sub" id="lab-sub"></div></div>
-            <span class="badge bg" id="lab-badge" style="display:none;">Guardado</span>
+            <div><div class="card-label">AI Analysis</div><div class="card-title" id="lab-sub">Deep dive</div></div>
+            <span class="badge badge-ok" id="lab-badge" style="display:none;">Saved</span>
           </div>
-          <div class="ai-box" id="lab-ai-out"><span class="ai-placeholder">Esperando respuesta...</span></div>
+          <div class="ai-box" id="lab-ai-out">
+            <span class="ai-placeholder">Waiting for response...</span>
+          </div>
           <div class="paste-area" id="lab-paste">
-            <div class="paste-note">Prompt enviado. Pegá mi respuesta acá cuando aparezca en el chat:</div>
-            <textarea id="lab-paste-in" placeholder="Pegá la respuesta de la IA acá..." style="min-height:80px;"></textarea>
-            <button class="btn btn-orange btn-sm" style="width:fit-content;" onclick="saveResp('lab')">Guardar análisis</button>
+            <div class="paste-note">↗ Prompt sent · Paste the AI response below</div>
+            <textarea id="lab-paste-in" placeholder="Paste the AI response here..." style="min-height:100px;"></textarea>
+            <button class="btn btn-primary btn-sm" style="width:fit-content;" onclick="saveResp('lab')">Save analysis</button>
           </div>
         </div>
       </div>
+
     </section>
 
   </div><!-- /content -->
@@ -562,18 +1214,18 @@ tr:hover td { background: rgba(255,255,255,0.02); }
 <script>
 const S = {
   videos: [], events: [], products: [], competitors: [],
-  brain: {}, approvedIdea: null,
+  brain: {}, approvedIdea: null, ideas: [],
   calMonth: new Date().getMonth(), calYear: new Date().getFullYear()
 };
 
 const PAGES = {
-  dashboard: { title:'Dashboard', sub:'Director de Contenido IA · Valtori' },
-  brain:     { title:'Brain — Memoria de marca', sub:'La IA usa esto como contexto en cada pedido' },
-  analytics: { title:'Analytics', sub:'Historial real de videos · Análisis por IA' },
-  ideas:     { title:'Ideas de contenido', sub:'Generadas por IA con base en tus datos reales' },
-  production:{ title:'Production', sub:'Plan de grabación generado por IA' },
-  calendar:  { title:'Calendario', sub:'Planificación mensual de contenido' },
-  lab:       { title:'Laboratory', sub:'Análisis post-publicación · Aprendizaje continuo' }
+  dashboard:  { section: 'Overview',    breadcrumb: 'Valtori Studio' },
+  brain:      { section: 'Brand Brain', breadcrumb: 'System' },
+  analytics:  { section: 'Analytics',  breadcrumb: 'System' },
+  ideas:      { section: 'Ideas',       breadcrumb: 'Content' },
+  production: { section: 'Production',  breadcrumb: 'Content' },
+  calendar:   { section: 'Calendar',    breadcrumb: 'Content' },
+  lab:        { section: 'Laboratory',  breadcrumb: 'Content' }
 };
 
 function nav(page) {
@@ -584,167 +1236,166 @@ function nav(page) {
   document.querySelectorAll('.ni').forEach(n => {
     if (n.getAttribute('onclick') && n.getAttribute('onclick').includes("'" + page + "'")) n.classList.add('active');
   });
-  const info = PAGES[page] || { title: page, sub: '' };
-  document.getElementById('tb-title').textContent = info.title;
-  document.getElementById('tb-sub').textContent = info.sub;
-  // Update topbar actions per page
+  const info = PAGES[page] || {};
+  document.getElementById('tb-section').textContent = info.section || page;
+
   const ta = document.getElementById('tb-actions');
-  if (page === 'dashboard') ta.innerHTML = '<button class="btn btn-ghost" onclick="nav(\'analytics\')">+ Cargar video</button><button class="btn btn-orange" onclick="askDash()">✦ Análisis IA ↗</button>';
-  else if (page === 'analytics') ta.innerHTML = '<button class="btn btn-ghost" onclick="toggleForm(\'video-form\')">+ Cargar video</button><button class="btn btn-orange" onclick="askAnalysis()">✦ Analizar con IA ↗</button>';
-  else if (page === 'ideas') ta.innerHTML = '<button class="btn btn-orange" onclick="askIdeas()">✦ Generar ideas ↗</button>';
+  if (page === 'dashboard')  ta.innerHTML = '<button class="btn btn-ghost" onclick="nav(\'analytics\')">Load video</button><button class="btn btn-primary" onclick="askDash()">Request AI analysis</button>';
+  else if (page === 'analytics') ta.innerHTML = '<button class="btn btn-ghost" onclick="toggleForm(\'video-form\')">Load video</button><button class="btn btn-primary" onclick="askAnalysis()">Request AI analysis</button>';
+  else if (page === 'ideas')  ta.innerHTML = '<button class="btn btn-primary" onclick="askIdeas()">Generate ideas</button>';
   else if (page === 'production') ta.innerHTML = '<button class="btn btn-ghost" onclick="nav(\'ideas\')">← Ideas</button>';
-  else if (page === 'brain') ta.innerHTML = '<button class="btn btn-orange" onclick="saveBrain()">Guardar cambios</button>';
+  else if (page === 'brain')  ta.innerHTML = '<button class="btn btn-primary" onclick="saveBrain()">Save changes</button>';
   else ta.innerHTML = '';
+
   if (page === 'dashboard') refreshDash();
-  if (page === 'calendar') renderCal();
-  if (page === 'lab') refreshLab();
+  if (page === 'calendar')  renderCal();
+  if (page === 'lab')       refreshLab();
 }
 
 function toggleForm(id) {
-  const el = document.getElementById(id);
-  el.classList.toggle('open');
+  document.getElementById(id).classList.toggle('open');
 }
 
-/* ── BRAIN CONTEXT ── */
+/* ── CONTEXT ── */
 function getBrain() {
   const b = S.brain;
-  const prods = S.products.map(p => `${p.name} (${p.price})`).join(', ') || 'ninguno';
-  const comps = S.competitors.map(c => c.name).join(', ') || 'ninguno';
-  return `Marca: ${b.brand||'no definida'}
-Descripción: ${b.desc||'no definida'}
-Propuesta de valor: ${b.value||'no definida'}
-Tono: ${b.tone||'no definido'}
-Público: ${b.age||''} ${b.gender||''}
-Intereses: ${b.interests||'no definidos'}
-Plataformas: ${b.platforms||'no definidas'}
-Productos: ${prods}
-Competidores: ${comps}
-Estética: ${b.aesthetic||'no definida'}
-Colores: ${b.colors||'no definidos'}
-Referencias: ${b.refs||'ninguna'}`;
+  const prods = S.products.map(p => `${p.name} (${p.price})`).join(', ') || 'none';
+  const comps  = S.competitors.map(c => c.name).join(', ') || 'none';
+  return `Brand: ${b.brand||'undefined'}
+Description: ${b.desc||'undefined'}
+Value proposition: ${b.value||'undefined'}
+Tone: ${b.tone||'undefined'}
+Audience: ${b.age||''} ${b.gender||''}, interests: ${b.interests||'undefined'}
+Platforms: ${b.platforms||'undefined'}
+Products: ${prods}
+Competitors: ${comps}
+Aesthetic: ${b.aesthetic||'undefined'}
+Colors: ${b.colors||'undefined'}
+Visual references: ${b.refs||'none'}`;
 }
 
 function getVideos() {
-  if (!S.videos.length) return 'Sin videos cargados todavía.';
+  if (!S.videos.length) return 'No videos loaded yet.';
   return S.videos.map(v =>
-    `- "${v.name}" | ${v.plat} | ${v.cat} | ${v.dur}s | ${v.views.toLocaleString()} vistas | ${v.ret}% retención | ${v.foll >= 0 ? '+' : ''}${v.foll} seguidores`
+    `- "${v.name}" | ${v.plat} | ${v.cat} | ${v.dur}s | ${v.views.toLocaleString()} views | ${v.ret}% retention | ${v.foll >= 0 ? '+' : ''}${v.foll} followers`
   ).join('\n');
 }
 
 /* ── AI PROMPTS ── */
-function askDash() {
-  if (!S.videos.length && !S.brain.brand) {
-    alert('Primero completá el Brain y cargá al menos un video.');
-    nav('brain'); return;
+function sendOrCopy(prompt) {
+  if (typeof sendPrompt === 'function') sendPrompt(prompt);
+  else {
+    navigator.clipboard.writeText(prompt).catch(() => {});
+    alert('Prompt copied. Paste it in the Claude chat.');
   }
-  const prompt = `Sos el director de contenido IA de VALTORI. Respondé en español con bullet points breves y concretos.
+}
 
-CONTEXTO DE MARCA:
+function askDash() {
+  if (!S.videos.length && !S.brain.brand) { alert('Complete the Brand Brain first.'); nav('brain'); return; }
+  const p = `You are the creative content director of VALTORI, a discrete luxury brand. Respond in Spanish, concise and strategic.
+
+BRAND CONTEXT:
 ${getBrain()}
 
-VIDEOS DEL CANAL:
+CHANNEL VIDEOS:
 ${getVideos()}
 
-Generá un análisis ejecutivo:
-1. ¿Qué está funcionando mejor? (con números reales si hay videos)
-2. ¿Qué hay que mejorar o evitar?
-3. Recomendación principal para el próximo video.
+Generate an executive analysis:
+1. What is performing best? (with real numbers if available)
+2. What should be improved or avoided?
+3. The single most important recommendation for the next video.
 
-Máximo 200 palabras. Sé específico.`;
-  if (typeof sendPrompt === 'function') sendPrompt(prompt);
-  else { navigator.clipboard.writeText(prompt).catch(()=>{}); alert('Prompt copiado. Pegalo en el chat de Claude.'); }
+Max 200 words. Be specific. Luxury brand voice.`;
+  sendOrCopy(p);
   showPaste('dash');
   refreshDash();
 }
 
 function askAnalysis() {
-  if (!S.videos.length) { alert('Cargá al menos un video primero.'); toggleForm('video-form'); return; }
-  const prompt = `Sos el analista de contenido de VALTORI. Analizá estos videos en español.
+  if (!S.videos.length) { alert('Load at least one video first.'); toggleForm('video-form'); return; }
+  const p = `You are the content analyst of VALTORI, a discrete luxury brand. Respond in Spanish.
 
-CONTEXTO DE MARCA:
+BRAND CONTEXT:
 ${getBrain()}
 
-VIDEOS CARGADOS:
+VIDEOS LOADED:
 ${getVideos()}
 
-Respondé con estas secciones:
-📈 QUÉ FUNCIONA MEJOR — categoría, formato o duración con mejor rendimiento
-⏱️ DURACIÓN ÓPTIMA — basada en los datos reales
-🏆 MEJOR VIDEO — cuál fue y por qué funcionó
-⚠️ QUÉ EVITAR — patrones de bajo rendimiento detectados
-★ PRÓXIMA RECOMENDACIÓN — acción concreta para el siguiente video
+Analyse and respond with these sections:
+📈 WHAT PERFORMS BEST — category, format or duration with highest performance
+⏱️ OPTIMAL DURATION — based on real data
+🏆 BEST VIDEO — which one and why it worked
+⚠️ WHAT TO AVOID — low-performance patterns detected
+★ NEXT RECOMMENDATION — one concrete action for the next video
 
-Basate solo en los datos reales. Sé específico con los números.`;
-  if (typeof sendPrompt === 'function') sendPrompt(prompt);
-  else { navigator.clipboard.writeText(prompt).catch(()=>{}); alert('Prompt copiado. Pegalo en el chat de Claude.'); }
+Base your analysis only on the real data provided.`;
+  sendOrCopy(p);
   showPaste('an');
 }
 
 function askIdeas() {
-  const prompt = `Sos el estratega de contenido de VALTORI. Generá 3 ideas de videos concretas.
+  const p = `You are the content strategist of VALTORI, a discrete luxury brand (accessories for ambitious men 18–35). Respond in Spanish.
 
-CONTEXTO DE MARCA:
+BRAND CONTEXT:
 ${getBrain()}
 
-VIDEOS DEL CANAL (para basar las ideas en lo que funciona):
+CHANNEL VIDEOS (base ideas on what works):
 ${getVideos()}
 
-Para cada idea usá este formato exacto:
+Generate exactly 3 video ideas. Use this exact format for each:
 
-TÍTULO: [título concreto y específico]
-CONFIANZA: [número del 1 al 100]
-FORMATO: [duración sugerida · plataforma recomendada]
-POR QUÉ FUNCIONARÁ: [razón basada en datos reales del canal, o en la marca si no hay videos]
-HOOK SUGERIDO: [qué mostrar exactamente en los primeros 2 segundos]
-
----
-
-[repetir para idea 2]
+TÍTULO: [concrete specific title]
+CONFIANZA: [number 1–100]
+FORMATO: [suggested duration · recommended platform]
+POR QUÉ FUNCIONARÁ: [reason based on real channel data, or brand if no videos yet]
+HOOK SUGERIDO: [exactly what to show in the first 2 seconds]
 
 ---
 
-[repetir para idea 3]`;
-  if (typeof sendPrompt === 'function') sendPrompt(prompt);
-  else { navigator.clipboard.writeText(prompt).catch(()=>{}); alert('Prompt copiado. Pegalo en el chat de Claude.'); }
+[repeat for idea 2]
+
+---
+
+[repeat for idea 3]`;
+  sendOrCopy(p);
   document.getElementById('ideas-empty').style.display = 'none';
-  document.getElementById('ideas-prompt-card').style.display = 'block';
+  document.getElementById('ideas-paste-card').style.display = 'block';
   document.getElementById('ideas-list').style.display = 'none';
 }
 
 function askProduction() {
-  if (!S.approvedIdea) { alert('No hay idea aprobada.'); return; }
+  if (!S.approvedIdea) { alert('No approved idea.'); return; }
   const idea = S.approvedIdea;
-  const prompt = `Sos el director de producción de VALTORI. Generá el plan completo para este video.
+  const p = `You are the production director of VALTORI, a discrete luxury brand. Respond in Spanish.
 
-CONTEXTO DE MARCA:
+BRAND CONTEXT:
 ${getBrain()}
 
-IDEA APROBADA: "${idea.title}"
-${idea.format ? 'Formato: ' + idea.format : ''}
-${idea.hook ? 'Hook sugerido: ' + idea.hook : ''}
-${idea.why ? 'Por qué funcionará: ' + idea.why : ''}
+APPROVED IDEA: "${idea.title}"
+${idea.format ? 'Format: ' + idea.format : ''}
+${idea.hook ? 'Suggested hook: ' + idea.hook : ''}
+${idea.why ? 'Why it will work: ' + idea.why : ''}
 
-HISTORIAL DEL CANAL (referencia):
+CHANNEL HISTORY (reference):
 ${getVideos()}
 
-Generá el plan completo con estas secciones:
+Generate the complete production plan with these sections:
 
-🎬 GUION ESCENA POR ESCENA
-Mínimo 3 escenas. Para cada una: duración, acción exacta, instrucciones de cámara y resultado visual esperado.
+🎬 SCRIPT — SCENE BY SCENE
+Minimum 3 scenes. For each: duration, exact action, camera instructions, expected visual result.
 
-📝 INSTRUCCIONES DE CÁMARA Y LUZ
-Equipamiento, ángulos, iluminación recomendada, errores a evitar.
+📝 CAMERA & LIGHT INSTRUCTIONS
+Equipment, angles, recommended lighting, mistakes to avoid.
 
-✂️ PLAN DE EDICIÓN
-Música, ritmo de cortes, texto en pantalla, color grading.
+✂️ EDITING PLAN
+Music, cut rhythm, on-screen text, color grading.
 
-📋 DESCRIPCIÓN Y HASHTAGS
-Copy listo para copiar en TikTok e Instagram.
+📋 CAPTION & HASHTAGS
+Copy ready to paste for TikTok and Instagram.
 
-✦ PREDICCIÓN DE RENDIMIENTO
-Estimaciones realistas basadas en el historial del canal.`;
-  if (typeof sendPrompt === 'function') sendPrompt(prompt);
-  else { navigator.clipboard.writeText(prompt).catch(()=>{}); alert('Prompt copiado. Pegalo en el chat de Claude.'); }
+✦ PERFORMANCE FORECAST
+Realistic estimates based on channel history.`;
+  sendOrCopy(p);
   showPaste('prod');
 }
 
@@ -753,82 +1404,79 @@ function askLab() {
   const v = S.videos[idx];
   if (!v) return;
   const others = S.videos.filter((_, i) => i !== idx);
-  const prompt = `Sos el analista post-publicación de VALTORI. Analizá este video en profundidad.
+  const p = `You are the post-publication analyst of VALTORI. Respond in Spanish.
 
-CONTEXTO DE MARCA:
+BRAND CONTEXT:
 ${getBrain()}
 
-VIDEO ANALIZADO:
-- Nombre: ${v.name}
-- Plataforma: ${v.plat}
-- Categoría: ${v.cat}
-- Duración: ${v.dur}s
-- Hora de publicación: ${v.time || 'no registrada'}
-- Vistas: ${v.views.toLocaleString()}
+VIDEO ANALYSED:
+- Name: ${v.name}
+- Platform: ${v.plat}
+- Category: ${v.cat}
+- Duration: ${v.dur}s
+- Publication time: ${v.time || 'not recorded'}
+- Views: ${v.views.toLocaleString()}
 - Likes: ${v.likes.toLocaleString()}
-- Comentarios: ${v.comm.toLocaleString()}
-- Compartidos: ${v.shares.toLocaleString()}
-- Guardados: ${v.saves.toLocaleString()}
-- Seguidores ganados: ${v.foll >= 0 ? '+' : ''}${v.foll}
-- Retención: ${v.ret}%
+- Comments: ${v.comm.toLocaleString()}
+- Shares: ${v.shares.toLocaleString()}
+- Saves: ${v.saves.toLocaleString()}
+- Followers gained: ${v.foll >= 0 ? '+' : ''}${v.foll}
+- Retention: ${v.ret}%
 
-${others.length ? 'OTROS VIDEOS DEL CANAL (promedio de referencia):\n' + others.map(ov => `- ${ov.name}: ${ov.views.toLocaleString()} vistas, ${ov.ret}% retención`).join('\n') : 'Este es el único video cargado.'}
+${others.length ? 'OTHER CHANNEL VIDEOS:\n' + others.map(ov => `- ${ov.name}: ${ov.views.toLocaleString()} views, ${ov.ret}% retention`).join('\n') : 'This is the only video loaded.'}
 
-Analizá con estas secciones:
-✓ QUÉ FUNCIONÓ — mínimo 3 puntos con los números reales
-✗ QUÉ MEJORAR — con recomendaciones concretas y accionables
-★ PRÓXIMO VIDEO — qué replicar exactamente y qué cambiar
-${others.length ? '📊 VS PROMEDIO DEL CANAL — comparación con los otros videos' : ''}`;
-  if (typeof sendPrompt === 'function') sendPrompt(prompt);
-  else { navigator.clipboard.writeText(prompt).catch(()=>{}); alert('Prompt copiado. Pegalo en el chat de Claude.'); }
+Analyse with these sections:
+✓ WHAT WORKED — minimum 3 points with real numbers
+✗ WHAT TO IMPROVE — concrete actionable recommendations
+★ NEXT VIDEO — what to replicate and what to change
+${others.length ? '📊 VS CHANNEL AVERAGE — comparison with other videos' : ''}`;
+  sendOrCopy(p);
   document.getElementById('lab-result').style.display = 'block';
-  document.getElementById('lab-sub').textContent = 'Análisis de "' + v.name + '"';
+  document.getElementById('lab-sub').textContent = `"${v.name}"`;
   showPaste('lab');
 }
 
-/* ── PASTE & SAVE RESPONSES ── */
-function showPaste(section) {
+/* ── SAVE RESPONSES ── */
+function showPaste(s) {
   const map = { dash:'dash-paste', an:'an-paste', prod:'prod-paste', lab:'lab-paste' };
-  const el = document.getElementById(map[section]);
+  const el = document.getElementById(map[s]);
   if (el) el.style.display = 'flex';
 }
 
-function saveResp(section) {
-  const inputs = { dash:'dash-paste-in', an:'an-paste-in', prod:'prod-paste-in', lab:'lab-paste-in' };
-  const outputs = { dash:'dash-ai-out', an:'an-ai-out', prod:'prod-ai-out', lab:'lab-ai-out' };
-  const pastes = { dash:'dash-paste', an:'an-paste', prod:'prod-paste', lab:'lab-paste' };
-  const badges = { dash:'dash-badge', an:'an-badge', lab:'lab-badge' };
-  const input = document.getElementById(inputs[section]);
-  const output = document.getElementById(outputs[section]);
-  if (!input || !output) return;
-  const val = input.value.trim();
-  if (!val) { alert('Pegá la respuesta de la IA primero.'); return; }
-  output.textContent = val;
-  const paste = document.getElementById(pastes[section]);
-  if (paste) paste.style.display = 'none';
-  if (badges[section]) { const b = document.getElementById(badges[section]); if (b) b.style.display = 'inline-flex'; }
-  input.value = '';
+function saveResp(s) {
+  const iMap = { dash:'dash-paste-in', an:'an-paste-in', prod:'prod-paste-in', lab:'lab-paste-in' };
+  const oMap = { dash:'dash-ai-out', an:'an-ai-out', prod:'prod-ai-out', lab:'lab-ai-out' };
+  const pMap = { dash:'dash-paste', an:'an-paste', prod:'prod-paste', lab:'lab-paste' };
+  const bMap = { dash:'dash-badge', an:'an-badge', lab:'lab-badge' };
+  const inp = document.getElementById(iMap[s]);
+  const out = document.getElementById(oMap[s]);
+  if (!inp || !out) return;
+  const val = inp.value.trim();
+  if (!val) { alert('Paste the AI response first.'); return; }
+  out.textContent = val;
+  const pe = document.getElementById(pMap[s]); if (pe) pe.style.display = 'none';
+  if (bMap[s]) { const b = document.getElementById(bMap[s]); if (b) b.style.display = 'inline-flex'; }
+  inp.value = '';
 }
 
 /* ── BRAIN ── */
 function saveBrain() {
   S.brain = {
     brand: document.getElementById('b-brand').value,
-    desc: document.getElementById('b-desc').value,
+    desc:  document.getElementById('b-desc').value,
     value: document.getElementById('b-value').value,
-    tone: document.getElementById('b-tone').value,
-    age: document.getElementById('b-age').value,
+    tone:  document.getElementById('b-tone').value,
+    age:   document.getElementById('b-age').value,
     gender: document.getElementById('b-gender').value,
     interests: document.getElementById('b-interests').value,
     platforms: document.getElementById('b-platforms').value,
     colors: document.getElementById('b-colors').value,
     aesthetic: document.getElementById('b-aesthetic').value,
-    refs: document.getElementById('b-refs').value
+    refs:  document.getElementById('b-refs').value
   };
   const btn = event.target;
-  const orig = btn.textContent;
-  btn.textContent = '✓ Guardado'; btn.style.background = '#22c55e';
-  setTimeout(() => { btn.textContent = orig; btn.style.background = ''; }, 2000);
+  btn.textContent = 'Saved'; btn.style.background = '#5B8A5B';
+  setTimeout(() => { btn.textContent = 'Save changes'; btn.style.background = ''; }, 2000);
   refreshDash();
 }
 
@@ -843,12 +1491,14 @@ function saveProduct() {
 
 function renderProducts() {
   const el = document.getElementById('prod-list');
-  if (!S.products.length) { el.innerHTML = '<div class="empty" style="padding:16px;"><div class="empty-desc">Agregá tus productos.</div></div>'; return; }
-  el.innerHTML = '<div style="overflow-x:auto;"><table><thead><tr><th>Nombre</th><th>Precio</th><th>Categoría</th></tr></thead><tbody>' +
-    S.products.map((p, i) => `<tr><td>${p.name}</td><td>${p.price}</td><td>${p.cat}</td><td><button class="btn btn-ghost btn-sm" onclick="delProduct(${i})">✕</button></td></tr>`).join('') +
+  if (!S.products.length) {
+    el.innerHTML = '<div class="empty" style="padding:20px;"><div class="empty-rule"></div><div class="empty-desc">Add your products.</div></div>';
+    return;
+  }
+  el.innerHTML = '<div style="overflow-x:auto;"><table><thead><tr><th>Name</th><th>Price</th><th>Category</th><th></th></tr></thead><tbody>' +
+    S.products.map((p, i) => `<tr><td style="font-weight:400;">${p.name}</td><td>${p.price}</td><td>${p.cat}</td><td><button class="btn btn-ghost btn-xs" onclick="delProduct(${i})">Remove</button></td></tr>`).join('') +
     '</tbody></table></div>';
 }
-
 function delProduct(i) { S.products.splice(i, 1); renderProducts(); }
 
 function saveComp() {
@@ -862,38 +1512,41 @@ function saveComp() {
 
 function renderComps() {
   const el = document.getElementById('comp-list');
-  if (!S.competitors.length) { el.innerHTML = '<div class="empty" style="padding:16px;"><div class="empty-desc">Agregá competidores.</div></div>'; return; }
-  const labels = { alta:'Alta amenaza', media:'Media amenaza', ref:'Referencia' };
-  const cls = { alta:'br', media:'bo', ref:'bm' };
-  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:5px;">' +
+  if (!S.competitors.length) {
+    el.innerHTML = '<div class="empty" style="padding:20px;"><div class="empty-rule"></div><div class="empty-desc">Add competitors.</div></div>';
+    return;
+  }
+  const labels = { alta:'High threat', media:'Medium threat', ref:'Reference' };
+  const cls = { alta:'badge-champ', media:'badge-stone', ref:'badge-stone' };
+  el.innerHTML = '<div style="display:flex;flex-direction:column;gap:6px;">' +
     S.competitors.map((c, i) => `
-      <div style="display:flex;align-items:center;justify-content:space-between;padding:7px 9px;background:var(--surface2);border-radius:6px;border:1px solid var(--border);">
-        <span>${c.name}</span>
-        <div style="display:flex;align-items:center;gap:6px;">
+      <div style="display:flex;align-items:center;justify-content:space-between;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--ivory-2);">
+        <span style="font-weight:400;font-size:12px;">${c.name}</span>
+        <div style="display:flex;align-items:center;gap:8px;">
           <span class="badge ${cls[c.threat]}">${labels[c.threat]}</span>
-          <button class="btn btn-ghost btn-sm" onclick="delComp(${i})">✕</button>
+          <button class="btn btn-ghost btn-xs" onclick="delComp(${i})">Remove</button>
         </div>
       </div>`).join('') + '</div>';
 }
-
 function delComp(i) { S.competitors.splice(i, 1); renderComps(); }
 
 /* ── ANALYTICS ── */
 function saveVideo() {
   const name = document.getElementById('v-name').value.trim();
-  if (!name) { alert('El nombre del video es obligatorio.'); return; }
+  if (!name) { alert('Video name is required.'); return; }
   S.videos.push({
     name, date: document.getElementById('v-date').value,
-    plat: document.getElementById('v-plat').value, cat: document.getElementById('v-cat').value,
+    plat: document.getElementById('v-plat').value,
+    cat: document.getElementById('v-cat').value,
     dur: parseInt(document.getElementById('v-dur').value) || 0,
     time: document.getElementById('v-time').value,
-    views: parseInt(document.getElementById('v-views').value) || 0,
-    likes: parseInt(document.getElementById('v-likes').value) || 0,
-    comm: parseInt(document.getElementById('v-comm').value) || 0,
+    views:  parseInt(document.getElementById('v-views').value)  || 0,
+    likes:  parseInt(document.getElementById('v-likes').value)  || 0,
+    comm:   parseInt(document.getElementById('v-comm').value)   || 0,
     shares: parseInt(document.getElementById('v-shares').value) || 0,
-    saves: parseInt(document.getElementById('v-saves').value) || 0,
-    foll: parseInt(document.getElementById('v-foll').value) || 0,
-    ret: parseInt(document.getElementById('v-ret').value) || 0
+    saves:  parseInt(document.getElementById('v-saves').value)  || 0,
+    foll:   parseInt(document.getElementById('v-foll').value)   || 0,
+    ret:    parseInt(document.getElementById('v-ret').value)    || 0
   });
   ['v-name','v-date','v-views','v-likes','v-comm','v-shares','v-saves','v-foll','v-ret','v-dur','v-time']
     .forEach(id => { const el = document.getElementById(id); if (el) el.value = ''; });
@@ -903,29 +1556,28 @@ function saveVideo() {
 
 function refreshAnalytics() {
   const empty = document.getElementById('analytics-empty');
-  const data = document.getElementById('analytics-data');
+  const data  = document.getElementById('analytics-data');
   if (!S.videos.length) { empty.style.display = 'block'; data.style.display = 'none'; return; }
   empty.style.display = 'none'; data.style.display = 'flex';
   const totalV = S.videos.reduce((a,v) => a + v.views, 0);
-  const avgR = Math.round(S.videos.reduce((a,v) => a + v.ret, 0) / S.videos.length);
+  const avgR   = Math.round(S.videos.reduce((a,v) => a + v.ret, 0) / S.videos.length);
   const totalF = S.videos.reduce((a,v) => a + v.foll, 0);
-  const best = [...S.videos].sort((a,b) => b.views - a.views)[0];
   document.getElementById('an-kpis').innerHTML = [
-    ['Videos cargados', S.videos.length, null],
-    ['Vistas totales', totalV >= 1000 ? (totalV/1000).toFixed(1)+'K' : totalV, null],
-    ['Retención prom.', avgR + '%', null],
-    ['Seguidores ganados', '+' + totalF, null]
+    ['Videos', S.videos.length, null],
+    ['Total views', totalV >= 1000 ? (totalV/1000).toFixed(1)+'K' : totalV, null],
+    ['Avg retention', avgR + '%', null],
+    ['Followers gained', '+' + totalF, null]
   ].map(([l,v]) => `<div class="mc"><div class="mc-label">${l}</div><div class="mc-val">${v}</div></div>`).join('');
-  document.getElementById('an-sub').textContent = `Basado en ${S.videos.length} video${S.videos.length > 1 ? 's' : ''} cargados`;
+  document.getElementById('an-title').textContent = `Pattern recognition · ${S.videos.length} video${S.videos.length > 1 ? 's' : ''}`;
   document.getElementById('videos-tbody').innerHTML = S.videos.map((v, i) => `
     <tr>
-      <td><div style="font-weight:500;">${v.name}</div><div style="font-size:10px;color:var(--muted);">${v.date || ''} ${v.time ? '· '+v.time : ''}</div></td>
-      <td><span class="badge bb">${v.plat}</span></td>
-      <td><span class="badge bp">${v.cat}</span></td>
-      <td>${v.dur}s</td>
-      <td style="color:var(--orange);font-weight:600;">${v.views >= 1000 ? (v.views/1000).toFixed(1)+'K' : v.views.toLocaleString()}</td>
-      <td style="color:${v.ret >= 70 ? '#22c55e' : v.ret >= 50 ? 'var(--orange)' : '#f87171'};font-weight:500;">${v.ret}%</td>
-      <td style="color:${v.foll > 0 ? '#22c55e' : 'var(--muted)'};">${v.foll > 0 ? '+' : ''}${v.foll}</td>
+      <td><div style="font-weight:400;font-size:12px;">${v.name}</div><div style="font-size:9px;color:var(--faint);letter-spacing:0.06em;">${v.date || ''} ${v.time ? '· '+v.time : ''}</div></td>
+      <td><span class="badge badge-stone">${v.plat}</span></td>
+      <td><span class="badge badge-stone">${v.cat}</span></td>
+      <td style="font-weight:300;">${v.dur}s</td>
+      <td style="font-weight:500;">${v.views >= 1000 ? (v.views/1000).toFixed(1)+'K' : v.views.toLocaleString()}</td>
+      <td style="color:${v.ret >= 70 ? '#5B8A5B' : v.ret >= 50 ? 'var(--champagne)' : '#C07070'};font-weight:500;">${v.ret}%</td>
+      <td style="color:${v.foll > 0 ? '#5B8A5B' : 'var(--faint)'};">${v.foll > 0 ? '+' : ''}${v.foll}</td>
     </tr>`).join('');
   refreshDash();
 }
@@ -933,27 +1585,27 @@ function refreshAnalytics() {
 /* ── IDEAS ── */
 function saveIdeas() {
   const raw = document.getElementById('ideas-paste-in').value.trim();
-  if (!raw) { alert('Pegá la respuesta de la IA primero.'); return; }
+  if (!raw) { alert('Paste the AI response first.'); return; }
   const blocks = raw.split(/---+/).map(b => b.trim()).filter(Boolean);
   S.ideas = blocks.map(b => {
-    const get = (rx) => { const m = b.match(rx); return m ? m[1].trim() : ''; };
+    const get = rx => { const m = b.match(rx); return m ? m[1].trim() : ''; };
     return {
-      title: get(/TÍTULO[:\s]+(.+)/i) || b.slice(0, 60),
-      conf: parseInt(get(/CONFIANZA[:\s]+(\d+)/i)) || null,
+      title:  get(/TÍTULO[:\s]+(.+)/i) || b.slice(0, 70),
+      conf:   parseInt(get(/CONFIANZA[:\s]+(\d+)/i)) || null,
       format: get(/FORMATO[:\s]+(.+)/i),
-      why: get(/POR QUÉ[^:]*:\s*(.+?)(?=\n(?:HOOK|---)|$)/is),
-      hook: get(/HOOK[^:]*:\s*(.+?)(?=\n---|$)/is),
+      why:    get(/POR QUÉ[^:]*:\s*(.+?)(?=\nHOOK|\n---|$)/is),
+      hook:   get(/HOOK[^:]*:\s*(.+?)(?=\n---|$)/is),
       status: 'pending'
     };
   });
-  document.getElementById('ideas-prompt-card').style.display = 'none';
+  document.getElementById('ideas-paste-card').style.display = 'none';
   document.getElementById('ideas-paste-in').value = '';
   renderIdeas();
 }
 
 function renderIdeas() {
   const list = document.getElementById('ideas-list');
-  const pending = S.ideas ? S.ideas.filter(i => i.status === 'pending') : [];
+  const pending = S.ideas.filter(i => i.status === 'pending');
   if (!pending.length) {
     list.style.display = 'none';
     document.getElementById('ideas-empty').style.display = 'block';
@@ -963,17 +1615,17 @@ function renderIdeas() {
   list.style.display = 'flex';
   list.innerHTML = pending.map((idea, idx) => `
     <div class="idea-card" id="idea-${idx}">
-      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:10px;">
-        <div style="font-size:13px;font-weight:500;flex:1;">${idea.title}</div>
-        ${idea.conf ? `<div style="text-align:right;flex-shrink:0;"><div style="font-size:20px;font-weight:600;color:var(--orange);letter-spacing:-1px;">${idea.conf}</div><div style="font-size:9px;color:var(--muted);text-transform:uppercase;letter-spacing:0.06em;">Confianza</div></div>` : ''}
+      <div style="display:flex;align-items:flex-start;justify-content:space-between;gap:16px;">
+        <div class="idea-title" style="flex:1;">${idea.title}</div>
+        ${idea.conf ? `<div style="text-align:right;flex-shrink:0;"><div class="idea-conf">${idea.conf}</div><div class="idea-conf-label">Confidence</div></div>` : ''}
       </div>
-      ${idea.format ? `<div><span class="badge bm">${idea.format}</span></div>` : ''}
+      ${idea.format ? `<div><span class="badge badge-stone">${idea.format}</span></div>` : ''}
       ${idea.conf ? `<div class="score-bar"><div class="score-fill" style="width:${idea.conf}%;"></div></div>` : ''}
-      ${idea.why ? `<div style="font-size:11px;color:var(--muted);line-height:1.65;">${idea.why}</div>` : ''}
-      ${idea.hook ? `<div class="hook-box"><strong style="color:var(--orange);font-weight:500;">Hook:</strong> ${idea.hook}</div>` : ''}
-      <div style="display:flex;gap:6px;margin-top:2px;">
-        <button class="btn btn-orange btn-sm" onclick="approveIdea(${idx})">✓ Aprobar</button>
-        <button class="btn btn-ghost btn-sm" onclick="discardIdea(${idx})">✗ Descartar</button>
+      ${idea.why ? `<div style="font-size:11px;font-weight:300;color:var(--muted);line-height:1.7;">${idea.why}</div>` : ''}
+      ${idea.hook ? `<div class="hook-box">${idea.hook}</div>` : ''}
+      <div style="display:flex;gap:8px;padding-top:4px;border-top:1px solid var(--border);">
+        <button class="btn btn-primary btn-sm" onclick="approveIdea(${idx})">Approve</button>
+        <button class="btn btn-ghost btn-sm" onclick="discardIdea(${idx})">Discard</button>
       </div>
     </div>`).join('');
 }
@@ -985,18 +1637,15 @@ function approveIdea(idx) {
   idea.status = 'approved';
   S.approvedIdea = idea;
   const card = document.getElementById('idea-' + idx);
-  if (card) { card.style.borderColor = 'rgba(34,197,94,0.4)'; card.style.background = 'rgba(34,197,94,0.04)'; }
+  if (card) { card.style.borderColor = 'rgba(91,138,91,0.4)'; card.style.background = 'rgba(91,138,91,0.03)'; }
   setTimeout(() => {
     nav('production');
     document.getElementById('prod-empty').style.display = 'none';
     document.getElementById('prod-content').style.display = 'flex';
     document.getElementById('prod-hero').innerHTML = `
-      <div style="display:flex;align-items:center;gap:7px;margin-bottom:7px;">
-        <span class="badge bg">✓ Aprobado</span>
-        ${idea.conf ? `<span class="badge bo">Confianza: ${idea.conf}%</span>` : ''}
-      </div>
-      <div style="font-size:17px;font-weight:600;margin-bottom:5px;letter-spacing:-0.3px;">${idea.title}</div>
-      ${idea.format ? `<div style="font-size:12px;color:var(--muted);">${idea.format}</div>` : ''}`;
+      <div class="prod-hero-label">Approved · ${idea.conf ? 'Confidence ' + idea.conf + '%' : ''}</div>
+      <div class="prod-hero-title">${idea.title}</div>
+      ${idea.format ? `<div style="font-size:11px;font-weight:300;color:var(--stone-2);margin-top:6px;">${idea.format}</div>` : ''}`;
   }, 500);
 }
 
@@ -1009,7 +1658,7 @@ function discardIdea(idx) {
 /* ── CALENDAR ── */
 function saveEvent() {
   const title = document.getElementById('ev-title').value.trim();
-  if (!title) { alert('El título es obligatorio.'); return; }
+  if (!title) { alert('Title is required.'); return; }
   S.events.push({
     title, date: document.getElementById('ev-date').value,
     plat: document.getElementById('ev-plat').value,
@@ -1023,7 +1672,7 @@ function saveEvent() {
 
 function renderCal() {
   const y = S.calYear, m = S.calMonth;
-  const mnames = ['Enero','Febrero','Marzo','Abril','Mayo','Junio','Julio','Agosto','Septiembre','Octubre','Noviembre','Diciembre'];
+  const mnames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
   document.getElementById('cal-label').textContent = mnames[m] + ' ' + y;
   const first = new Date(y, m, 1), last = new Date(y, m+1, 0);
   let sdow = first.getDay(); sdow = sdow === 0 ? 6 : sdow - 1;
@@ -1037,12 +1686,12 @@ function renderCal() {
     grid.appendChild(d);
   }
   for (let day = 1; day <= last.getDate(); day++) {
-    const d = document.createElement('div');
     const isToday = today.getDate() === day && today.getMonth() === m && today.getFullYear() === y;
+    const d = document.createElement('div');
     d.className = 'cal-day' + (isToday ? ' today' : '');
     const ds = y + '-' + String(m+1).padStart(2,'0') + '-' + String(day).padStart(2,'0');
     const evs = S.events.filter(e => e.date === ds);
-    d.innerHTML = `<div class="cal-dn${isToday?' today-n':''}">${day}${isToday?' ●':''}</div>` +
+    d.innerHTML = `<div class="cal-dn${isToday?' today-n':''}">${day}</div>` +
       evs.map(e => `<div class="cal-ev ${evCls[e.status]||'ev-idea'}">${e.title}</div>`).join('');
     grid.appendChild(d);
   }
@@ -1054,70 +1703,68 @@ function renderCal() {
 
   const todayStr = today.toISOString().split('T')[0];
   const upcoming = S.events.filter(e => e.date >= todayStr).sort((a,b) => a.date.localeCompare(b.date)).slice(0,5);
-  const lbl = { pub:'Publicado', grab:'Grabando', apr:'Aprobado', edit:'Editando', idea:'Idea' };
-  const bcls = { pub:'bg', grab:'bo', apr:'bb', edit:'bp', idea:'bm' };
+  const lbl = { pub:'Published', grab:'Filming', apr:'Approved', edit:'Editing', idea:'Idea' };
+  const bcls = { pub:'badge-ok', grab:'badge-champ', apr:'badge-stone', edit:'badge-stone', idea:'badge-stone' };
   document.getElementById('upcoming').innerHTML = upcoming.length
-    ? '<div style="display:flex;flex-direction:column;gap:5px;">' + upcoming.map(e =>
-        `<div style="display:flex;align-items:center;gap:8px;padding:8px;background:var(--surface2);border-radius:6px;border:1px solid var(--border);">
-          <div style="font-size:10px;color:var(--muted);min-width:36px;">${e.date ? e.date.slice(5).replace('-','/') : '—'}</div>
-          <div style="flex:1;font-size:12px;">${e.title}</div>
-          <span class="badge ${bcls[e.status]||'bm'}">${lbl[e.status]||e.status}</span>
+    ? '<div style="display:flex;flex-direction:column;gap:6px;">' + upcoming.map(e =>
+        `<div style="display:flex;align-items:center;gap:10px;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius);background:var(--ivory-2);">
+          <div style="font-size:10px;font-weight:300;color:var(--faint);min-width:38px;">${e.date ? e.date.slice(5).replace('-','/') : '—'}</div>
+          <div style="flex:1;font-size:12px;font-weight:300;">${e.title}</div>
+          <span class="badge ${bcls[e.status]||'badge-stone'}">${lbl[e.status]||e.status}</span>
         </div>`).join('') + '</div>'
-    : '<div class="empty" style="padding:16px;"><div class="empty-desc">No hay eventos próximos agendados.</div></div>';
+    : '<div class="empty" style="padding:20px;"><div class="empty-rule"></div><div class="empty-desc">No upcoming events scheduled.</div></div>';
 
   const mStr = y + '-' + String(m+1).padStart(2,'0');
   const mEvs = S.events.filter(e => e.date && e.date.startsWith(mStr));
   document.getElementById('cal-summary').innerHTML = [
-    ['Publicados', mEvs.filter(e=>e.status==='pub').length],
-    ['Grabando', mEvs.filter(e=>e.status==='grab').length],
-    ['Aprobados', mEvs.filter(e=>e.status==='apr').length],
-    ['Total mes', mEvs.length]
+    ['Published', mEvs.filter(e=>e.status==='pub').length],
+    ['Filming',   mEvs.filter(e=>e.status==='grab').length],
+    ['Approved',  mEvs.filter(e=>e.status==='apr').length],
+    ['This month', mEvs.length]
   ].map(([l,v]) => `<div class="mc"><div class="mc-label">${l}</div><div class="mc-val">${v}</div></div>`).join('');
 }
 
 function changeMonth(dir) {
   S.calMonth += dir;
   if (S.calMonth > 11) { S.calMonth = 0; S.calYear++; }
-  if (S.calMonth < 0) { S.calMonth = 11; S.calYear--; }
+  if (S.calMonth < 0)  { S.calMonth = 11; S.calYear--; }
   renderCal();
 }
 
 /* ── DASHBOARD ── */
 function refreshDash() {
   const empty = document.getElementById('dash-empty');
-  const data = document.getElementById('dash-data');
-  const hasBrain = S.brain.brand;
-  const hasVideos = S.videos.length > 0;
-  if (!hasBrain && !hasVideos) { empty.style.display = 'block'; data.style.display = 'none'; return; }
+  const data  = document.getElementById('dash-data');
+  if (!S.brain.brand && !S.videos.length) { empty.style.display = 'block'; data.style.display = 'none'; return; }
   empty.style.display = 'none'; data.style.display = 'flex';
-  const now = new Date();
-  document.getElementById('dash-date').textContent = now.toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long' });
-  if (hasVideos) {
-    const best = [...S.videos].sort((a,b) => b.views - a.views)[0];
-    const totalV = S.videos.reduce((a,v) => a+v.views, 0);
-    const avgR = Math.round(S.videos.reduce((a,v) => a+v.ret, 0) / S.videos.length);
-    const totalF = S.videos.reduce((a,v) => a+v.foll, 0);
-    document.getElementById('dash-best-title').textContent = `Mejor video: "${best.name}"`;
-    document.getElementById('dash-best-desc').textContent = `${best.views.toLocaleString()} vistas · ${best.ret}% retención · ${best.plat}. Pedí el análisis completo del canal para ver qué replicar.`;
+  if (S.videos.length) {
+    const best   = [...S.videos].sort((a,b) => b.views - a.views)[0];
+    const totalV = S.videos.reduce((a,v) => a + v.views, 0);
+    const avgR   = Math.round(S.videos.reduce((a,v) => a + v.ret, 0) / S.videos.length);
+    const totalF = S.videos.reduce((a,v) => a + v.foll, 0);
+    document.getElementById('dash-best-title').textContent = `Best performing: "${best.name}"`;
+    document.getElementById('dash-best-desc').textContent  = `${best.views.toLocaleString()} views · ${best.ret}% retention · ${best.plat}. Request the full analysis to understand what to replicate.`;
     document.getElementById('dash-kpis').innerHTML = [
-      ['Videos', S.videos.length], ['Vistas totales', totalV >= 1000 ? (totalV/1000).toFixed(1)+'K' : totalV],
-      ['Retención prom.', avgR + '%'], ['Seguidores ganados', '+' + totalF]
+      ['Videos', S.videos.length],
+      ['Total views', totalV >= 1000 ? (totalV/1000).toFixed(1)+'K' : totalV],
+      ['Avg retention', avgR + '%'],
+      ['Followers gained', '+' + totalF]
     ].map(([l,v]) => `<div class="mc"><div class="mc-label">${l}</div><div class="mc-val">${v}</div></div>`).join('');
   } else {
-    document.getElementById('dash-best-title').textContent = 'Brain configurado ✓';
-    document.getElementById('dash-best-desc').textContent = `Marca: ${S.brain.brand}. Ahora cargá tus videos en Analytics para activar el análisis completo.`;
+    document.getElementById('dash-best-title').textContent = `Brand Brain configured.`;
+    document.getElementById('dash-best-desc').textContent  = `${S.brain.brand} is ready. Load your first video in Analytics to activate the full AI analysis.`;
     document.getElementById('dash-kpis').innerHTML = '';
   }
 }
 
 /* ── LABORATORY ── */
 function refreshLab() {
-  const empty = document.getElementById('lab-empty');
+  const empty   = document.getElementById('lab-empty');
   const content = document.getElementById('lab-content');
   if (!S.videos.length) { empty.style.display = 'block'; content.style.display = 'none'; return; }
   empty.style.display = 'none'; content.style.display = 'flex';
   const sel = document.getElementById('lab-select');
-  sel.innerHTML = S.videos.map((v,i) => `<option value="${i}">${v.name} (${v.views >= 1000 ? (v.views/1000).toFixed(1)+'K' : v.views.toLocaleString()} vistas)</option>`).join('');
+  sel.innerHTML = S.videos.map((v,i) => `<option value="${i}">${v.name} · ${v.views >= 1000 ? (v.views/1000).toFixed(1)+'K' : v.views.toLocaleString()} views</option>`).join('');
   updateLabMetrics();
 }
 
@@ -1126,16 +1773,19 @@ function updateLabMetrics() {
   const v = S.videos[idx];
   if (!v) return;
   document.getElementById('lab-metrics').innerHTML = [
-    ['Vistas', v.views.toLocaleString()], ['Likes', v.likes.toLocaleString()],
-    ['Comentarios', v.comm.toLocaleString()], ['Compartidos', v.shares.toLocaleString()],
-    ['Guardados', v.saves.toLocaleString()], ['Seguidores', (v.foll>=0?'+':'')+v.foll],
-    ['Retención', v.ret+'%'], ['Duración', v.dur+'s']
-  ].map(([l,val]) => `<div class="mc"><div class="mc-label">${l}</div><div class="mc-val">${val}</div></div>`).join('');
+    ['Views',    v.views.toLocaleString()],
+    ['Likes',    v.likes.toLocaleString()],
+    ['Comments', v.comm.toLocaleString()],
+    ['Shares',   v.shares.toLocaleString()],
+    ['Saves',    v.saves.toLocaleString()],
+    ['Followers', (v.foll >= 0 ? '+' : '') + v.foll],
+    ['Retention', v.ret + '%'],
+    ['Duration',  v.dur + 's']
+  ].map(([l, val]) => `<div class="mc"><div class="mc-label">${l}</div><div class="mc-val">${val}</div></div>`).join('');
 }
 
 /* ── INIT ── */
 renderCal();
-document.getElementById('dash-date').textContent = new Date().toLocaleDateString('es-AR', { weekday:'long', day:'numeric', month:'long' });
 </script>
 </body>
 </html>
